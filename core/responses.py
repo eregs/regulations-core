@@ -9,6 +9,7 @@ def user_error(reason):
 def success(ret_value=None):
     if ret_value is not None:
         response = make_response(json.dumps(ret_value), 200)
+        response.headers['Content-type'] = 'application/json'
     else:
         response = make_response('', 204)
     return response
