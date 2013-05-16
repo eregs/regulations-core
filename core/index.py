@@ -2,7 +2,7 @@ from elasticutils import get_es
 from pyelasticsearch.exceptions import IndexAlreadyExistsError
 import settings
 
-NODE_SCHEMA = {
+NODE_SEARCH_SCHEMA = {
     'text': {'type': 'string'}, #   Full text search
     #   Do not search children, but make them available
     'children': {'type': 'object', 'enabled': False},
@@ -11,7 +11,9 @@ NODE_SCHEMA = {
         'text': {'type': 'string', 'index': 'not_analyzed'},
         'parts': {'type': 'string', 'index': 'not_analyzed'},
         'title': {'type': 'string'}
-    }}
+    }},
+    'id': {'type': 'string', 'index': 'not_analyzed'},
+    'version': {'type': 'string', 'index': 'not_analyzed'}
 }
 
 
@@ -24,5 +26,5 @@ def init_schema():
 
     #   Does not replace if exact mapping already exists
     es.put_mapping(settings.ELASTIC_SEARCH_INDEX, 'reg_tree', {
-        'reg_tree': {'properties': NODE_SCHEMA}
+        'reg_tree': {'properties': NODE_SEARCH_SCHEMA}
     })

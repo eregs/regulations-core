@@ -1,1 +1,3 @@
+jsonschema==1.3.0
 elasticutils==0.7.dev
+Flask==0.9
