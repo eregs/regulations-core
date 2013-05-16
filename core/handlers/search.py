@@ -1,7 +1,7 @@
 from core import app
 from core.responses import success
-from elasticutils import Q, S
 from flask import request
+from pyelasticsearch import ElasticSearch
 import settings
 
 @app.route('/search')
@@ -10,9 +10,11 @@ def search():
     if not term:
         return user_error('No query term')
 
-    search = S().es(urls=settings.ELASTIC_SEARCH_URLS)
-    search = search.indexes(settings.ELASTIC_SEARCH_INDEX)
-    #search = search.query(**{'label.title__text': term})
-    search = search.query(text__text=term)
+    query = {
+        'fields': ['text', 'label', 'version'],
+        'query': {'match': {'text': term}}
+    }
+    es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
+    results = es.search(query, index=settings.ELASTIC_SEARCH_INDEX)
 
-    return success([result.__dict__ for result in search.all()])
+    return success(results['hits']['hits'])

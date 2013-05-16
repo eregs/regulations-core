@@ -1,8 +1,8 @@
 from core import app
 from core.responses import success, user_error
-from elasticutils import get_es
 from flask import request
 import jsonschema
+from pyelasticsearch import ElasticSearch
 import settings
 
 REGULATION_SCHEMA = {
@@ -56,7 +56,7 @@ def add(label, version):
             add_node(child)
     add_node(node)
 
-    es = get_es(settings.ELASTIC_SEARCH_URLS)
+    es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
     es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree', to_save)
 
     return success()

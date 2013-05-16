@@ -1,4 +1,4 @@
-from elasticutils import get_es
+from pyelasticsearch import ElasticSearch
 from pyelasticsearch.exceptions import IndexAlreadyExistsError
 import settings
 
@@ -18,7 +18,7 @@ NODE_SEARCH_SCHEMA = {
 
 
 def init_schema():
-    es = get_es(settings.ELASTIC_SEARCH_URLS)
+    es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
     try:
         es.create_index(settings.ELASTIC_SEARCH_INDEX)
     except IndexAlreadyExistsError:
