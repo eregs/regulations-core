@@ -18,6 +18,8 @@ NODE_SEARCH_SCHEMA = {
 
 
 def init_schema():
+    """Should be called at application startup. Makes sure the mappings and
+    index exist."""
     es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
     try:
         es.create_index(settings.ELASTIC_SEARCH_INDEX)

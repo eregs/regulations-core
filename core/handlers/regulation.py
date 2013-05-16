@@ -15,7 +15,7 @@ REGULATION_SCHEMA = {
         'children': {
             'type': 'array',
             'additionalItems': False,
-            'items': [{'$ref': 'reg_tree_node'}]
+            'items': {'$ref': 'reg_tree_node'}
         },
         'label': {
             'type': 'object', 
@@ -26,7 +26,7 @@ REGULATION_SCHEMA = {
                 'parts': {
                     'type': 'array', 
                     'additionalItems': False,
-                    'items': [{'type': 'string'}]
+                    'items': {'type': 'string'}
                 },
                 'title': {'type': 'string'}
             }
@@ -36,11 +36,12 @@ REGULATION_SCHEMA = {
 
 @app.route('/regulation/<label>/<version>', methods=['PUT'])
 def add(label, version):
+    """Add this regulation node and all of its children to elastic search"""
     node = request.json
 
     try:
         jsonschema.validate(node, REGULATION_SCHEMA)
-    except jsonschema.ValidationError:
+    except jsonschema.ValidationError, e:
         return user_error("JSON is invalid")
 
     if label != node['label']['text']:
