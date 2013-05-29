@@ -1,6 +1,6 @@
-from core import app
+from core import app, db
 from core.responses import success, user_error
-from flask import request
+from flask import abort, request
 import jsonschema
 from pyelasticsearch import ElasticSearch
 import settings
@@ -61,3 +61,14 @@ def add(label, version):
     es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree', to_save)
 
     return success()
+
+
+@app.route('/regulation/<label>/<version>', methods=['GET'])
+def get(label, version):
+    """Find and return the regulation with this version and label"""
+    regulation = db.Regulations().get(label, version)
+    if regulation:
+        return success(regulation)
+    else:
+        abort(404)
+
