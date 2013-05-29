@@ -1,13 +1,14 @@
-from core import app, db
+from core import db
 from core.responses import success, user_error
-from flask import request
+from flask import request, Blueprint
 
-@app.route('/notice/<doc_number>', methods=['PUT'])
-def add(doc_number):
+blueprint = Blueprint('notice', __name__)
+
+@blueprint.route('/notice/<docnum>', methods=['PUT'])
+def add(docnum):
     """Add the notice to the db"""
     notice = request.json
 
     #   @todo: write a schema that verifies the notice's structure
-    db.Notices().put(doc_number, notice)
+    db.Notices().put(docnum, notice)
     return success()
-

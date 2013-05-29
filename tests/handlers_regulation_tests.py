@@ -5,6 +5,10 @@ import json
 from mock import patch
 
 class HandlersRegulationTest(FlaskTest):
+    
+    def setUp(self):
+        FlaskTest.setUp(self)
+        app.register_blueprint(blueprint)
 
     def test_add_not_json(self):
         url ='/regulation/lablab/verver'

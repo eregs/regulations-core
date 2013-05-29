@@ -49,7 +49,7 @@ class ESLayers(object):
 
     def bulk_put(self, layers):
         """Store all layer objects"""
-        self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'layer', regs)
+        self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'layer', layers)
 
 class Notices(object):
     """A level of indirection for our database abstraction. All backends

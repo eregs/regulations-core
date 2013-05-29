@@ -5,6 +5,10 @@ from mock import patch
 
 class HandlersSearchTest(FlaskTest):
 
+    def setUp(self):
+        FlaskTest.setUp(self)
+        app.register_blueprint(blueprint)
+
     def test_search_missing_q(self):
         response = self.client.get('/search?non_q=test')
         self.assertEqual(400, response.status_code)

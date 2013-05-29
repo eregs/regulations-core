@@ -1,10 +1,11 @@
-from core import app
 from core.responses import success, user_error
-from flask import request
+from flask import Blueprint, request
 from pyelasticsearch import ElasticSearch
 import settings
 
-@app.route('/search')
+blueprint = Blueprint('search', __name__)
+
+@blueprint.route('/search')
 def search():
     """Search elastic search for any matches in the node's text"""
     term = request.args.get('q', '')
