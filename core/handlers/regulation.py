@@ -36,7 +36,7 @@ REGULATION_SCHEMA = {
 
 @app.route('/regulation/<label>/<version>', methods=['PUT'])
 def add(label, version):
-    """Add this regulation node and all of its children to elastic search"""
+    """Add this regulation node and all of its children to the db"""
     node = request.json
 
     try:
@@ -57,8 +57,7 @@ def add(label, version):
             add_node(child)
     add_node(node)
 
-    es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
-    es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree', to_save)
+    db.Regulations().bulk_put(to_save)
 
     return success()
 

@@ -47,8 +47,8 @@ class HandlersRegulationTest(FlaskTest):
             data = json.dumps(message))
         self.assertEqual(405, response.status_code)
 
-    @patch('core.handlers.regulation.ElasticSearch')
-    def test_add_label_success(self, es):
+    @patch('core.handlers.regulation.db')
+    def test_add_label_success(self, db):
         url = '/regulation/p/verver'
 
         message = {
@@ -67,10 +67,9 @@ class HandlersRegulationTest(FlaskTest):
         }
         response = self.client.put(url, content_type='application/json',
             data = json.dumps(message))
-        self.assertTrue(es.called)
-        self.assertTrue(es.return_value.bulk_index.called)
-        bulk_index_args = es.return_value.bulk_index.call_args[0]
-        self.assertEqual(3, len(bulk_index_args[2]))
+        self.assertTrue(db.Regulations.return_value.bulk_put.called)
+        bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
+        self.assertEqual(3, len(bulk_put_args[0]))
 
     @patch('core.handlers.regulation.db')
     def test_get_good(self, db):
