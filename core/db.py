@@ -50,3 +50,22 @@ class ESLayers(object):
     def bulk_put(self, layers):
         """Store all layer objects"""
         self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'layer', regs)
+
+class Notices(object):
+    """A level of indirection for our database abstraction. All backends
+    should provide the same interface."""
+    def __new__(cls):
+        return ESNotices()
+
+    def put(self, doc_number, notice):
+        """Documentation method. doc_number:String, notice:Dict"""
+
+class ESNotices(object):
+    """Implementation of Elastic Search as notice backend"""
+    def __init__(self):
+        self.es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
+
+    def put(self, doc_number, notice):
+        """Store a single notice"""
+        self.es.index(settings.ELASTIC_SEARCH_INDEX, 'notice', notice,
+                id=doc_number)
