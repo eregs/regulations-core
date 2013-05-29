@@ -71,3 +71,26 @@ class HandlersRegulationTest(FlaskTest):
         self.assertTrue(es.return_value.bulk_index.called)
         bulk_index_args = es.return_value.bulk_index.call_args[0]
         self.assertEqual(3, len(bulk_index_args[2]))
+
+    @patch('core.handlers.regulation.db')
+    def test_get_good(self, db):
+        url = '/regulation/lab/ver'
+        db.Regulations.return_value.get.return_value = {"some": "thing"}
+        response = self.client.get(url)
+        self.assertTrue(db.Regulations.return_value.get.called)
+        args = db.Regulations.return_value.get.call_args[0]
+        self.assertTrue('lab' in args)
+        self.assertTrue('ver' in args)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual({'some': 'thing'}, json.loads(response.data))
+
+    @patch('core.handlers.regulation.db')
+    def test_get_404(self, db):
+        url = '/regulation/lab/ver'
+        db.Regulations.return_value.get.return_value = None
+        response = self.client.get(url)
+        self.assertTrue(db.Regulations.return_value.get.called)
+        args = db.Regulations.return_value.get.call_args[0]
+        self.assertTrue('lab' in args)
+        self.assertTrue('ver' in args)
+        self.assertEqual(404, response.status_code)
