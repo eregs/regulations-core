@@ -9,6 +9,9 @@ def add(name, label, version):
     """Add the layer node and all of its children to the db"""
     layer = request.json
 
+    if not isinstance(layer, dict):
+        return user_error('invalid format')
+
     keys = layer.keys() #   a stack
     keys.sort(reverse=True)
     for key in keys:
@@ -23,10 +26,10 @@ def add(name, label, version):
         for k in [k for k in keys if k.startswith(key)]:
             sublayer[k] = layer[k]
         to_save.append({
-            "id": version + "/" + name + "/" + label,
+            "id": version + "/" + name + "/" + key,
             "version": version,
             "name": name,
-            "label": label,
+            "label": key,
             "layer": sublayer
         })
 
