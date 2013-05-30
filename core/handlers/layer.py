@@ -1,6 +1,6 @@
 from core import db
 from core.responses import success, user_error
-from flask import Blueprint, request
+from flask import abort, Blueprint, request
 
 blueprint = Blueprint('layer', __name__)
 
@@ -12,27 +12,48 @@ def add(name, label, version):
     if not isinstance(layer, dict):
         return user_error('invalid format')
 
-    keys = layer.keys() #   a stack
-    keys.sort(reverse=True)
-    for key in keys:
-        if not key.startswith(label):
+    for key in layer.keys():
+        # terms layer has a special attribute
+        if not key.startswith(label) and key != 'referenced':
             return user_error('label mismatch: %s, %s' % (label, key))
 
     to_save = []
-    while keys:
-        key = keys.pop()
-        sublayer = {key: layer[key]}
-        # would be more efficient to step from the end, but this is > readable
-        for k in [k for k in keys if k.startswith(key)]:
-            sublayer[k] = layer[k]
+    for node_key in child_keys(label, version):
+        sublayer = {}
+        for layer_key in layer.keys():
+            if layer_key.startswith(node_key):
+                sublayer[layer_key] = layer[layer_key]
+
         to_save.append({
-            "id": version + "/" + name + "/" + key,
+            "id": version + "/" + name + "/" + node_key,
             "version": version,
             "name": name,
-            "label": key,
+            "label": node_key,
             "layer": sublayer
         })
 
     db.Layers().bulk_put(to_save)
 
     return success()
+
+def child_keys(label, version):
+    reg = db.Regulations().get(label, version)
+    if not reg:
+        return []
+
+    keys = []
+    def walk(node):
+        keys.append(node['label']['text'])
+        for child in node['children']:
+            walk(child)
+    walk(reg)
+    return keys
+
+@blueprint.route('/layer/<name>/<label>/<version>', methods=['GET'])
+def get(name, label, version):
+    """Find and return the layer with this name + version + label"""
+    layer = db.Layers().get(name, label, version)
+    if layer:
+        return success(layer)
+    else:
+        abort(404)
