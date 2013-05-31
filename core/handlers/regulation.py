@@ -1,6 +1,6 @@
-from core import app
+from core import db
 from core.responses import success, user_error
-from flask import request
+from flask import abort, Blueprint, request
 import jsonschema
 from pyelasticsearch import ElasticSearch
 import settings
@@ -34,9 +34,11 @@ REGULATION_SCHEMA = {
     }
 }
 
-@app.route('/regulation/<label>/<version>', methods=['PUT'])
+blueprint = Blueprint('regulation', __name__)
+
+@blueprint.route('/regulation/<label>/<version>', methods=['PUT'])
 def add(label, version):
-    """Add this regulation node and all of its children to elastic search"""
+    """Add this regulation node and all of its children to the db"""
     node = request.json
 
     try:
@@ -57,7 +59,17 @@ def add(label, version):
             add_node(child)
     add_node(node)
 
-    es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
-    es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree', to_save)
+    db.Regulations().bulk_put(to_save)
 
     return success()
+
+
+@blueprint.route('/regulation/<label>/<version>', methods=['GET'])
+def get(label, version):
+    """Find and return the regulation with this version and label"""
+    regulation = db.Regulations().get(label, version)
+    if regulation:
+        return success(regulation)
+    else:
+        abort(404)
+

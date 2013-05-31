@@ -5,6 +5,10 @@ import json
 from mock import patch
 
 class HandlersRegulationTest(FlaskTest):
+    
+    def setUp(self):
+        FlaskTest.setUp(self)
+        app.register_blueprint(blueprint)
 
     def test_add_not_json(self):
         url ='/regulation/lablab/verver'
@@ -47,8 +51,8 @@ class HandlersRegulationTest(FlaskTest):
             data = json.dumps(message))
         self.assertEqual(405, response.status_code)
 
-    @patch('core.handlers.regulation.ElasticSearch')
-    def test_add_label_success(self, es):
+    @patch('core.handlers.regulation.db')
+    def test_add_label_success(self, db):
         url = '/regulation/p/verver'
 
         message = {
@@ -67,7 +71,29 @@ class HandlersRegulationTest(FlaskTest):
         }
         response = self.client.put(url, content_type='application/json',
             data = json.dumps(message))
-        self.assertTrue(es.called)
-        self.assertTrue(es.return_value.bulk_index.called)
-        bulk_index_args = es.return_value.bulk_index.call_args[0]
-        self.assertEqual(3, len(bulk_index_args[2]))
+        self.assertTrue(db.Regulations.return_value.bulk_put.called)
+        bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
+        self.assertEqual(3, len(bulk_put_args[0]))
+
+    @patch('core.handlers.regulation.db')
+    def test_get_good(self, db):
+        url = '/regulation/lab/ver'
+        db.Regulations.return_value.get.return_value = {"some": "thing"}
+        response = self.client.get(url)
+        self.assertTrue(db.Regulations.return_value.get.called)
+        args = db.Regulations.return_value.get.call_args[0]
+        self.assertTrue('lab' in args)
+        self.assertTrue('ver' in args)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual({'some': 'thing'}, json.loads(response.data))
+
+    @patch('core.handlers.regulation.db')
+    def test_get_404(self, db):
+        url = '/regulation/lab/ver'
+        db.Regulations.return_value.get.return_value = None
+        response = self.client.get(url)
+        self.assertTrue(db.Regulations.return_value.get.called)
+        args = db.Regulations.return_value.get.call_args[0]
+        self.assertTrue('lab' in args)
+        self.assertTrue('ver' in args)
+        self.assertEqual(404, response.status_code)
