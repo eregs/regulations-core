@@ -153,3 +153,11 @@ class HandlersLayerTest(FlaskTest):
         response = self.client.get('/layer/nnn/lll/vvv')
         self.assertEqual(200, response.status_code)
         self.assertEqual({'example': 'response'}, json.loads(response.data))
+
+    @patch('core.handlers.layer.db')
+    def test_get_results_empty_layer(self, db):
+        db.Layers.return_value.get.return_value = {}
+        response = self.client.get('/layer/nnn/lll/vvv')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual({}, json.loads(response.data))
+

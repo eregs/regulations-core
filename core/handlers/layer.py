@@ -53,7 +53,7 @@ def child_keys(label, version):
 def get(name, label, version):
     """Find and return the layer with this name + version + label"""
     layer = db.Layers().get(name, label, version)
-    if layer:
+    if layer is not None:
         return success(layer)
     else:
         abort(404)
