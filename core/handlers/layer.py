@@ -20,6 +20,8 @@ def add(name, label, version):
     to_save = []
     for node_key in child_keys(label, version):
         sublayer = {}
+        if 'referenced' in layer:   #   @todo: be more granular
+            sublayer['referenced'] = layer['referenced']
         for layer_key in layer.keys():
             if layer_key.startswith(node_key):
                 sublayer[layer_key] = layer[layer_key]
