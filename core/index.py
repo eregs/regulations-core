@@ -8,7 +8,7 @@ NODE_SEARCH_SCHEMA = {
     'children': {'type': 'object', 'enabled': False},
     'label': {'type': 'string'},
     'title': {'type': 'string'},
-    'typ': {'type': 'string', 'index': 'not_analyzed'},
+    'node_type': {'type': 'string', 'index': 'not_analyzed'},
     'id': {'type': 'string', 'index': 'not_analyzed'},
     'version': {'type': 'string', 'index': 'not_analyzed'}
 }
