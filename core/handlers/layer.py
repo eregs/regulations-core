@@ -45,7 +45,7 @@ def child_keys(label, version):
 
     keys = []
     def walk(node):
-        keys.append(node['label']['text'])
+        keys.append('-'.join(node['label']))
         for child in node['children']:
             walk(child)
     walk(reg)

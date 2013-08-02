@@ -14,7 +14,7 @@ class HandlersRegulationTest(FlaskTest):
         url ='/regulation/lablab/verver'
 
         response = self.client.put(url, data = json.dumps(
-            {'text': '', 'child': [], 'label': {'text': '', 'parts': []}}))
+            {'text': '', 'child': [], 'label': []}))
         self.assertEqual(400, response.status_code)
 
         response = self.client.put(url, content_type='application/json',
@@ -28,7 +28,7 @@ class HandlersRegulationTest(FlaskTest):
             data = json.dumps({'incorrect': 'schema'}))
         self.assertEqual(400, response.status_code)
 
-        message = {'text': '', 'label': {'text': '', 'parts': []}}
+        message = {'text': '', 'label': []}
         response = self.client.put(url, content_type='application/json',
             data = json.dumps(message))
         self.assertEqual(400, response.status_code)
@@ -37,7 +37,7 @@ class HandlersRegulationTest(FlaskTest):
         url ='/regulation/lablab/verver'
 
         message = {'text': '', 'children': [], 
-            'label': {'text': 'notlablba', 'parts': ['notlablab']}}
+            'label': ['notlablab']}
         response = self.client.put(url, content_type='application/json',
             data = json.dumps(message))
         self.assertEqual(400, response.status_code)
@@ -46,7 +46,7 @@ class HandlersRegulationTest(FlaskTest):
         url ='/regulation/lablab/verver'
 
         message = {'text': '', 'children': [], 
-            'label': {'text': 'lablba', 'parts': ['notlablab']}}
+            'label': ['notlablab']}
         response = self.client.post(url, content_type='application/json',
             data = json.dumps(message))
         self.assertEqual(405, response.status_code)
@@ -57,15 +57,15 @@ class HandlersRegulationTest(FlaskTest):
 
         message = {
             'text': 'parent text',
-            'label': {'text': 'p', 'parts': ['p']},
+            'label': ['p'],
             'children': [{
                 'text': 'child1',
-                'label': {'text': 'p-c1', 'parts': ['p', 'c1']},
+                'label': ['p', 'c1'],
                 'children': []
             }, {
                 'text': 'child2',
-                'label': {'text': 'p-c2', 'parts': ['p', 'c2'], 
-                    'title': 'My Title'},
+                'label': ['p', 'c2'], 
+                'title': 'My Title',
                 'children': []
             }]
         }
@@ -74,6 +74,21 @@ class HandlersRegulationTest(FlaskTest):
         self.assertTrue(db.Regulations.return_value.bulk_put.called)
         bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
         self.assertEqual(3, len(bulk_put_args[0]))
+
+    @patch('core.handlers.regulation.db')
+    def test_add_empty_children(self, db):
+        url = '/regulation/p/verver'
+
+        message = {
+            'text': 'parent text',
+            'label': ['p'],
+            'children': []
+        }
+        response = self.client.put(url, content_type='application/json',
+            data = json.dumps(message))
+        self.assertTrue(db.Regulations.return_value.bulk_put.called)
+        bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
+        self.assertEqual(1, len(bulk_put_args[0]))
 
     @patch('core.handlers.regulation.db')
     def test_get_good(self, db):
