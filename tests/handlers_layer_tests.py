@@ -44,11 +44,11 @@ class HandlersLayerTest(FlaskTest):
             'lablab-b-4': [3,4],
         }
         db.Regulations.return_value.get.return_value = {
-            'label': {'text': 'lablab'},
+            'label': ['lablab'],
             'children': [{
-                'label': {'text': 'lablab-b'},
+                'label': ['lablab', 'b'],
                 'children': [{
-                    'label': {'text': 'lablab-b-4'},
+                    'label': ['lablab', 'b', '4'],
                     'children': []
                 }]
             }]
@@ -80,11 +80,11 @@ class HandlersLayerTest(FlaskTest):
             'lablab-b-4': [3,4],
         }
         db.Regulations.return_value.get.return_value = {
-            'label': {'text': 'lablab'},
+            'label': ['lablab'],
             'children': [{
-                'label': {'text': 'lablab-b'},
+                'label': ['lablab', 'b'],
                 'children': [{
-                    'label': {'text': 'lablab-b-4'},
+                    'label': ['lablab', 'b', '4'],
                     'children': []
                 }]
             }]
@@ -119,14 +119,14 @@ class HandlersLayerTest(FlaskTest):
     @patch('core.handlers.layer.db')
     def test_child_keys_with_results(self, db):
         db.Regulations.return_value.get.return_value = {
-            'label': {'text': 'lll'},
+            'label': ['lll'],
             'children': [{
-                'label': {'text': 'lll-a'},
+                'label': ['lll', 'a'],
                 'children': []
             }, {
-                'label': {'text': 'lll-b'},
+                'label': ['lll', 'b'],
                 'children': [{
-                    'label': {'text': 'lll-b-1'},
+                    'label': ['lll', 'b', '1'],
                     'children': []
                 }]
             }]

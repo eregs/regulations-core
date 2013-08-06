@@ -18,19 +18,12 @@ REGULATION_SCHEMA = {
             'items': {'$ref': 'reg_tree_node'}
         },
         'label': {
-            'type': 'object', 
-            'additionalProperties': False,
-            'required': ['text', 'parts'],
-            'properties': {
-                'text': {'type': 'string'},
-                'parts': {
-                    'type': 'array', 
-                    'additionalItems': False,
-                    'items': {'type': 'string'}
-                },
-                'title': {'type': 'string'}
-            }
-        }
+            'type': 'array',
+            'additionalItems': False,
+            'items': {'type': 'string'}
+        },
+        'title': {'type': 'string'},
+        'node_type': {'type': 'string'}
     }
 }
 
@@ -46,14 +39,14 @@ def add(label, version):
     except jsonschema.ValidationError, e:
         return user_error("JSON is invalid")
 
-    if label != node['label']['text']:
+    if label != '-'.join(node['label']):
         return user_error('label mismatch')
 
     to_save = []
     def add_node(node):
         node = dict(node)   #   copy
         node['version'] = version
-        node['id'] = version + '/' + node['label']['text']
+        node['id'] = version + '/' + '-'.join(node['label'])
         to_save.append(node)
         for child in node['children']:
             add_node(child)
