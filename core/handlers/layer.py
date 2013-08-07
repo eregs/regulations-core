@@ -6,15 +6,16 @@ blueprint = Blueprint('layer', __name__)
 
 def child_label_of(lhs, rhs):
     """Is the lhs label a child of the rhs label"""
-    if lhs.startswith(rhs):
-        return True
     #   Interpretations have a slightly different hierarchy
     if 'Interp' in lhs and 'Interp' in rhs:
         lhs_reg, lhs_comment = lhs.split('Interp')
         rhs_reg, rhs_comment = rhs.split('Interp')
-        if lhs_reg.startswith(rhs_reg) or (
-            lhs_reg == rhs_reg and lhs_comment.startswith(rhs_comment)):
+        if lhs_reg.startswith(rhs_reg):
             return True
+
+    #   Handle Interps with shared prefix as well as non-interps
+    if lhs.startswith(rhs):
+        return True
     
     return False
 
