@@ -107,6 +107,37 @@ class HandlersLayerTest(FlaskTest):
         self.assertEqual('lablab-b-4', args[0][2]['label'])
 
     @patch('core.handlers.layer.db')
+    def test_add_interp_children(self, db):
+        url = '/layer/layname/99/verver'
+
+        message = {'99-5-Interp': [1,2], '99-5-a-Interp': [3,4]}
+        db.Regulations.return_value.get.return_value = {
+            'label': ['99'],
+            'children': [{
+                'label': ['99', 'Interp'],
+                'children': [{
+                    'label': ['99', '5', 'Interp'],
+                    'children': [{
+                        'label': ['99', '5', 'a', 'Interp'],
+                        'children': [],
+                    }]
+                }]
+            }]
+        }
+        self.client.put(url, content_type='application/json',
+            data = json.dumps(message))
+        args = db.Layers.return_value.bulk_put.call_args[0][0]
+        self.assertEqual(4, len(args))
+        self.assertTrue('99-5-Interp' in args[0]['layer'])
+        self.assertTrue('99-5-a-Interp' in args[0]['layer'])
+        self.assertTrue('99-5-Interp' in args[1]['layer'])
+        self.assertTrue('99-5-a-Interp' in args[1]['layer'])
+        self.assertTrue('99-5-Interp' in args[2]['layer'])
+        self.assertTrue('99-5-a-Interp' in args[2]['layer'])
+        self.assertFalse('99-5-Interp' in args[3]['layer'])
+        self.assertTrue('99-5-a-Interp' in args[3]['layer'])
+
+    @patch('core.handlers.layer.db')
     def test_child_keys_no_results(self, db):
         db.Regulations.return_value.get.return_value = None
         self.assertEqual([], child_keys('lll', 'vvv'))
@@ -161,3 +192,7 @@ class HandlersLayerTest(FlaskTest):
         self.assertEqual(200, response.status_code)
         self.assertEqual({}, json.loads(response.data))
 
+
+    def test_child_label_of(self):
+        self.assertTrue(child_label_of('1005-5-a-1-Interp-1', 
+            '1005-5-Interp'))

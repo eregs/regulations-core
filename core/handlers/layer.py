@@ -4,6 +4,22 @@ from flask import abort, Blueprint, request
 
 blueprint = Blueprint('layer', __name__)
 
+def child_label_of(lhs, rhs):
+    """Is the lhs label a child of the rhs label"""
+    #   Interpretations have a slightly different hierarchy
+    if 'Interp' in lhs and 'Interp' in rhs:
+        lhs_reg, lhs_comment = lhs.split('Interp')
+        rhs_reg, rhs_comment = rhs.split('Interp')
+        if lhs_reg.startswith(rhs_reg):
+            return True
+
+    #   Handle Interps with shared prefix as well as non-interps
+    if lhs.startswith(rhs):
+        return True
+    
+    return False
+
+
 @blueprint.route('/layer/<name>/<label>/<version>', methods=['PUT'])
 def add(name, label, version):
     """Add the layer node and all of its children to the db"""
@@ -14,16 +30,18 @@ def add(name, label, version):
 
     for key in layer.keys():
         # terms layer has a special attribute
-        if not key.startswith(label) and key != 'referenced':
+        if not child_label_of(key, label) and key != 'referenced':
             return user_error('label mismatch: %s, %s' % (label, key))
 
     to_save = []
+    #   Make sure to add *a* layer for all children
     for node_key in child_keys(label, version):
         sublayer = {}
         if 'referenced' in layer:   #   @todo: be more granular
             sublayer['referenced'] = layer['referenced']
+        #   Determine which keys of the parent the child layer needs
         for layer_key in layer.keys():
-            if layer_key.startswith(node_key):
+            if child_label_of(layer_key, node_key):
                 sublayer[layer_key] = layer[layer_key]
 
         to_save.append({
