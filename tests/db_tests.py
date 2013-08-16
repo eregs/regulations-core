@@ -17,7 +17,7 @@ class ESRegulationsTest(FlaskTest):
     @patch('core.db.ElasticSearch')
     def test_get_success(self, es):
         es.return_value.get.return_value = { '_source': {
-            'first': 0, 'version': 'remove', 'id': 'also'
+            'first': 0, 'version': 'remove', 'id': 'also', 'label_string': 'a'
         }}
         esr = ESRegulations()
 
@@ -34,6 +34,17 @@ class ESRegulationsTest(FlaskTest):
         self.assertEqual(3, len(args))
         self.assertEqual('reg_tree', args[1])
         self.assertEqual([1,2,3,4], args[2])
+
+    @patch('core.db.ElasticSearch')
+    def test_listing(self, es):
+        es.return_value.search.return_value = {'hits': {'hits': [
+            {'fields': {'version': 'ver1'}}, {'fields': {'version': 'aaa'}},
+            {'fields': {'version': '333'}}, {'fields': {'version': 'four'}},
+        ]}}
+        esr = ESRegulations()
+        results = esr.listing('lll')
+        self.assertTrue('ll' in str(es.return_value.search.call_args[0][0]))
+        self.assertEqual(['ver1', 'aaa', '333', 'four'], results)
 
 class ESLayersTest(FlaskTest):
 
@@ -105,14 +116,22 @@ class ESNoticesTest(FlaskTest):
         self.assertEqual('docdoc', kwargs['id'])
 
     @patch('core.db.ElasticSearch')
-    def test_all(self, es):
+    def test_listing(self, es):
         es.return_value.search.return_value = { 'hits': { 'hits': [
-            {'_id': 22, '_somethingelse': 5},
-            {'_id': 9, '_somethingelse': 'blue'},
+            {'_id': 22, '_somethingelse': 5, 'fields':{
+                'effective_on': '2005-05-05'}},
+            {'_id': 9, '_somethingelse': 'blue', 'fields': {}},
         ]}}
         esn = ESNotices()
 
-        self.assertEqual([22, 9], esn.all())
+        self.assertEqual([{'document_number': 22, 'effective_on': '2005-05-05'},
+                          {'document_number': 9}], esn.listing())
         self.assertEqual('notice',
             es.return_value.search.call_args[1]['doc_type'])
+ 
+        self.assertEqual([{'document_number': 22, 'effective_on': '2005-05-05'},
+                          {'document_number': 9}], esn.listing('876'))
+        self.assertEqual('notice',
+            es.return_value.search.call_args[1]['doc_type'])
+        self.assertTrue('876' in str(es.return_value.search.call_args[0][0]))
  

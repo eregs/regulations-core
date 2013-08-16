@@ -14,6 +14,11 @@ class Regulations(object):
     def bulk_put(self, regs):
         """Documentation method. Add many entries, each with an id field"""
 
+    def listing(self, label):
+        """Documentation method. List regulation versions that match this
+        label"""
+
+
 class ESRegulations(object):
     """Implementation of Elastic Search as regulations backend"""
     def __init__(self):
@@ -27,6 +32,7 @@ class ESRegulations(object):
 
             reg_node = result['_source']
             del reg_node['version']
+            del reg_node['label_string']
             del reg_node['id']
             return reg_node
         except ElasticHttpNotFoundError:
@@ -35,6 +41,15 @@ class ESRegulations(object):
     def bulk_put(self, regs):
         """Store all reg objects"""
         self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree', regs)
+
+    def listing(self, label):
+        """List regulation version that match this label"""
+        query = {'match': {'label_string': label}}
+        query = {'fields': ['version'], 'query': query}
+        result = self.es.search(query, index=settings.ELASTIC_SEARCH_INDEX,
+                doc_type='reg_tree', size=100)
+        return [res['fields']['version'] for res in result['hits']['hits']]
+
 
 class Layers(object):
     """A level of indirection for our database abstraction. All backends
@@ -47,6 +62,7 @@ class Layers(object):
 
     def get(self, name, label, version):
         """Doc method. Return a single layer (no meta data) or None"""
+
 
 class ESLayers(object):
     """Implementation of Elastic Search as layers backend"""
@@ -67,6 +83,7 @@ class ESLayers(object):
         except ElasticHttpNotFoundError:
             return None
 
+
 class Notices(object):
     """A level of indirection for our database abstraction. All backends
     should provide the same interface."""
@@ -79,8 +96,9 @@ class Notices(object):
     def get(self, doc_number):
         """Documentation method. Return matching notice or None"""
 
-    def all(self):
-        """Documentation method. Return all known notice ids"""
+    def listing(self, part=None):
+        """Documentation method. Return all notices or notices by part"""
+
 
 class ESNotices(object):
     """Implementation of Elastic Search as notice backend"""
@@ -102,9 +120,19 @@ class ESNotices(object):
         except ElasticHttpNotFoundError:
             return None
 
-    def all(self):
-        """Return all notice ids"""
-        query = {'fields': ['id'], 'query': {'match_all' : {}}}
+    def listing(self, part=None):
+        """All notices or filtered by cfr_part"""
+        if part:
+            query = {'match': {'cfr_part': part}}
+        else:
+            query = {'match_all' : {}}
+        query = {'fields': ['effective_on', 'fr_url', 'publication_date'], 
+                 'query': query}
         result = self.es.search(query, index=settings.ELASTIC_SEARCH_INDEX,
                 doc_type='notice', size=100)
-        return [res['_id'] for res in result['hits']['hits']]
+        notices = []
+        for notice in self.es.search(query, doc_type='notice', size=100,
+                index=settings.ELASTIC_SEARCH_INDEX)['hits']['hits']:
+            notice['fields']['document_number'] = notice['_id']
+            notices.append(notice['fields'])
+        return notices
