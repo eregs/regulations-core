@@ -1,11 +1,11 @@
-from core.db import *
+from core.db.es import *
 from flasktest import FlaskTest
 from mock import patch
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 
 class ESRegulationsTest(FlaskTest):
 
-    @patch('core.db.ElasticSearch')
+    @patch('core.db.es.ElasticSearch')
     def test_get_404(self, es):
         es.return_value.get.side_effect = ElasticHttpNotFoundError
         esr = ESRegulations()
@@ -14,7 +14,7 @@ class ESRegulationsTest(FlaskTest):
         self.assertEqual('reg_tree', es.return_value.get.call_args[0][1])
         self.assertEqual('verver/lablab', es.return_value.get.call_args[0][2])
 
-    @patch('core.db.ElasticSearch')
+    @patch('core.db.es.ElasticSearch')
     def test_get_success(self, es):
         es.return_value.get.return_value = { '_source': {
             'first': 0, 'version': 'remove', 'id': 'also', 'label_string': 'a'
@@ -25,7 +25,7 @@ class ESRegulationsTest(FlaskTest):
         self.assertEqual('reg_tree', es.return_value.get.call_args[0][1])
         self.assertEqual('verver/lablab', es.return_value.get.call_args[0][2])
 
-    @patch('core.db.ElasticSearch')
+    @patch('core.db.es.ElasticSearch')
     def test_bulk_put(self, es):
         esr = ESRegulations()
         esr.bulk_put([1, 2, 3, 4])
@@ -35,7 +35,7 @@ class ESRegulationsTest(FlaskTest):
         self.assertEqual('reg_tree', args[1])
         self.assertEqual([1,2,3,4], args[2])
 
-    @patch('core.db.ElasticSearch')
+    @patch('core.db.es.ElasticSearch')
     def test_listing(self, es):
         es.return_value.search.return_value = {'hits': {'hits': [
             {'fields': {'version': 'ver1'}}, {'fields': {'version': 'aaa'}},
@@ -48,7 +48,7 @@ class ESRegulationsTest(FlaskTest):
 
 class ESLayersTest(FlaskTest):
 
-    @patch('core.db.ElasticSearch')
+    @patch('core.db.es.ElasticSearch')
     def test_get_404(self, es):
         es.return_value.get.side_effect = ElasticHttpNotFoundError
         esl = ESLayers()
@@ -58,7 +58,7 @@ class ESLayersTest(FlaskTest):
         self.assertEqual('verver/namnam/lablab', 
             es.return_value.get.call_args[0][2])
 
-    @patch('core.db.ElasticSearch')
+    @patch('core.db.es.ElasticSearch')
     def test_get_success(self, es):
         es.return_value.get.return_value = { '_source': { 'layer': {
             'some': 'body'
@@ -71,7 +71,7 @@ class ESLayersTest(FlaskTest):
         self.assertEqual('verver/namnam/lablab', 
             es.return_value.get.call_args[0][2])
 
-    @patch('core.db.ElasticSearch')
+    @patch('core.db.es.ElasticSearch')
     def test_bulk_put(self, es):
         esl = ESLayers()
         esl.bulk_put([1, 2, 3, 4])
@@ -83,7 +83,7 @@ class ESLayersTest(FlaskTest):
 
 class ESNoticesTest(FlaskTest):
 
-    @patch('core.db.ElasticSearch')
+    @patch('core.db.es.ElasticSearch')
     def test_get_404(self, es):
         es.return_value.get.side_effect = ElasticHttpNotFoundError
         esn = ESNotices()
@@ -92,7 +92,7 @@ class ESNoticesTest(FlaskTest):
         self.assertEqual('notice', es.return_value.get.call_args[0][1])
         self.assertEqual('docdoc', es.return_value.get.call_args[0][2])
 
-    @patch('core.db.ElasticSearch')
+    @patch('core.db.es.ElasticSearch')
     def test_get_success(self, es):
         es.return_value.get.return_value = { '_source': { 
             'some': 'body'
@@ -103,7 +103,7 @@ class ESNoticesTest(FlaskTest):
         self.assertEqual('notice', es.return_value.get.call_args[0][1])
         self.assertEqual('docdoc', es.return_value.get.call_args[0][2])
  
-    @patch('core.db.ElasticSearch')
+    @patch('core.db.es.ElasticSearch')
     def test_put(self, es):
         esn = ESNotices()
         esn.put('docdoc', {"some": "structure"})
@@ -115,7 +115,7 @@ class ESNoticesTest(FlaskTest):
         self.assertTrue('id' in kwargs)
         self.assertEqual('docdoc', kwargs['id'])
 
-    @patch('core.db.ElasticSearch')
+    @patch('core.db.es.ElasticSearch')
     def test_listing(self, es):
         es.return_value.search.return_value = { 'hits': { 'hits': [
             {'_id': 22, '_somethingelse': 5, 'fields':{
