@@ -1,5 +1,6 @@
 import es
 
+
 class Regulations(object):
     """A level of indirection for our database abstraction. All backends
     should provide the same interface."""

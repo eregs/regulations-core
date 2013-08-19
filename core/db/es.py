@@ -12,7 +12,7 @@ class ESRegulations(object):
         """Find the regulation label + version"""
         try:
             result = self.es.get(settings.ELASTIC_SEARCH_INDEX, 'reg_tree',
-                    version + '/' + label)
+                                 version + '/' + label)
 
             reg_node = result['_source']
             del reg_node['version']
@@ -31,7 +31,7 @@ class ESRegulations(object):
         query = {'match': {'label_string': label}}
         query = {'fields': ['version'], 'query': query}
         result = self.es.search(query, index=settings.ELASTIC_SEARCH_INDEX,
-                doc_type='reg_tree', size=100)
+                                doc_type='reg_tree', size=100)
         return [res['fields']['version'] for res in result['hits']['hits']]
 
 
@@ -48,7 +48,7 @@ class ESLayers(object):
         """Find the label that matches these parameters"""
         try:
             result = self.es.get(settings.ELASTIC_SEARCH_INDEX, 'layer',
-                    version + '/' + name + '/' + label)
+                                 version + '/' + name + '/' + label)
 
             return result['_source']['layer']
         except ElasticHttpNotFoundError:
@@ -63,13 +63,13 @@ class ESNotices(object):
     def put(self, doc_number, notice):
         """Store a single notice"""
         self.es.index(settings.ELASTIC_SEARCH_INDEX, 'notice', notice,
-                id=doc_number)
+                      id=doc_number)
 
     def get(self, doc_number):
         """Find the associated notice"""
         try:
             result = self.es.get(settings.ELASTIC_SEARCH_INDEX, 'notice',
-                    doc_number)
+                                 doc_number)
 
             return result['_source']
         except ElasticHttpNotFoundError:
@@ -80,14 +80,15 @@ class ESNotices(object):
         if part:
             query = {'match': {'cfr_part': part}}
         else:
-            query = {'match_all' : {}}
-        query = {'fields': ['effective_on', 'fr_url', 'publication_date'], 
+            query = {'match_all': {}}
+        query = {'fields': ['effective_on', 'fr_url', 'publication_date'],
                  'query': query}
         result = self.es.search(query, index=settings.ELASTIC_SEARCH_INDEX,
-                doc_type='notice', size=100)
+                                doc_type='notice', size=100)
         notices = []
-        for notice in self.es.search(query, doc_type='notice', size=100,
-                index=settings.ELASTIC_SEARCH_INDEX)['hits']['hits']:
+        results = self.es.search(query, doc_type='notice', size=100,
+                                 index=settings.ELASTIC_SEARCH_INDEX)
+        for notice in results['hits']['hits']:
             notice['fields']['document_number'] = notice['_id']
             notices.append(notice['fields'])
         return notices
