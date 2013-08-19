@@ -10,13 +10,16 @@ class Regulations(object):
 
     def get(self, label, version):
         """Documentation method. Returns a regulation node or None"""
+        raise NotImplementedError
 
     def bulk_put(self, regs):
         """Documentation method. Add many entries, each with an id field"""
+        raise NotImplementedError
 
     def listing(self, label):
         """Documentation method. List regulation versions that match this
         label"""
+        raise NotImplementedError
 
 
 class ESRegulations(object):
@@ -59,9 +62,11 @@ class Layers(object):
 
     def bulk_put(self, layers):
         """Documentation method. Add many entries, each with an id field"""
+        raise NotImplementedError
 
     def get(self, name, label, version):
         """Doc method. Return a single layer (no meta data) or None"""
+        raise NotImplementedError
 
 
 class ESLayers(object):
@@ -92,12 +97,15 @@ class Notices(object):
 
     def put(self, doc_number, notice):
         """Documentation method. doc_number:String, notice:Dict"""
+        raise NotImplementedError
 
     def get(self, doc_number):
         """Documentation method. Return matching notice or None"""
+        raise NotImplementedError
 
     def listing(self, part=None):
         """Documentation method. Return all notices or notices by part"""
+        raise NotImplementedError
 
 
 class ESNotices(object):
