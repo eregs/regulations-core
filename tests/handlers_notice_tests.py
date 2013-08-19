@@ -52,11 +52,9 @@ class HandlersNoticeTest(FlaskTest):
         self.assertEqual({'example': 'response'}, json.loads(response.data))
 
     @patch('core.handlers.notice.db')
-    def test_all(self, db):
-        db.Notices.return_value.all.return_value = [1, 2, 3]
+    def test_listing(self, db):
+        db.Notices.return_value.listing.return_value = [1, 2, 3]
         response = self.client.get('/notice')
         self.assertEqual(200, response.status_code)
-        self.assertEqual({'results': [
-            {'document_number': 1}, {'document_number': 2}, 
-                {'document_number': 3}
-            ]}, json.loads(response.data))
+        self.assertEqual({'results': [1,2,3]},
+                         json.loads(response.data))

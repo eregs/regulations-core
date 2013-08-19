@@ -28,7 +28,6 @@ def get(docnum):
 @blueprint.route('/notice', methods=['GET'])
 def listing():
     """Find and return all notices"""
-    notices = db.Notices().all()
     return success({
-        'results': [{'document_number': docnum} for docnum in notices]
+        'results': db.Notices().listing(request.args.get('part', None))
     })

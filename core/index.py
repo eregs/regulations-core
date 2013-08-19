@@ -6,7 +6,8 @@ NODE_SEARCH_SCHEMA = {
     'text': {'type': 'string'}, #   Full text search
     #   Do not search children, but make them available
     'children': {'type': 'object', 'enabled': False},
-    'label': {'type': 'string'},
+    'label': {'type': 'string'},    # An array of strings
+    'label_string': {'type': 'string', 'index': 'not_analyzed'},
     'title': {'type': 'string'},
     'node_type': {'type': 'string', 'index': 'not_analyzed'},
     'id': {'type': 'string', 'index': 'not_analyzed'},

@@ -56,20 +56,22 @@ class HandlersLayerTest(FlaskTest):
         response = self.client.put(url, content_type='application/json',
             data = json.dumps(message))
         self.assertTrue(db.Layers.return_value.bulk_put.called)
-        args = db.Layers.return_value.bulk_put.call_args[0]
-        self.assertEqual(3, len(args[0]))
-        self.assertEqual(message, args[0][0]['layer'])
-        self.assertEqual('verver/layname/lablab', args[0][0]['id'])
-        self.assertEqual('lablab', args[0][0]['label'])
+        args = db.Layers.return_value.bulk_put.call_args[0][0]
+        args = list(reversed(args))   # switch to outside in
+
+        self.assertEqual(3, len(args))
+        self.assertEqual(message, args[0]['layer'])
+        self.assertEqual('verver/layname/lablab', args[0]['id'])
+        self.assertEqual('lablab', args[0]['label'])
         #   Sub layers have fewer elements
         del message['lablab']
-        self.assertEqual(message, args[0][1]['layer'])
-        self.assertEqual('verver/layname/lablab-b', args[0][1]['id'])
-        self.assertEqual('lablab-b', args[0][1]['label'])
+        self.assertEqual(message, args[1]['layer'])
+        self.assertEqual('verver/layname/lablab-b', args[1]['id'])
+        self.assertEqual('lablab-b', args[1]['label'])
         del message['lablab-b']
-        self.assertEqual(message, args[0][2]['layer'])
-        self.assertEqual('verver/layname/lablab-b-4', args[0][2]['id'])
-        self.assertEqual('lablab-b-4', args[0][2]['label'])
+        self.assertEqual(message, args[2]['layer'])
+        self.assertEqual('verver/layname/lablab-b-4', args[2]['id'])
+        self.assertEqual('lablab-b-4', args[2]['label'])
 
     @patch('core.handlers.layer.db')
     def test_add_skip_level(self, db):
@@ -92,19 +94,21 @@ class HandlersLayerTest(FlaskTest):
         response = self.client.put(url, content_type='application/json',
             data = json.dumps(message))
         self.assertTrue(db.Layers.return_value.bulk_put.called)
-        args = db.Layers.return_value.bulk_put.call_args[0]
-        self.assertEqual(3, len(args[0]))
-        self.assertEqual(message, args[0][0]['layer'])
-        self.assertEqual('verver/layname/lablab', args[0][0]['id'])
-        self.assertEqual('lablab', args[0][0]['label'])
+        args = db.Layers.return_value.bulk_put.call_args[0][0]
+        args = list(reversed(args))   # switch to outside in
+
+        self.assertEqual(3, len(args))
+        self.assertEqual(message, args[0]['layer'])
+        self.assertEqual('verver/layname/lablab', args[0]['id'])
+        self.assertEqual('lablab', args[0]['label'])
         #   Sub layers have fewer elements
         del message['lablab']
-        self.assertEqual(message, args[0][1]['layer'])
-        self.assertEqual('verver/layname/lablab-b', args[0][1]['id'])
-        self.assertEqual('lablab-b', args[0][1]['label'])
-        self.assertEqual(message, args[0][2]['layer'])
-        self.assertEqual('verver/layname/lablab-b-4', args[0][2]['id'])
-        self.assertEqual('lablab-b-4', args[0][2]['label'])
+        self.assertEqual(message, args[1]['layer'])
+        self.assertEqual('verver/layname/lablab-b', args[1]['id'])
+        self.assertEqual('lablab-b', args[1]['label'])
+        self.assertEqual(message, args[2]['layer'])
+        self.assertEqual('verver/layname/lablab-b-4', args[2]['id'])
+        self.assertEqual('lablab-b-4', args[2]['label'])
 
     @patch('core.handlers.layer.db')
     def test_add_interp_children(self, db):
@@ -128,6 +132,7 @@ class HandlersLayerTest(FlaskTest):
             data = json.dumps(message))
         args = db.Layers.return_value.bulk_put.call_args[0][0]
         self.assertEqual(4, len(args))
+        args = list(reversed(args))   # switch to outside in
         self.assertTrue('99-5-Interp' in args[0]['layer'])
         self.assertTrue('99-5-a-Interp' in args[0]['layer'])
         self.assertTrue('99-5-Interp' in args[1]['layer'])
@@ -138,32 +143,67 @@ class HandlersLayerTest(FlaskTest):
         self.assertTrue('99-5-a-Interp' in args[3]['layer'])
 
     @patch('core.handlers.layer.db')
-    def test_child_keys_no_results(self, db):
-        db.Regulations.return_value.get.return_value = None
-        self.assertEqual([], child_keys('lll', 'vvv'))
-        self.assertTrue(db.Regulations.return_value.get.called)
-        self.assertEqual('lll',
-                db.Regulations.return_value.get.call_args[0][0])
-        self.assertEqual('vvv',
-                db.Regulations.return_value.get.call_args[0][1])
+    def test_add_subpart_children(self, db):
+        url = '/layer/layname/99/verver'
 
-    @patch('core.handlers.layer.db')
-    def test_child_keys_with_results(self, db):
+        message = {'99-1': [1,2], '99-1-a': [3,4]}
         db.Regulations.return_value.get.return_value = {
-            'label': ['lll'],
+            'label': ['99'],
             'children': [{
-                'label': ['lll', 'a'],
-                'children': []
-            }, {
-                'label': ['lll', 'b'],
+                'label': ['99', 'Subpart', 'A'],
                 'children': [{
-                    'label': ['lll', 'b', '1'],
-                    'children': []
+                    'label': ['99', '1'],
+                    'children': [{
+                        'label': ['99', '1', 'a'],
+                        'children': []
+                    }]
                 }]
             }]
         }
-        self.assertEqual(['lll', 'lll-a', 'lll-b', 'lll-b-1'], 
-                child_keys('lll', 'vvv'))
+        self.client.put(url, content_type='application/json',
+            data = json.dumps(message))
+        args = db.Layers.return_value.bulk_put.call_args[0][0]
+        self.assertEqual(4, len(args))
+        args = list(reversed(args))   # switch to outside in
+        self.assertTrue('99-1' in args[0]['layer'])
+        self.assertTrue('99-1' in args[1]['layer'])
+        self.assertTrue('99-1' in args[2]['layer'])
+        self.assertTrue('99-1-a' in args[0]['layer'])
+        self.assertTrue('99-1-a' in args[1]['layer'])
+        self.assertTrue('99-1-a' in args[2]['layer'])
+        self.assertTrue('99-1-a' in args[3]['layer'])
+
+    @patch('core.handlers.layer.db')
+    def test_add_referenced(self, db):
+        url = '/layer/layname/99/verver'
+
+        message = {'99-1': [1,2], '99-1-a': [3,4], 'referenced': [5,6]}
+        db.Regulations.return_value.get.return_value = {
+            'label': ['99'],
+            'children': [{
+                'label': ['99', 'Subpart', 'A'],
+                'children': [{
+                    'label': ['99', '1'],
+                    'children': [{
+                        'label': ['99', '1', 'a'],
+                        'children': []
+                    }]
+                }]
+            }]
+        }
+        self.client.put(url, content_type='application/json',
+            data = json.dumps(message))
+        args = db.Layers.return_value.bulk_put.call_args[0][0]
+        self.assertEqual(4, len(args))
+        self.assertTrue('referenced' in args[0]['layer'])
+        self.assertTrue('referenced' in args[1]['layer'])
+        self.assertTrue('referenced' in args[2]['layer'])
+        self.assertTrue('referenced' in args[3]['layer'])
+
+    @patch('core.handlers.layer.db')
+    def test_child_layers_no_results(self, db):
+        db.Regulations.return_value.get.return_value = None
+        self.assertEqual([], child_layers('layname', 'lll', 'vvv', {}))
         self.assertTrue(db.Regulations.return_value.get.called)
         self.assertEqual('lll',
                 db.Regulations.return_value.get.call_args[0][0])

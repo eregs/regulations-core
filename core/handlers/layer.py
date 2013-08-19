@@ -33,41 +33,43 @@ def add(name, label, version):
         if not child_label_of(key, label) and key != 'referenced':
             return user_error('label mismatch: %s, %s' % (label, key))
 
-    to_save = []
-    #   Make sure to add *a* layer for all children
-    for node_key in child_keys(label, version):
-        sublayer = {}
-        if 'referenced' in layer:   #   @todo: be more granular
-            sublayer['referenced'] = layer['referenced']
-        #   Determine which keys of the parent the child layer needs
-        for layer_key in layer.keys():
-            if child_label_of(layer_key, node_key):
-                sublayer[layer_key] = layer[layer_key]
-
-        to_save.append({
-            "id": version + "/" + name + "/" + node_key,
-            "version": version,
-            "name": name,
-            "label": node_key,
-            "layer": sublayer
-        })
-
-    db.Layers().bulk_put(to_save)
+    db.Layers().bulk_put(child_layers(name, label, version, layer))
 
     return success()
 
-def child_keys(label, version):
-    reg = db.Regulations().get(label, version)
-    if not reg:
+def child_layers(layer_name, root_label, version, root_layer):
+
+    root = db.Regulations().get(root_label, version)
+    if not root:
         return []
 
-    keys = []
-    def walk(node):
-        keys.append('-'.join(node['label']))
+    to_save = []
+
+    def find_labels(node):
+        child_labels = []
         for child in node['children']:
-            walk(child)
-    walk(reg)
-    return keys
+            child_labels.extend(find_labels(child))
+
+        label_id = '-'.join(node['label'])
+
+        sub_layer = {}
+        for key in root_layer:
+            #   'referenced' is a special case of the definitions layer
+            if key == label_id or key in child_labels or key == 'referenced':
+                sub_layer[key] = root_layer[key]
+
+        to_save.append({
+            'id': '%s/%s/%s' % (version, layer_name, label_id),
+            'version': version,
+            'name': layer_name,
+            'label': label_id,
+            'layer': sub_layer
+        })
+
+        return child_labels + [label_id]
+
+    find_labels(root)
+    return to_save
 
 @blueprint.route('/layer/<name>/<label>/<version>', methods=['GET'])
 def get(name, label, version):
