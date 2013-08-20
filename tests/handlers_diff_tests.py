@@ -16,18 +16,18 @@ class HandlersDiffTest(FlaskTest):
     def test_add_not_json(self):
         url = '/diff/lablab/oldold/newnew'
 
-        response = self.client.put(url, data = json.dumps({'some': 'struct'}))
+        response = self.client.put(url, data=json.dumps({'some': 'struct'}))
         self.assertEqual(400, response.status_code)
 
         response = self.client.put(url, content_type='application/json',
-            data = '{Invalid}')
+                                   data='{Invalid}')
         self.assertEqual(400, response.status_code)
 
     def test_add_post(self):
         url = '/diff/lablab/oldold/newnew'
 
         response = self.client.post(url, content_type='application/json',
-            data = json.dumps({'some': 'struct'}))
+                                    data=json.dumps({'some': 'struct'}))
         self.assertEqual(405, response.status_code)
 
     @patch('core.handlers.diff.db')
@@ -35,11 +35,11 @@ class HandlersDiffTest(FlaskTest):
         url = '/diff/lablab/oldold/newnew'
 
         response = self.client.put(url, content_type='application/json',
-            data = json.dumps({'some': 'struct'}))
+                                   data=json.dumps({'some': 'struct'}))
         self.assertTrue(db.Diffs.return_value.put.called)
         args = db.Diffs.return_value.put.call_args[0]
         self.assertEqual(('lablab', 'oldold', 'newnew', {'some': 'struct'}),
-            args)
+                         args)
 
     @patch('core.handlers.diff.db')
     def test_get_none(self, db):

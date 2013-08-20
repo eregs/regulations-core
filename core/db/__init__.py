@@ -62,7 +62,7 @@ class Diffs(object):
         return es.ESDiffs()
 
     def put(self, label, old_version, new_version, diff):
-        """Documentation method. label, old_version, new_version:String, 
+        """Documentation method. label, old_version, new_version:String,
         diff:Dict"""
         raise NotImplementedError
 

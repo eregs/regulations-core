@@ -3,7 +3,7 @@ from pyelasticsearch.exceptions import IndexAlreadyExistsError
 import settings
 
 NODE_SEARCH_SCHEMA = {
-    'text': {'type': 'string'}, #   Full text search
+    'text': {'type': 'string'},  # Full text search
     #   Do not search children, but make them available
     'children': {'type': 'object', 'enabled': False},
     'label': {'type': 'string'},    # An array of strings
@@ -23,7 +23,7 @@ LAYER_SCHEMA = {
     #   label at which this layer applies (1005, 1005-12, 1005-12-b, etc.)
     'label': {'type': 'string', 'index': 'not_analyzed'},
     #   Will never search on the layer components
-    'layer': {'type': 'object', 'enabled': False}   
+    'layer': {'type': 'object', 'enabled': False}
 }
 
 NOTICE_SCHEMA = {
