@@ -53,3 +53,19 @@ class Notices(object):
     def listing(self, part=None):
         """Documentation method. Return all notices or notices by part"""
         raise NotImplementedError
+
+
+class Diffs(object):
+    """A level of indirection for our database abstraction. All backends
+    should provide the same interface."""
+    def __new__(cls):
+        return es.ESDiffs()
+
+    def put(self, label, old_version, new_version, diff):
+        """Documentation method. label, old_version, new_version:String,
+        diff:Dict"""
+        raise NotImplementedError
+
+    def get(self, label, old_version, new_version):
+        """Documentation method. Return matching diff or None"""
+        raise NotImplementedError

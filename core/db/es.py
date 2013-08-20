@@ -92,3 +92,33 @@ class ESNotices(object):
             notice['fields']['document_number'] = notice['_id']
             notices.append(notice['fields'])
         return notices
+
+
+class ESDiffs(object):
+    """Implementation of Elastic Search as diff backend"""
+    def __init__(self):
+        self.es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
+
+    @staticmethod
+    def to_id(label, old, new):
+        return "%s/%s/%s" % (label, old, new)
+
+    def put(self, label, old_version, new_version, diff):
+        """Store a diff between two versions of a regulation node"""
+        struct = {
+            'label': label,
+            'old_version': old_version,
+            'new_version': new_version,
+            'diff': diff
+        }
+        self.es.index(settings.ELASTIC_SEARCH_INDEX, 'diff', struct,
+                      id=self.to_id(label, old_version, new_version))
+
+    def get(self, label, old_version, new_version):
+        """Find the associated diff"""
+        try:
+            result = self.es.get(settings.ELASTIC_SEARCH_INDEX, 'diff',
+                                 self.to_id(label, old_version, new_version))
+            return result['_source']['diff']
+        except ElasticHttpNotFoundError:
+            return None

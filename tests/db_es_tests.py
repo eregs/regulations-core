@@ -139,3 +139,48 @@ class ESNoticesTest(FlaskTest):
         self.assertEqual('notice',
                          es.return_value.search.call_args[1]['doc_type'])
         self.assertTrue('876' in str(es.return_value.search.call_args[0][0]))
+
+
+class ESDiffTest(FlaskTest):
+
+    @patch('core.db.es.ElasticSearch')
+    def test_get_404(self, es):
+        es.return_value.get.side_effect = ElasticHttpNotFoundError
+        eds = ESDiffs()
+
+        self.assertEqual(None, eds.get('lablab', 'oldold', 'newnew'))
+        self.assertEqual('diff', es.return_value.get.call_args[0][1])
+        self.assertEqual('lablab/oldold/newnew',
+                         es.return_value.get.call_args[0][2])
+
+    @patch('core.db.es.ElasticSearch')
+    def test_get_success(self, es):
+        es.return_value.get.return_value = {'_source': {
+            'label': 'lablab',
+            'old_version': 'oldold',
+            'new_version': 'newnew',
+            'diff': {'some': 'body'}
+        }}
+        eds = ESDiffs()
+
+        self.assertEqual({"some": 'body'},
+                         eds.get('lablab', 'oldold', 'newnew'))
+        self.assertEqual('diff', es.return_value.get.call_args[0][1])
+        self.assertEqual('lablab/oldold/newnew',
+                         es.return_value.get.call_args[0][2])
+
+    @patch('core.db.es.ElasticSearch')
+    def test_put(self, es):
+        eds = ESDiffs()
+        eds.put('lablab', 'oldold', 'newnew', {"some": "structure"})
+        self.assertTrue(es.return_value.index.called)
+        args, kwargs = es.return_value.index.call_args
+        self.assertEqual(3, len(args))
+        self.assertEqual('diff', args[1])
+        self.assertEqual('lablab/oldold/newnew', kwargs['id'])
+        self.assertEqual({
+            'label': 'lablab',
+            'old_version': 'oldold',
+            'new_version': 'newnew',
+            'diff': {'some': 'structure'}
+        }, args[2])
