@@ -32,6 +32,15 @@ NOTICE_SCHEMA = {
     'notice': {'type': 'object', 'enabled': False}
 }
 
+DIFF_SCHEMA = {
+    'id': {'type': 'string', 'index': 'not_analyzed'},
+    'label': {'type': 'string', 'index': 'not_analyzed'},
+    'old_version': {'type': 'string', 'index': 'not_analyzed'},
+    'new_version': {'type': 'string', 'index': 'not_analyzed'},
+    #   No need to index this
+    'diff': {'type': 'object', 'enabled': False}
+}
+
 
 def init_schema():
     """Should be called at application startup. Makes sure the mappings and
@@ -51,4 +60,7 @@ def init_schema():
     })
     es.put_mapping(settings.ELASTIC_SEARCH_INDEX, 'notice', {
         'notice': {'properties': LAYER_SCHEMA}
+    })
+    es.put_mapping(settings.ELASTIC_SEARCH_INDEX, 'diff', {
+        'diff': {'properties': DIFF_SCHEMA}
     })
