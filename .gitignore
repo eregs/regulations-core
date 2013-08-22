@@ -2,3 +2,9 @@
 *.swp
 local_settings.py
 
+# Buildout cruft
+.installed.cfg
+bin
+develop-eggs
+eggs
+regcore.egg-info
