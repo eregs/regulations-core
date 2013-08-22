@@ -1,5 +1,5 @@
-from core import app
-from core.handlers.notice import *
+from regcore import app
+from regcore.handlers.notice import *
 from flasktest import FlaskTest
 import json
 from mock import patch
@@ -27,7 +27,7 @@ class HandlersNoticeTest(FlaskTest):
             data = json.dumps({'some': 'struct'}))
         self.assertEqual(405, response.status_code)
 
-    @patch('core.handlers.notice.db')
+    @patch('regcore.handlers.notice.db')
     def test_add_label_success(self, db):
         url = '/notice/docdoc'
 
@@ -38,20 +38,20 @@ class HandlersNoticeTest(FlaskTest):
         self.assertEqual('docdoc', args[0])
         self.assertEqual({'some': 'struct'}, args[1])
 
-    @patch('core.handlers.notice.db')
+    @patch('regcore.handlers.notice.db')
     def test_get_none(self, db):
         db.Notices.return_value.get.return_value = None
         response = self.client.get('/notice/docdoc')
         self.assertEqual(404, response.status_code)
 
-    @patch('core.handlers.notice.db')
+    @patch('regcore.handlers.notice.db')
     def test_get_results(self, db):
         db.Notices.return_value.get.return_value = {'example': 'response'}
         response = self.client.get('/notice/docdoc')
         self.assertEqual(200, response.status_code)
         self.assertEqual({'example': 'response'}, json.loads(response.data))
 
-    @patch('core.handlers.notice.db')
+    @patch('regcore.handlers.notice.db')
     def test_listing(self, db):
         db.Notices.return_value.listing.return_value = [1, 2, 3]
         response = self.client.get('/notice')

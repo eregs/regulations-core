@@ -1,5 +1,5 @@
-from core import app
-from core.handlers.regulation import *
+from regcore import app
+from regcore.handlers.regulation import *
 from flasktest import FlaskTest
 import json
 from mock import patch
@@ -51,7 +51,7 @@ class HandlersRegulationTest(FlaskTest):
             data = json.dumps(message))
         self.assertEqual(405, response.status_code)
 
-    @patch('core.handlers.regulation.db')
+    @patch('regcore.handlers.regulation.db')
     def test_add_label_success(self, db):
         url = '/regulation/p/verver'
 
@@ -85,7 +85,7 @@ class HandlersRegulationTest(FlaskTest):
                 found[2] = True
         self.assertEqual(found, [True, True, True])
 
-    @patch('core.handlers.regulation.db')
+    @patch('regcore.handlers.regulation.db')
     def test_add_empty_children(self, db):
         url = '/regulation/p/verver'
 
@@ -100,7 +100,7 @@ class HandlersRegulationTest(FlaskTest):
         bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
         self.assertEqual(1, len(bulk_put_args[0]))
 
-    @patch('core.handlers.regulation.db')
+    @patch('regcore.handlers.regulation.db')
     def test_get_good(self, db):
         url = '/regulation/lab/ver'
         db.Regulations.return_value.get.return_value = {"some": "thing"}
@@ -112,7 +112,7 @@ class HandlersRegulationTest(FlaskTest):
         self.assertEqual(200, response.status_code)
         self.assertEqual({'some': 'thing'}, json.loads(response.data))
 
-    @patch('core.handlers.regulation.db')
+    @patch('regcore.handlers.regulation.db')
     def test_get_404(self, db):
         url = '/regulation/lab/ver'
         db.Regulations.return_value.get.return_value = None
@@ -123,7 +123,7 @@ class HandlersRegulationTest(FlaskTest):
         self.assertTrue('ver' in args)
         self.assertEqual(404, response.status_code)
 
-    @patch('core.handlers.regulation.db')
+    @patch('regcore.handlers.regulation.db')
     def test_listing(self, db):
         url = '/regulation/lablab'
         db.Notices.return_value.listing.return_value = [

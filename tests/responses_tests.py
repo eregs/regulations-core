@@ -1,5 +1,5 @@
-from core import app
-from core.responses import *
+from regcore import app
+from regcore.responses import *
 from flasktest import FlaskTest
 import json
 from unittest import TestCase

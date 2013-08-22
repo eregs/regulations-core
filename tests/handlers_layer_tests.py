@@ -1,5 +1,5 @@
-from core import app
-from core.handlers.layer import *
+from regcore import app
+from regcore.handlers.layer import *
 from flasktest import FlaskTest
 import json
 from mock import patch
@@ -34,7 +34,7 @@ class HandlersLayerTest(FlaskTest):
             data = json.dumps({'lablab': []}))
         self.assertEqual(405, response.status_code)
 
-    @patch('core.handlers.layer.db')
+    @patch('regcore.handlers.layer.db')
     def test_add_success(self, db):
         url = '/layer/layname/lablab/verver'
 
@@ -73,7 +73,7 @@ class HandlersLayerTest(FlaskTest):
         self.assertEqual('verver/layname/lablab-b-4', args[2]['id'])
         self.assertEqual('lablab-b-4', args[2]['label'])
 
-    @patch('core.handlers.layer.db')
+    @patch('regcore.handlers.layer.db')
     def test_add_skip_level(self, db):
         url = '/layer/layname/lablab/verver'
 
@@ -110,7 +110,7 @@ class HandlersLayerTest(FlaskTest):
         self.assertEqual('verver/layname/lablab-b-4', args[2]['id'])
         self.assertEqual('lablab-b-4', args[2]['label'])
 
-    @patch('core.handlers.layer.db')
+    @patch('regcore.handlers.layer.db')
     def test_add_interp_children(self, db):
         url = '/layer/layname/99/verver'
 
@@ -142,7 +142,7 @@ class HandlersLayerTest(FlaskTest):
         self.assertFalse('99-5-Interp' in args[3]['layer'])
         self.assertTrue('99-5-a-Interp' in args[3]['layer'])
 
-    @patch('core.handlers.layer.db')
+    @patch('regcore.handlers.layer.db')
     def test_add_subpart_children(self, db):
         url = '/layer/layname/99/verver'
 
@@ -173,7 +173,7 @@ class HandlersLayerTest(FlaskTest):
         self.assertTrue('99-1-a' in args[2]['layer'])
         self.assertTrue('99-1-a' in args[3]['layer'])
 
-    @patch('core.handlers.layer.db')
+    @patch('regcore.handlers.layer.db')
     def test_add_referenced(self, db):
         url = '/layer/layname/99/verver'
 
@@ -200,7 +200,7 @@ class HandlersLayerTest(FlaskTest):
         self.assertTrue('referenced' in args[2]['layer'])
         self.assertTrue('referenced' in args[3]['layer'])
 
-    @patch('core.handlers.layer.db')
+    @patch('regcore.handlers.layer.db')
     def test_child_layers_no_results(self, db):
         db.Regulations.return_value.get.return_value = None
         self.assertEqual([], child_layers('layname', 'lll', 'vvv', {}))
@@ -210,7 +210,7 @@ class HandlersLayerTest(FlaskTest):
         self.assertEqual('vvv',
                 db.Regulations.return_value.get.call_args[0][1])
 
-    @patch('core.handlers.layer.db')
+    @patch('regcore.handlers.layer.db')
     def test_get_none(self, db):
         url = '/layer/layname/lablab/verver'
 
@@ -218,14 +218,14 @@ class HandlersLayerTest(FlaskTest):
         response = self.client.get(url)
         self.assertEqual(404, response.status_code)
 
-    @patch('core.handlers.layer.db')
+    @patch('regcore.handlers.layer.db')
     def test_get_results(self, db):
         db.Layers.return_value.get.return_value = {'example': 'response'}
         response = self.client.get('/layer/nnn/lll/vvv')
         self.assertEqual(200, response.status_code)
         self.assertEqual({'example': 'response'}, json.loads(response.data))
 
-    @patch('core.handlers.layer.db')
+    @patch('regcore.handlers.layer.db')
     def test_get_results_empty_layer(self, db):
         db.Layers.return_value.get.return_value = {}
         response = self.client.get('/layer/nnn/lll/vvv')

@@ -4,8 +4,8 @@ from flask import abort, Blueprint, request
 import jsonschema
 from pyelasticsearch import ElasticSearch
 
-from core import db
-from core.responses import success, user_error
+from regcore import db
+from regcore.responses import success, user_error
 import settings
 
 REGULATION_SCHEMA = {

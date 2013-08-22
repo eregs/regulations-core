@@ -1,4 +1,4 @@
-from core.responses import success, user_error
+from regcore.responses import success, user_error
 from flask import Blueprint, request
 from pyelasticsearch import ElasticSearch
 import settings

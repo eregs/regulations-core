@@ -1,4 +1,4 @@
-from core import app
+from regcore import app
 from functools import wraps
 import unittest
 

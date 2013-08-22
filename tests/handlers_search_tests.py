@@ -1,5 +1,5 @@
-from core import app
-from core.handlers.search import *
+from regcore import app
+from regcore.handlers.search import *
 from flasktest import FlaskTest
 from mock import patch
 
@@ -13,7 +13,7 @@ class HandlersSearchTest(FlaskTest):
         response = self.client.get('/search?non_q=test')
         self.assertEqual(400, response.status_code)
     
-    @patch('core.handlers.search.ElasticSearch')
+    @patch('regcore.handlers.search.ElasticSearch')
     def test_search_success(self, es):
         es.return_value.search.return_value = {'hits': {'hits': []}}
         response = self.client.get('/search?q=test')
