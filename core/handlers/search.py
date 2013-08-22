@@ -19,4 +19,4 @@ def search():
     es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
     results = es.search(query, index=settings.ELASTIC_SEARCH_INDEX)
 
-    return success(results['hits']['hits'])
+    return success({'results': results['hits']['hits']})
