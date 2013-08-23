@@ -7,7 +7,7 @@ from mock import patch
 from regcore.views.layer import *
 
 
-class HandlersLayerTest(TestCase):
+class ViewsLayerTest(TestCase):
 
     def test_add_not_json(self):
         url = '/layer/layname/lablab/verver'

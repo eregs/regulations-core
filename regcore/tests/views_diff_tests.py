@@ -7,7 +7,7 @@ from mock import patch
 from regcore.views.diff import *
 
 
-class HandlersDiffTest(TestCase):
+class ViewsDiffTest(TestCase):
 
     def test_add_not_json(self):
         url = '/diff/lablab/oldold/newnew'

@@ -6,7 +6,7 @@ from mock import patch
 
 from regcore.views.notice import *
 
-class HandlersNoticeTest(TestCase):
+class ViewsNoticeTest(TestCase):
 
     def test_add_not_json(self):
         url = '/notice/docdoc'

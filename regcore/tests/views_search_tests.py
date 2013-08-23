@@ -6,7 +6,7 @@ from mock import patch
 from regcore.views.search import *
 
 
-class HandlersSearchTest(TestCase):
+class ViewsSearchTest(TestCase):
 
     def test_search_missing_q(self):
         response = Client().get('/search?non_q=test')

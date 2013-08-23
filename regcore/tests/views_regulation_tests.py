@@ -7,7 +7,7 @@ from mock import patch
 from regcore.views.regulation import *
 
 
-class HandlersRegulationTest(TestCase):
+class ViewsRegulationTest(TestCase):
     
     def test_add_not_json(self):
         url ='/regulation/lablab/verver'
