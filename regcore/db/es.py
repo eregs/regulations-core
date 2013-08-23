@@ -1,6 +1,6 @@
+from django.conf import settings
 from pyelasticsearch import ElasticSearch
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError
-import settings
 
 
 class ESRegulations(object):

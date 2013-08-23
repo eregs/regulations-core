@@ -1,8 +1,8 @@
-from core import db
-from core.responses import success, user_error
-from flask import abort, Blueprint, request
+import anyjson
 
-blueprint = Blueprint('layer', __name__)
+from regcore import db
+from regcore.responses import four_oh_four, success, user_error
+
 
 def child_label_of(lhs, rhs):
     """Is the lhs label a child of the rhs label"""
@@ -16,26 +16,29 @@ def child_label_of(lhs, rhs):
     #   Handle Interps with shared prefix as well as non-interps
     if lhs.startswith(rhs):
         return True
-    
+
     return False
 
 
-@blueprint.route('/layer/<name>/<label>/<version>', methods=['PUT'])
-def add(name, label, version):
+def add(request, name, label_id, version):
     """Add the layer node and all of its children to the db"""
-    layer = request.json
+    try:
+        layer = anyjson.deserialize(request.body)
+    except ValueError:
+        return user_error('invalid format')
 
     if not isinstance(layer, dict):
         return user_error('invalid format')
 
     for key in layer.keys():
         # terms layer has a special attribute
-        if not child_label_of(key, label) and key != 'referenced':
-            return user_error('label mismatch: %s, %s' % (label, key))
+        if not child_label_of(key, label_id) and key != 'referenced':
+            return user_error('label mismatch: %s, %s' % (label_id, key))
 
-    db.Layers().bulk_put(child_layers(name, label, version, layer))
+    db.Layers().bulk_put(child_layers(name, label_id, version, layer))
 
     return success()
+
 
 def child_layers(layer_name, root_label, version, root_layer):
 
@@ -71,11 +74,11 @@ def child_layers(layer_name, root_label, version, root_layer):
     find_labels(root)
     return to_save
 
-@blueprint.route('/layer/<name>/<label>/<version>', methods=['GET'])
-def get(name, label, version):
+
+def get(request, name, label_id, version):
     """Find and return the layer with this name + version + label"""
-    layer = db.Layers().get(name, label, version)
+    layer = db.Layers().get(name, label_id, version)
     if layer is not None:
         return success(layer)
     else:
-        abort(404)
+        return four_oh_four()

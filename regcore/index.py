@@ -1,6 +1,6 @@
+from django.conf import settings
 from pyelasticsearch import ElasticSearch
 from pyelasticsearch.exceptions import IndexAlreadyExistsError
-import settings
 
 NODE_SEARCH_SCHEMA = {
     'text': {'type': 'string'},  # Full text search
