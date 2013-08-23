@@ -5,7 +5,7 @@ def by_verb_url(regex, name, **by_verb):
     def wrapper(request, *args, **kwargs):
         verb = request.method.upper()
         if verb in by_verb:
-            by_verb[verb](request, *args, **kwargs)
+            return by_verb[verb](request, *args, **kwargs)
         else:
             raise Http404
-    url(regex, wrapper, name=name)
+    return url(regex, wrapper, name=name)
