@@ -1,12 +1,10 @@
 from collections import defaultdict
 
-from flask import abort, Blueprint, request
 import jsonschema
-from pyelasticsearch import ElasticSearch
 
 from regcore import db
-from regcore.responses import success, user_error
-import settings
+from regcore.responses import four_oh_four, success, user_error
+
 
 REGULATION_SCHEMA = {
     'type': 'object',
@@ -30,18 +28,15 @@ REGULATION_SCHEMA = {
     }
 }
 
-blueprint = Blueprint('regulation', __name__)
 
-
-@blueprint.route('/regulation/<label>', methods=['GET'])
-def listing(label):
+def listing(request, label_id):
     """List versions of this regulation"""
-    part = label.split('-')[0]
-    notices = db.Notices().listing(label)
+    part = label_id.split('-')[0]
+    notices = db.Notices().listing(label_id)
     by_date = defaultdict(list)
     for notice in (n for n in notices if 'effective_on' in n):
         by_date[notice['effective_on']].append(notice)
-    reg_versions = set(db.Regulations().listing(label))
+    reg_versions = set(db.Regulations().listing(label_id))
 
     regs = []
     for effective_date in sorted(by_date.keys(), reverse=True):
@@ -60,20 +55,20 @@ def listing(label):
     if regs:
         return success({'versions': regs})
     else:
-        abort(404)
+        return four_oh_four()
 
 
-@blueprint.route('/regulation/<label>/<version>', methods=['PUT'])
-def add(label, version):
+def add(request, label_id, version):
     """Add this regulation node and all of its children to the db"""
-    node = request.json
-
     try:
+        node = anyjson.deserialize(request.body)
         jsonschema.validate(node, REGULATION_SCHEMA)
+    except ValueError:
+        return user_error('invalid format')
     except jsonschema.ValidationError, e:
         return user_error("JSON is invalid")
 
-    if label != '-'.join(node['label']):
+    if label_id != '-'.join(node['label']):
         return user_error('label mismatch')
 
     to_save = []
@@ -92,12 +87,11 @@ def add(label, version):
     return success()
 
 
-@blueprint.route('/regulation/<label>/<version>', methods=['GET'])
-def get(label, version):
+def get(request, label_id, version):
     """Find and return the regulation with this version and label"""
-    regulation = db.Regulations().get(label, version)
+    regulation = db.Regulations().get(label_id, version)
     if regulation:
         return success(regulation)
     else:
-        abort(404)
+        return four_oh_four()
 

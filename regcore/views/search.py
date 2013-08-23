@@ -1,14 +1,10 @@
 from regcore.responses import success, user_error
-from flask import Blueprint, request
 from pyelasticsearch import ElasticSearch
 import settings
 
-blueprint = Blueprint('search', __name__)
-
-@blueprint.route('/search')
-def search():
+def search(request):
     """Search elastic search for any matches in the node's text"""
-    term = request.args.get('q', '')
+    term = request.GET.get('q', '')
     if not term:
         return user_error('No query term')
 
