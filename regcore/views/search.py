@@ -1,6 +1,8 @@
-from regcore.responses import success, user_error
+from django.conf import settings
 from pyelasticsearch import ElasticSearch
-import settings
+
+from regcore.responses import success, user_error
+
 
 def search(request):
     """Search elastic search for any matches in the node's text"""
