@@ -20,7 +20,7 @@ def child_label_of(lhs, rhs):
     return False
 
 
-def add(request, label_id, version):
+def add(request, name, label_id, version):
     """Add the layer node and all of its children to the db"""
     try:
         layer = anyjson.deserialize(request.body)

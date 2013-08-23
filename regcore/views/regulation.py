@@ -1,3 +1,4 @@
+import anyjson
 from collections import defaultdict
 
 import jsonschema

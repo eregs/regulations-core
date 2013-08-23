@@ -1,35 +1,34 @@
-from regcore import app
-from regcore.handlers.regulation import *
-from flasktest import FlaskTest
 import json
+from unittest import TestCase
+
+from django.test.client import Client
 from mock import patch
 
-class HandlersRegulationTest(FlaskTest):
-    
-    def setUp(self):
-        FlaskTest.setUp(self)
-        app.register_blueprint(blueprint)
+from regcore.views.regulation import *
 
+
+class HandlersRegulationTest(TestCase):
+    
     def test_add_not_json(self):
         url ='/regulation/lablab/verver'
 
-        response = self.client.put(url, data = json.dumps(
+        response = Client().put(url, data = json.dumps(
             {'text': '', 'child': [], 'label': []}))
         self.assertEqual(400, response.status_code)
 
-        response = self.client.put(url, content_type='application/json',
+        response = Client().put(url, content_type='application/json',
             data = '{Invalid}')
         self.assertEqual(400, response.status_code)
 
     def test_add_invalid_json(self):
         url ='/regulation/lablab/verver'
 
-        response = self.client.put(url, content_type='application/json',
+        response = Client().put(url, content_type='application/json',
             data = json.dumps({'incorrect': 'schema'}))
         self.assertEqual(400, response.status_code)
 
         message = {'text': '', 'label': []}
-        response = self.client.put(url, content_type='application/json',
+        response = Client().put(url, content_type='application/json',
             data = json.dumps(message))
         self.assertEqual(400, response.status_code)
 
@@ -38,7 +37,7 @@ class HandlersRegulationTest(FlaskTest):
 
         message = {'text': '', 'children': [], 
             'label': ['notlablab']}
-        response = self.client.put(url, content_type='application/json',
+        response = Client().put(url, content_type='application/json',
             data = json.dumps(message))
         self.assertEqual(400, response.status_code)
 
@@ -47,11 +46,11 @@ class HandlersRegulationTest(FlaskTest):
 
         message = {'text': '', 'children': [], 
             'label': ['notlablab']}
-        response = self.client.post(url, content_type='application/json',
+        response = Client().post(url, content_type='application/json',
             data = json.dumps(message))
         self.assertEqual(405, response.status_code)
 
-    @patch('regcore.handlers.regulation.db')
+    @patch('regcore.views.regulation.db')
     def test_add_label_success(self, db):
         url = '/regulation/p/verver'
 
@@ -69,7 +68,7 @@ class HandlersRegulationTest(FlaskTest):
                 'children': []
             }]
         }
-        response = self.client.put(url, content_type='application/json',
+        response = Client().put(url, content_type='application/json',
             data = json.dumps(message))
         self.assertTrue(db.Regulations.return_value.bulk_put.called)
         bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
@@ -85,7 +84,7 @@ class HandlersRegulationTest(FlaskTest):
                 found[2] = True
         self.assertEqual(found, [True, True, True])
 
-    @patch('regcore.handlers.regulation.db')
+    @patch('regcore.views.regulation.db')
     def test_add_empty_children(self, db):
         url = '/regulation/p/verver'
 
@@ -94,36 +93,36 @@ class HandlersRegulationTest(FlaskTest):
             'label': ['p'],
             'children': []
         }
-        response = self.client.put(url, content_type='application/json',
+        response = Client().put(url, content_type='application/json',
             data = json.dumps(message))
         self.assertTrue(db.Regulations.return_value.bulk_put.called)
         bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
         self.assertEqual(1, len(bulk_put_args[0]))
 
-    @patch('regcore.handlers.regulation.db')
+    @patch('regcore.views.regulation.db')
     def test_get_good(self, db):
         url = '/regulation/lab/ver'
         db.Regulations.return_value.get.return_value = {"some": "thing"}
-        response = self.client.get(url)
+        response = Client().get(url)
         self.assertTrue(db.Regulations.return_value.get.called)
         args = db.Regulations.return_value.get.call_args[0]
         self.assertTrue('lab' in args)
         self.assertTrue('ver' in args)
         self.assertEqual(200, response.status_code)
-        self.assertEqual({'some': 'thing'}, json.loads(response.data))
+        self.assertEqual({'some': 'thing'}, json.loads(response.content))
 
-    @patch('regcore.handlers.regulation.db')
+    @patch('regcore.views.regulation.db')
     def test_get_404(self, db):
         url = '/regulation/lab/ver'
         db.Regulations.return_value.get.return_value = None
-        response = self.client.get(url)
+        response = Client().get(url)
         self.assertTrue(db.Regulations.return_value.get.called)
         args = db.Regulations.return_value.get.call_args[0]
         self.assertTrue('lab' in args)
         self.assertTrue('ver' in args)
         self.assertEqual(404, response.status_code)
 
-    @patch('regcore.handlers.regulation.db')
+    @patch('regcore.views.regulation.db')
     def test_listing(self, db):
         url = '/regulation/lablab'
         db.Notices.return_value.listing.return_value = [
@@ -135,10 +134,10 @@ class HandlersRegulationTest(FlaskTest):
         ]
         db.Regulations.return_value.listing.return_value = ['10', '15', '20']
 
-        response = self.client.get(url)
+        response = Client().get(url)
         self.assertEqual(200, response.status_code)
         found = [False, False, False]
-        for ver in json.loads(response.data)['versions']:
+        for ver in json.loads(response.content)['versions']:
             if ver['version'] == '10' and 'by_date' not in ver:
                 found[0] = True
             if ver['version'] == '15' and ver['by_date'] == '2010-10-10':

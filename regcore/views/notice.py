@@ -7,7 +7,7 @@ from regcore.responses import four_oh_four, success, user_error
 def add(request, docnum):
     """Add the notice to the db"""
     try:
-        notice = request.json
+        notice = anyjson.deserialize(request.body)
     except ValueError:
         return user_error('invalid format')
 

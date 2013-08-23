@@ -1,5 +1,5 @@
 from django.conf.urls import url
-from django.http import Http404
+from django.http import HttpResponseNotAllowed
 
 def by_verb_url(regex, name, **by_verb):
     def wrapper(request, *args, **kwargs):
@@ -7,5 +7,5 @@ def by_verb_url(regex, name, **by_verb):
         if verb in by_verb:
             return by_verb[verb](request, *args, **kwargs)
         else:
-            raise Http404
+            return HttpResponseNotAllowed(by_verb.keys())
     return url(regex, wrapper, name=name)

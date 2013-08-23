@@ -1,10 +1,12 @@
-from regcore.db.es import *
-from flasktest import FlaskTest
+from unittest import TestCase
+
 from mock import patch
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 
+from regcore.db.es import *
 
-class ESRegulationsTest(FlaskTest):
+
+class ESRegulationsTest(TestCase):
 
     @patch('regcore.db.es.ElasticSearch')
     def test_get_404(self, es):
@@ -48,7 +50,7 @@ class ESRegulationsTest(FlaskTest):
         self.assertEqual(['ver1', 'aaa', '333', 'four'], results)
 
 
-class ESLayersTest(FlaskTest):
+class ESLayersTest(TestCase):
 
     @patch('regcore.db.es.ElasticSearch')
     def test_get_404(self, es):
@@ -84,7 +86,7 @@ class ESLayersTest(FlaskTest):
         self.assertEqual([1, 2, 3, 4], args[2])
 
 
-class ESNoticesTest(FlaskTest):
+class ESNoticesTest(TestCase):
 
     @patch('regcore.db.es.ElasticSearch')
     def test_get_404(self, es):
@@ -141,7 +143,7 @@ class ESNoticesTest(FlaskTest):
         self.assertTrue('876' in str(es.return_value.search.call_args[0][0]))
 
 
-class ESDiffTest(FlaskTest):
+class ESDiffTest(TestCase):
 
     @patch('regcore.db.es.ElasticSearch')
     def test_get_404(self, es):
