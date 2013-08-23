@@ -13,14 +13,14 @@ class ViewsDiffTest(TestCase):
         url = '/diff/lablab/oldold/newnew'
 
         response = Client().put(url, content_type='application/json',
-                                   data='{Invalid}')
+                                data='{Invalid}')
         self.assertEqual(400, response.status_code)
 
     def test_add_post(self):
         url = '/diff/lablab/oldold/newnew'
 
         response = Client().post(url, content_type='application/json',
-                                    data=json.dumps({'some': 'struct'}))
+                                 data=json.dumps({'some': 'struct'}))
         self.assertEqual(405, response.status_code)
 
     @patch('regcore.views.diff.db')
@@ -28,7 +28,7 @@ class ViewsDiffTest(TestCase):
         url = '/diff/lablab/oldold/newnew'
 
         response = Client().put(url, content_type='application/json',
-                                   data=json.dumps({'some': 'struct'}))
+                                data=json.dumps({'some': 'struct'}))
         self.assertTrue(db.Diffs.return_value.put.called)
         args = db.Diffs.return_value.put.call_args[0]
         self.assertEqual(('lablab', 'oldold', 'newnew', {'some': 'struct'}),

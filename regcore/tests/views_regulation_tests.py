@@ -8,46 +8,46 @@ from regcore.views.regulation import *
 
 
 class ViewsRegulationTest(TestCase):
-    
-    def test_add_not_json(self):
-        url ='/regulation/lablab/verver'
 
-        response = Client().put(url, data = json.dumps(
+    def test_add_not_json(self):
+        url = '/regulation/lablab/verver'
+
+        response = Client().put(url, data=json.dumps(
             {'text': '', 'child': [], 'label': []}))
         self.assertEqual(400, response.status_code)
 
         response = Client().put(url, content_type='application/json',
-            data = '{Invalid}')
+                                data='{Invalid}')
         self.assertEqual(400, response.status_code)
 
     def test_add_invalid_json(self):
-        url ='/regulation/lablab/verver'
+        url = '/regulation/lablab/verver'
 
         response = Client().put(url, content_type='application/json',
-            data = json.dumps({'incorrect': 'schema'}))
+                                data=json.dumps({'incorrect': 'schema'}))
         self.assertEqual(400, response.status_code)
 
         message = {'text': '', 'label': []}
         response = Client().put(url, content_type='application/json',
-            data = json.dumps(message))
+                                data=json.dumps(message))
         self.assertEqual(400, response.status_code)
 
     def test_add_label_mismatch(self):
-        url ='/regulation/lablab/verver'
+        url = '/regulation/lablab/verver'
 
-        message = {'text': '', 'children': [], 
-            'label': ['notlablab']}
+        message = {'text': '', 'children': [],
+                   'label': ['notlablab']}
         response = Client().put(url, content_type='application/json',
-            data = json.dumps(message))
+                                data=json.dumps(message))
         self.assertEqual(400, response.status_code)
 
     def test_add_post(self):
-        url ='/regulation/lablab/verver'
+        url = '/regulation/lablab/verver'
 
-        message = {'text': '', 'children': [], 
-            'label': ['notlablab']}
+        message = {'text': '', 'children': [],
+                   'label': ['notlablab']}
         response = Client().post(url, content_type='application/json',
-            data = json.dumps(message))
+                                 data=json.dumps(message))
         self.assertEqual(405, response.status_code)
 
     @patch('regcore.views.regulation.db')
@@ -63,13 +63,13 @@ class ViewsRegulationTest(TestCase):
                 'children': []
             }, {
                 'text': 'child2',
-                'label': ['p', 'c2'], 
+                'label': ['p', 'c2'],
                 'title': 'My Title',
                 'children': []
             }]
         }
         response = Client().put(url, content_type='application/json',
-            data = json.dumps(message))
+                                data=json.dumps(message))
         self.assertTrue(db.Regulations.return_value.bulk_put.called)
         bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
         self.assertEqual(3, len(bulk_put_args[0]))
@@ -94,7 +94,7 @@ class ViewsRegulationTest(TestCase):
             'children': []
         }
         response = Client().put(url, content_type='application/json',
-            data = json.dumps(message))
+                                data=json.dumps(message))
         self.assertTrue(db.Regulations.return_value.bulk_put.called)
         bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
         self.assertEqual(1, len(bulk_put_args[0]))

@@ -6,20 +6,21 @@ from mock import patch
 
 from regcore.views.notice import *
 
+
 class ViewsNoticeTest(TestCase):
 
     def test_add_not_json(self):
         url = '/notice/docdoc'
 
         response = Client().put(url, content_type='application/json',
-            data = '{Invalid}')
+                                data='{Invalid}')
         self.assertEqual(400, response.status_code)
 
     def test_add_post(self):
         url = '/notice/docdoc'
 
         response = Client().post(url, content_type='application/json',
-            data = json.dumps({'some': 'struct'}))
+                                 data=json.dumps({'some': 'struct'}))
         self.assertEqual(405, response.status_code)
 
     @patch('regcore.views.notice.db')
@@ -27,7 +28,7 @@ class ViewsNoticeTest(TestCase):
         url = '/notice/docdoc'
 
         response = Client().put(url, content_type='application/json',
-            data = json.dumps({'some': 'struct'}))
+                                data=json.dumps({'some': 'struct'}))
         self.assertTrue(db.Notices.return_value.put.called)
         args = db.Notices.return_value.put.call_args[0]
         self.assertEqual('docdoc', args[0])
@@ -52,5 +53,5 @@ class ViewsNoticeTest(TestCase):
         db.Notices.return_value.listing.return_value = [1, 2, 3]
         response = Client().get('/notice')
         self.assertEqual(200, response.status_code)
-        self.assertEqual({'results': [1,2,3]},
+        self.assertEqual({'results': [1, 2, 3]},
                          json.loads(response.content))

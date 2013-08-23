@@ -11,7 +11,7 @@ class ViewsSearchTest(TestCase):
     def test_search_missing_q(self):
         response = Client().get('/search?non_q=test')
         self.assertEqual(400, response.status_code)
-    
+
     @patch('regcore.views.search.ElasticSearch')
     def test_search_success(self, es):
         es.return_value.search.return_value = {'hits': {'hits': []}}

@@ -16,7 +16,7 @@ def child_label_of(lhs, rhs):
     #   Handle Interps with shared prefix as well as non-interps
     if lhs.startswith(rhs):
         return True
-    
+
     return False
 
 

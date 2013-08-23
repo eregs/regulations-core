@@ -3,6 +3,7 @@ from mock import patch
 from pyelasticsearch.exceptions import IndexAlreadyExistsError
 from unittest import TestCase
 
+
 class IndexTest(TestCase):
 
     @patch('regcore.index.ElasticSearch')

@@ -4,14 +4,15 @@ from regcore.views import diff, layer, notice, regulation, search
 from regcore.urls_utils import by_verb_url
 
 
-#Re-usable URL patterns. 
+# Re-usable URL patterns.
 def seg(label):
     return r'(?P<%s>[-\d\w]+)' % label
 
 
-urlpatterns = patterns('',
+urlpatterns = patterns(
+    '',
     by_verb_url(r'^diff/%s/%s/%s$' % (seg('label_id'), seg('old_version'),
-                                       seg('new_version')),
+                                      seg('new_version')),
                 'diff',
                 GET=diff.get,
                 PUT=diff.add),

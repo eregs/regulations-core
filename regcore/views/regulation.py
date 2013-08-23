@@ -41,11 +41,11 @@ def listing(request, label_id):
 
     regs = []
     for effective_date in sorted(by_date.keys(), reverse=True):
-        notices = [(n['document_number'], n['effective_on']) 
+        notices = [(n['document_number'], n['effective_on'])
                    for n in by_date[effective_date]]
         notices = sorted(notices, reverse=True)
         found_latest = False
-        for version, effective in ((v,d) for v,d in notices 
+        for version, effective in ((v, d) for v, d in notices
                                    if v in reg_versions):
             if found_latest:
                 regs.append({'version': version})
@@ -73,8 +73,9 @@ def add(request, label_id, version):
         return user_error('label mismatch')
 
     to_save = []
+
     def add_node(node):
-        node = dict(node)   #   copy
+        node = dict(node)   # copy
         node['version'] = version
         node['label_string'] = '-'.join(node['label'])
         node['id'] = version + '/' + node['label_string']
@@ -95,4 +96,3 @@ def get(request, label_id, version):
         return success(regulation)
     else:
         return four_oh_four()
-

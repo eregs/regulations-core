@@ -13,21 +13,21 @@ class ViewsLayerTest(TestCase):
         url = '/layer/layname/lablab/verver'
 
         response = Client().put(url, content_type='application/json',
-            data = '{Invalid}')
+                                data='{Invalid}')
         self.assertEqual(400, response.status_code)
 
     def test_add_label_mismatch(self):
         url = '/layer/layname/lablab/verver'
 
         response = Client().put(url, content_type='application/json',
-            data = json.dumps({'nonlab': []}))
+                                data=json.dumps({'nonlab': []}))
         self.assertEqual(400, response.status_code)
 
     def test_add_post(self):
         url = '/layer/layname/lablab/verver'
 
         response = Client().post(url, content_type='application/json',
-            data = json.dumps({'lablab': []}))
+                                 data=json.dumps({'lablab': []}))
         self.assertEqual(405, response.status_code)
 
     @patch('regcore.views.layer.db')
@@ -37,7 +37,7 @@ class ViewsLayerTest(TestCase):
         message = {
             'lablab': [1, 2],
             'lablab-b': [2, 3],
-            'lablab-b-4': [3,4],
+            'lablab-b-4': [3, 4],
         }
         db.Regulations.return_value.get.return_value = {
             'label': ['lablab'],
@@ -50,7 +50,7 @@ class ViewsLayerTest(TestCase):
             }]
         }
         response = Client().put(url, content_type='application/json',
-            data = json.dumps(message))
+                                data=json.dumps(message))
         self.assertTrue(db.Layers.return_value.bulk_put.called)
         args = db.Layers.return_value.bulk_put.call_args[0][0]
         args = list(reversed(args))   # switch to outside in
@@ -75,7 +75,7 @@ class ViewsLayerTest(TestCase):
 
         message = {
             'lablab': [1, 2],
-            'lablab-b-4': [3,4],
+            'lablab-b-4': [3, 4],
         }
         db.Regulations.return_value.get.return_value = {
             'label': ['lablab'],
@@ -88,7 +88,7 @@ class ViewsLayerTest(TestCase):
             }]
         }
         response = Client().put(url, content_type='application/json',
-            data = json.dumps(message))
+                                data=json.dumps(message))
         self.assertTrue(db.Layers.return_value.bulk_put.called)
         args = db.Layers.return_value.bulk_put.call_args[0][0]
         args = list(reversed(args))   # switch to outside in
@@ -110,7 +110,7 @@ class ViewsLayerTest(TestCase):
     def test_add_interp_children(self, db):
         url = '/layer/layname/99/verver'
 
-        message = {'99-5-Interp': [1,2], '99-5-a-Interp': [3,4]}
+        message = {'99-5-Interp': [1, 2], '99-5-a-Interp': [3, 4]}
         db.Regulations.return_value.get.return_value = {
             'label': ['99'],
             'children': [{
@@ -125,7 +125,7 @@ class ViewsLayerTest(TestCase):
             }]
         }
         Client().put(url, content_type='application/json',
-            data = json.dumps(message))
+                     data=json.dumps(message))
         args = db.Layers.return_value.bulk_put.call_args[0][0]
         self.assertEqual(4, len(args))
         args = list(reversed(args))   # switch to outside in
@@ -142,7 +142,7 @@ class ViewsLayerTest(TestCase):
     def test_add_subpart_children(self, db):
         url = '/layer/layname/99/verver'
 
-        message = {'99-1': [1,2], '99-1-a': [3,4]}
+        message = {'99-1': [1, 2], '99-1-a': [3, 4]}
         db.Regulations.return_value.get.return_value = {
             'label': ['99'],
             'children': [{
@@ -157,7 +157,7 @@ class ViewsLayerTest(TestCase):
             }]
         }
         Client().put(url, content_type='application/json',
-            data = json.dumps(message))
+                     data=json.dumps(message))
         args = db.Layers.return_value.bulk_put.call_args[0][0]
         self.assertEqual(4, len(args))
         args = list(reversed(args))   # switch to outside in
@@ -173,7 +173,7 @@ class ViewsLayerTest(TestCase):
     def test_add_referenced(self, db):
         url = '/layer/layname/99/verver'
 
-        message = {'99-1': [1,2], '99-1-a': [3,4], 'referenced': [5,6]}
+        message = {'99-1': [1, 2], '99-1-a': [3, 4], 'referenced': [5, 6]}
         db.Regulations.return_value.get.return_value = {
             'label': ['99'],
             'children': [{
@@ -188,7 +188,7 @@ class ViewsLayerTest(TestCase):
             }]
         }
         Client().put(url, content_type='application/json',
-            data = json.dumps(message))
+                     data=json.dumps(message))
         args = db.Layers.return_value.bulk_put.call_args[0][0]
         self.assertEqual(4, len(args))
         self.assertTrue('referenced' in args[0]['layer'])
@@ -202,9 +202,9 @@ class ViewsLayerTest(TestCase):
         self.assertEqual([], child_layers('layname', 'lll', 'vvv', {}))
         self.assertTrue(db.Regulations.return_value.get.called)
         self.assertEqual('lll',
-                db.Regulations.return_value.get.call_args[0][0])
+                         db.Regulations.return_value.get.call_args[0][0])
         self.assertEqual('vvv',
-                db.Regulations.return_value.get.call_args[0][1])
+                         db.Regulations.return_value.get.call_args[0][1])
 
     @patch('regcore.views.layer.db')
     def test_get_none(self, db):
@@ -229,7 +229,6 @@ class ViewsLayerTest(TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual({}, json.loads(response.content))
 
-
     def test_child_label_of(self):
-        self.assertTrue(child_label_of('1005-5-a-1-Interp-1', 
-            '1005-5-Interp'))
+        self.assertTrue(child_label_of('1005-5-a-1-Interp-1',
+                        '1005-5-Interp'))

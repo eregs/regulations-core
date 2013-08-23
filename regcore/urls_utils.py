@@ -1,6 +1,7 @@
 from django.conf.urls import url
 from django.http import HttpResponseNotAllowed
 
+
 def by_verb_url(regex, name, **by_verb):
     def wrapper(request, *args, **kwargs):
         verb = request.method.upper()
