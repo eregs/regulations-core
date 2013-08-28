@@ -75,12 +75,11 @@ class ViewsRegulationTest(TestCase):
         self.assertEqual(3, len(bulk_put_args[0]))
         found = [False, False, False]
         for arg in bulk_put_args[0]:
-            self.assertEqual(arg['version'], 'verver')
-            if arg['label_string'] == 'p' and arg['id'] == 'verver/p':
+            if arg['label'] == ['p']:
                 found[0] = True
-            if arg['label_string'] == 'p-c1' and arg['id'] == 'verver/p-c1':
+            if arg['label'] == ['p', 'c1']:
                 found[1] = True
-            if arg['label_string'] == 'p-c2' and arg['id'] == 'verver/p-c2':
+            if arg['label'] == ['p', 'c2']:
                 found[2] = True
         self.assertEqual(found, [True, True, True])
 

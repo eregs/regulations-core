@@ -56,18 +56,16 @@ class ViewsLayerTest(TestCase):
         args = list(reversed(args))   # switch to outside in
 
         self.assertEqual(3, len(args))
-        self.assertEqual(message, args[0]['layer'])
-        self.assertEqual('verver/layname/lablab', args[0]['id'])
-        self.assertEqual('lablab', args[0]['label'])
+        message['label'] = 'lablab'
+        self.assertEqual(message, args[0])
+
         #   Sub layers have fewer elements
         del message['lablab']
-        self.assertEqual(message, args[1]['layer'])
-        self.assertEqual('verver/layname/lablab-b', args[1]['id'])
-        self.assertEqual('lablab-b', args[1]['label'])
+        message['label'] = 'lablab-b'
+        self.assertEqual(message, args[1])
         del message['lablab-b']
-        self.assertEqual(message, args[2]['layer'])
-        self.assertEqual('verver/layname/lablab-b-4', args[2]['id'])
-        self.assertEqual('lablab-b-4', args[2]['label'])
+        message['label'] = 'lablab-b-4'
+        self.assertEqual(message, args[2])
 
     @patch('regcore.views.layer.db')
     def test_add_skip_level(self, db):
@@ -94,17 +92,14 @@ class ViewsLayerTest(TestCase):
         args = list(reversed(args))   # switch to outside in
 
         self.assertEqual(3, len(args))
-        self.assertEqual(message, args[0]['layer'])
-        self.assertEqual('verver/layname/lablab', args[0]['id'])
-        self.assertEqual('lablab', args[0]['label'])
+        message['label'] = 'lablab'
+        self.assertEqual(message, args[0])
         #   Sub layers have fewer elements
         del message['lablab']
-        self.assertEqual(message, args[1]['layer'])
-        self.assertEqual('verver/layname/lablab-b', args[1]['id'])
-        self.assertEqual('lablab-b', args[1]['label'])
-        self.assertEqual(message, args[2]['layer'])
-        self.assertEqual('verver/layname/lablab-b-4', args[2]['id'])
-        self.assertEqual('lablab-b-4', args[2]['label'])
+        message['label'] = 'lablab-b'
+        self.assertEqual(message, args[1])
+        message['label'] = 'lablab-b-4'
+        self.assertEqual(message, args[2])
 
     @patch('regcore.views.layer.db')
     def test_add_interp_children(self, db):
@@ -129,14 +124,14 @@ class ViewsLayerTest(TestCase):
         args = db.Layers.return_value.bulk_put.call_args[0][0]
         self.assertEqual(4, len(args))
         args = list(reversed(args))   # switch to outside in
-        self.assertTrue('99-5-Interp' in args[0]['layer'])
-        self.assertTrue('99-5-a-Interp' in args[0]['layer'])
-        self.assertTrue('99-5-Interp' in args[1]['layer'])
-        self.assertTrue('99-5-a-Interp' in args[1]['layer'])
-        self.assertTrue('99-5-Interp' in args[2]['layer'])
-        self.assertTrue('99-5-a-Interp' in args[2]['layer'])
-        self.assertFalse('99-5-Interp' in args[3]['layer'])
-        self.assertTrue('99-5-a-Interp' in args[3]['layer'])
+        self.assertTrue('99-5-Interp' in args[0])
+        self.assertTrue('99-5-a-Interp' in args[0])
+        self.assertTrue('99-5-Interp' in args[1])
+        self.assertTrue('99-5-a-Interp' in args[1])
+        self.assertTrue('99-5-Interp' in args[2])
+        self.assertTrue('99-5-a-Interp' in args[2])
+        self.assertFalse('99-5-Interp' in args[3])
+        self.assertTrue('99-5-a-Interp' in args[3])
 
     @patch('regcore.views.layer.db')
     def test_add_subpart_children(self, db):
@@ -161,13 +156,13 @@ class ViewsLayerTest(TestCase):
         args = db.Layers.return_value.bulk_put.call_args[0][0]
         self.assertEqual(4, len(args))
         args = list(reversed(args))   # switch to outside in
-        self.assertTrue('99-1' in args[0]['layer'])
-        self.assertTrue('99-1' in args[1]['layer'])
-        self.assertTrue('99-1' in args[2]['layer'])
-        self.assertTrue('99-1-a' in args[0]['layer'])
-        self.assertTrue('99-1-a' in args[1]['layer'])
-        self.assertTrue('99-1-a' in args[2]['layer'])
-        self.assertTrue('99-1-a' in args[3]['layer'])
+        self.assertTrue('99-1' in args[0])
+        self.assertTrue('99-1' in args[1])
+        self.assertTrue('99-1' in args[2])
+        self.assertTrue('99-1-a' in args[0])
+        self.assertTrue('99-1-a' in args[1])
+        self.assertTrue('99-1-a' in args[2])
+        self.assertTrue('99-1-a' in args[3])
 
     @patch('regcore.views.layer.db')
     def test_add_referenced(self, db):
@@ -191,10 +186,10 @@ class ViewsLayerTest(TestCase):
                      data=json.dumps(message))
         args = db.Layers.return_value.bulk_put.call_args[0][0]
         self.assertEqual(4, len(args))
-        self.assertTrue('referenced' in args[0]['layer'])
-        self.assertTrue('referenced' in args[1]['layer'])
-        self.assertTrue('referenced' in args[2]['layer'])
-        self.assertTrue('referenced' in args[3]['layer'])
+        self.assertTrue('referenced' in args[0])
+        self.assertTrue('referenced' in args[1])
+        self.assertTrue('referenced' in args[2])
+        self.assertTrue('referenced' in args[3])
 
     @patch('regcore.views.layer.db')
     def test_child_layers_no_results(self, db):
