@@ -1,23 +1,33 @@
-import es
+import sys
+
+from django.conf import settings
+from django.utils.importlib import import_module
+
+
+def _select(key):
+    module, class_name = settings.BACKENDS[key].rsplit('.', 1)
+    module = import_module(module)
+    return getattr(module, class_name)()
 
 
 class Regulations(object):
     """A level of indirection for our database abstraction. All backends
     should provide the same interface."""
     def __new__(cls):
-        return es.ESRegulations()
+        return _select('regulations')
 
     def get(self, label, version):
         """Documentation method. Returns a regulation node or None"""
         raise NotImplementedError
 
-    def bulk_put(self, regs):
-        """Documentation method. Add many entries, each with an id field"""
+    def bulk_put(self, regs, version, root_label):
+        """Documentation method. Add many entries, with a root of root_label.
+           Each should have the provided version"""
         raise NotImplementedError
 
     def listing(self, label):
         """Documentation method. List regulation versions that match this
-        label"""
+        label, sorted"""
         raise NotImplementedError
 
 
@@ -25,10 +35,12 @@ class Layers(object):
     """A level of indirection for our database abstraction. All backends
     should provide the same interface."""
     def __new__(cls):
-        return es.ESLayers()
+        return _select('layers')
 
-    def bulk_put(self, layers):
-        """Documentation method. Add many entries, each with an id field"""
+    def bulk_put(self, layers, version, layer_name, root_label):
+        """Documentation method. Add many entries, with the root of the
+        entries having root_label and all entries having layer_name and
+        version"""
         raise NotImplementedError
 
     def get(self, name, label, version):
@@ -40,7 +52,7 @@ class Notices(object):
     """A level of indirection for our database abstraction. All backends
     should provide the same interface."""
     def __new__(cls):
-        return es.ESNotices()
+        return _select('notices')
 
     def put(self, doc_number, notice):
         """Documentation method. doc_number:String, notice:Dict"""
@@ -59,7 +71,7 @@ class Diffs(object):
     """A level of indirection for our database abstraction. All backends
     should provide the same interface."""
     def __new__(cls):
-        return es.ESDiffs()
+        return _select('diffs')
 
     def put(self, label, old_version, new_version, diff):
         """Documentation method. label, old_version, new_version:String,

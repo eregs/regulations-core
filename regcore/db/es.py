@@ -22,17 +22,27 @@ class ESRegulations(object):
         except ElasticHttpNotFoundError:
             return None
 
-    def bulk_put(self, regs):
+    def _transform(self, reg, version):
+        """Add some meta data fields which are ES specific"""
+        node = dict(reg)    # copy
+        node['version'] = version
+        node['label_string'] = '-'.join(node['label'])
+        node['id'] = version + '/' + node['label_string']
+        return node
+
+    def bulk_put(self, regs, version, root_label):
         """Store all reg objects"""
-        self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree', regs)
+        self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree',
+                           map(lambda r: self._transform(r, version), regs))
 
     def listing(self, label):
-        """List regulation version that match this label"""
+        """List regulation versions that match this label"""
         query = {'match': {'label_string': label}}
         query = {'fields': ['version'], 'query': query}
         result = self.es.search(query, index=settings.ELASTIC_SEARCH_INDEX,
                                 doc_type='reg_tree', size=100)
-        return [res['fields']['version'] for res in result['hits']['hits']]
+        return sorted(res['fields']['version']
+                      for res in result['hits']['hits'])
 
 
 class ESLayers(object):
@@ -40,12 +50,28 @@ class ESLayers(object):
     def __init__(self):
         self.es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
 
-    def bulk_put(self, layers):
+    def _transform(self, layer, version, layer_name):
+        """Add some meta data fields which are ES specific"""
+        layer = dict(layer)     # copy
+        label = layer['label']
+        del layer['label']
+        return {
+            'id': '%s/%s/%s' % (version, layer_name, label),
+            'version': version,
+            'name': layer_name,
+            'label': label,
+            'layer': layer
+        }
+
+    def bulk_put(self, layers, version, layer_name, root_label):
         """Store all layer objects"""
-        self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'layer', layers)
+        self.es.bulk_index(
+            settings.ELASTIC_SEARCH_INDEX, 'layer',
+            map(lambda l: self._transform(l, version, layer_name),
+                layers))
 
     def get(self, name, label, version):
-        """Find the label that matches these parameters"""
+        """Find the layer that matches these parameters"""
         try:
             result = self.es.get(settings.ELASTIC_SEARCH_INDEX, 'layer',
                                  version + '/' + name + '/' + label)
@@ -83,8 +109,6 @@ class ESNotices(object):
             query = {'match_all': {}}
         query = {'fields': ['effective_on', 'fr_url', 'publication_date'],
                  'query': query}
-        result = self.es.search(query, index=settings.ELASTIC_SEARCH_INDEX,
-                                doc_type='notice', size=100)
         notices = []
         results = self.es.search(query, doc_type='notice', size=100,
                                  index=settings.ELASTIC_SEARCH_INDEX)

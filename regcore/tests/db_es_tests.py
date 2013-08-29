@@ -31,12 +31,23 @@ class ESRegulationsTest(TestCase):
     @patch('regcore.db.es.ElasticSearch')
     def test_bulk_put(self, es):
         esr = ESRegulations()
-        esr.bulk_put([1, 2, 3, 4])
+        nodes = [
+            {'text': 'some text', 'label': ['111', '2'], 'children': []},
+            {'text': 'other', 'label': ['111', '3'], 'children': []}]
+        esr.bulk_put(nodes, 'verver', '111')
         self.assertTrue(es.return_value.bulk_index.called)
         args = es.return_value.bulk_index.call_args[0]
         self.assertEqual(3, len(args))
         self.assertEqual('reg_tree', args[1])
-        self.assertEqual([1, 2, 3, 4], args[2])
+
+        nodes[0]['version'] = 'verver'
+        nodes[0]['label_string'] = '111-2'
+        nodes[0]['id'] = 'verver/111-2'
+        nodes[1]['version'] = 'verver'
+        nodes[1]['label_string'] = '111-3'
+        nodes[1]['id'] = 'verver/111-3'
+
+        self.assertEqual(nodes, args[2])
 
     @patch('regcore.db.es.ElasticSearch')
     def test_listing(self, es):
@@ -47,7 +58,7 @@ class ESRegulationsTest(TestCase):
         esr = ESRegulations()
         results = esr.listing('lll')
         self.assertTrue('ll' in str(es.return_value.search.call_args[0][0]))
-        self.assertEqual(['ver1', 'aaa', '333', 'four'], results)
+        self.assertEqual(['333', 'aaa', 'four', 'ver1'], results)
 
 
 class ESLayersTest(TestCase):
@@ -78,12 +89,24 @@ class ESLayersTest(TestCase):
     @patch('regcore.db.es.ElasticSearch')
     def test_bulk_put(self, es):
         esl = ESLayers()
-        esl.bulk_put([1, 2, 3, 4])
+        layers = [
+            {'111-22': [], '111-22-a': [], 'label': '111-22'},
+            {'111-23': [], 'label': '111-23'}]
+        esl.bulk_put(layers, 'verver', 'name', '111')
         self.assertTrue(es.return_value.bulk_index.called)
         args = es.return_value.bulk_index.call_args[0]
         self.assertEqual(3, len(args))
         self.assertEqual('layer', args[1])
-        self.assertEqual([1, 2, 3, 4], args[2])
+
+        del layers[0]['label']
+        del layers[1]['label']
+        transformed = [
+            {'id': 'verver/name/111-22', 'version': 'verver',
+             'name': 'name', 'label': '111-22', 'layer': layers[0]},
+            {'id': 'verver/name/111-23', 'version': 'verver',
+             'name': 'name', 'label': '111-23', 'layer': layers[1]}]
+
+        self.assertEqual(transformed, args[2])
 
 
 class ESNoticesTest(TestCase):

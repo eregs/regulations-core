@@ -1,5 +1,6 @@
 INSTALLED_APPS = [
-    'regcore'
+    'regcore',
+    'south'
 ]
 
 MIDDLEWARE_CLASSES = (
@@ -8,13 +9,25 @@ MIDDLEWARE_CLASSES = (
 
 SECRET_KEY = 'v^p)1cwc)%td*szt7lt-(nl=bf)k07t%65*t(mi1f!*18dz9m@'
 
-DATABASES = {}
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': 'eregs.db'
+    }
+}
 
-TEST_RUNNER = 'testing.DatabaselessTestRunner'
+TEST_RUNNER = 'django_nose.runner.NoseTestSuiteRunner'
 
 ROOT_URLCONF = 'regcore.urls'
 
 DEBUG = True
+
+BACKENDS = {
+    'regulations': 'regcore.db.es.ESRegulations',
+    'layers': 'regcore.db.es.ESLayers',
+    'notices': 'regcore.db.es.ESNotices',
+    'diffs': 'regcore.db.es.ESDiffs'
+}
 
 ELASTIC_SEARCH_URLS = []
 ELASTIC_SEARCH_INDEX = 'eregs'

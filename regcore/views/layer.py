@@ -35,7 +35,8 @@ def add(request, name, label_id, version):
         if not child_label_of(key, label_id) and key != 'referenced':
             return user_error('label mismatch: %s, %s' % (label_id, key))
 
-    db.Layers().bulk_put(child_layers(name, label_id, version, layer))
+    db.Layers().bulk_put(child_layers(name, label_id, version, layer),
+                         version, name, label_id)
 
     return success()
 
@@ -55,19 +56,13 @@ def child_layers(layer_name, root_label, version, root_layer):
 
         label_id = '-'.join(node['label'])
 
-        sub_layer = {}
+        sub_layer = {'label': label_id}
         for key in root_layer:
             #   'referenced' is a special case of the definitions layer
             if key == label_id or key in child_labels or key == 'referenced':
                 sub_layer[key] = root_layer[key]
 
-        to_save.append({
-            'id': '%s/%s/%s' % (version, layer_name, label_id),
-            'version': version,
-            'name': layer_name,
-            'label': label_id,
-            'layer': sub_layer
-        })
+        to_save.append(sub_layer)
 
         return child_labels + [label_id]
 

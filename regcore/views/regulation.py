@@ -76,15 +76,12 @@ def add(request, label_id, version):
 
     def add_node(node):
         node = dict(node)   # copy
-        node['version'] = version
-        node['label_string'] = '-'.join(node['label'])
-        node['id'] = version + '/' + node['label_string']
         to_save.append(node)
         for child in node['children']:
             add_node(child)
     add_node(node)
 
-    db.Regulations().bulk_put(to_save)
+    db.Regulations().bulk_put(to_save, version, label_id)
 
     return success()
 
