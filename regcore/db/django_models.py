@@ -45,7 +45,7 @@ class DMRegulations(object):
         query = Regulation.objects.filter(label_string=label).only('version')
         query = query.order_by('version')
         versions = [v for v, in query.values_list('version')]  # Flattens
-        return list(versions)
+        return versions
 
 
 class DMLayers(object):
@@ -102,16 +102,15 @@ class DMNotices(object):
         query = Notice.objects
         if part:
             query = query.filter(cfr_part=part)
-        query = query.values('document_number', 'effective_on', 'fr_url',
+        results = query.values('document_number', 'effective_on', 'fr_url',
                              'publication_date')
-        results = list(query)
         for result in results:
             for key in ('effective_on', 'publication_date'):
                 if result[key]:
                     result[key] = result[key].isoformat()
                 else:
                     del result[key]
-        return results
+        return list(results)  # maintain compatibility with other backends
 
 
 class DMDiffs(object):
