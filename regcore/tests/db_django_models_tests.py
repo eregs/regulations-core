@@ -18,7 +18,7 @@ class DMRegulationsTest(TestCase):
 
     def test_get_success(self):
         model = Regulation(version='verver', label_string='a-b', text='ttt',
-                node_type='tyty', children='[]').save()
+                           node_type='tyty', children='[]').save()
         dmr = DMRegulations()
 
         self.assertEqual({'text': 'ttt',
@@ -36,7 +36,7 @@ class DMRegulationsTest(TestCase):
         dmr.bulk_put(nodes, 'verver', '111')
 
         regs = Regulation.objects.all().order_by('text')
-        
+
         self.assertEqual(2, len(regs))
 
         self.assertEqual('verver', regs[0].version)
@@ -116,7 +116,7 @@ class DMLayersTest(TestCase):
         self.assertEqual('name', layers[0].name)
         self.assertEqual('111-22', layers[0].label)
         self.assertEqual({'111-22': [], '111-22-a': []},
-                anyjson.deserialize(layers[0].layer))
+                         anyjson.deserialize(layers[0].layer))
 
         self.assertEqual('verver', layers[1].version)
         self.assertEqual('name', layers[1].name)
@@ -155,9 +155,11 @@ class DMNoticesTest(TestCase):
 
     def test_put(self):
         dmn = DMNotices()
-        doc = {"some": "structure", 'effective_on': '2011-01-01',
-               'fr_url': 'http://example.com', 
-               'publication_date': '2010-02-02', 'cfr_part': '222'}
+        doc = {"some": "structure",
+               'effective_on': '2011-01-01',
+               'fr_url': 'http://example.com',
+               'publication_date': '2010-02-02',
+               'cfr_part': '222'}
         dmn.put('docdoc', doc)
 
         notices = Notice.objects.all()
@@ -171,9 +173,11 @@ class DMNoticesTest(TestCase):
 
     def test_put_overwrite(self):
         dmn = DMNotices()
-        doc = {"some": "structure", 'effective_on': '2011-01-01',
-               'fr_url': 'http://example.com', 
-               'publication_date': '2010-02-02', 'cfr_part': '222'}
+        doc = {"some": "structure",
+               'effective_on': '2011-01-01',
+               'fr_url': 'http://example.com',
+               'publication_date': '2010-02-02',
+               'cfr_part': '222'}
         dmn.put('docdoc', doc)
 
         notices = Notice.objects.all()

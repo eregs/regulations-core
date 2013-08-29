@@ -3,6 +3,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from regcore.models import Diff, Layer, Notice, Regulation
 
+
 class DMRegulations(object):
     """Implementation of Django-models as regulations backend"""
     def get(self, label, version):
@@ -11,10 +12,10 @@ class DMRegulations(object):
             reg = Regulation.objects.get(version=version,
                                          label_string=label)
             as_dict = {
-               'label': reg.label_string.split('-'),
-               'text': reg.text,
-               'node_type': reg.node_type,
-               'children': anyjson.deserialize(reg.children)
+                'label': reg.label_string.split('-'),
+                'text': reg.text,
+                'node_type': reg.node_type,
+                'children': anyjson.deserialize(reg.children)
             }
             if reg.title:
                 as_dict['title'] = reg.title
@@ -35,7 +36,7 @@ class DMRegulations(object):
         """Store all reg objects"""
         # This does not handle subparts. Ignoring that for now
         Regulation.objects.filter(version=version,
-            label_string__startswith=root_label).delete()
+                                  label_string__startswith=root_label).delete()
         Regulation.objects.bulk_create(map(
             lambda r: self._transform(r, version), regs))
 
@@ -43,7 +44,7 @@ class DMRegulations(object):
         """List regulation versions that match this label"""
         query = Regulation.objects.filter(label_string=label).only('version')
         query = query.order_by('version')
-        versions = [v for v, in query.values_list('version')] # Flattens 
+        versions = [v for v, in query.values_list('version')]  # Flattens
         return list(versions)
 
 
@@ -61,7 +62,7 @@ class DMLayers(object):
         """Store all layer objects"""
         # This does not handle subparts. Ignoring that for now
         Layer.objects.filter(version=version, name=layer_name,
-            label__startswith=root_label).delete()
+                             label__startswith=root_label).delete()
         Layer.objects.bulk_create(map(
             lambda l: self._transform(l, version, layer_name), layers))
 
@@ -118,7 +119,7 @@ class DMDiffs(object):
     def put(self, label, old_version, new_version, diff):
         """Store a diff between two versions of a regulation node"""
         Diff.objects.filter(label=label, old_version=old_version,
-                new_version=new_version).delete()
+                            new_version=new_version).delete()
         Diff(label=label, old_version=old_version, new_version=new_version,
              diff=anyjson.serialize(diff)).save()
 

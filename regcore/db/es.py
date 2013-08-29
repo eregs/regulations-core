@@ -21,7 +21,7 @@ class ESRegulations(object):
             return reg_node
         except ElasticHttpNotFoundError:
             return None
-    
+
     def _transform(self, reg, version):
         """Add some meta data fields which are ES specific"""
         node = dict(reg)    # copy
@@ -32,8 +32,8 @@ class ESRegulations(object):
 
     def bulk_put(self, regs, version, root_label):
         """Store all reg objects"""
-        self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree', 
-                map(lambda r: self._transform(r, version), regs))
+        self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree',
+                           map(lambda r: self._transform(r, version), regs))
 
     def listing(self, label):
         """List regulation versions that match this label"""
@@ -65,9 +65,10 @@ class ESLayers(object):
 
     def bulk_put(self, layers, version, layer_name, root_label):
         """Store all layer objects"""
-        self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'layer',
-                map(lambda l: self._transform(l, version, layer_name),
-                    layers))
+        self.es.bulk_index(
+            settings.ELASTIC_SEARCH_INDEX, 'layer',
+            map(lambda l: self._transform(l, version, layer_name),
+                layers))
 
     def get(self, name, label, version):
         """Find the layer that matches these parameters"""
