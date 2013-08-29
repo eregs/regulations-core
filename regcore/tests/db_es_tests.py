@@ -34,7 +34,7 @@ class ESRegulationsTest(TestCase):
         nodes = [
             {'text': 'some text', 'label': ['111', '2'], 'children': []},
             {'text': 'other', 'label': ['111', '3'], 'children': []}]
-        esr.bulk_put(nodes, 'verver')
+        esr.bulk_put(nodes, 'verver', '111')
         self.assertTrue(es.return_value.bulk_index.called)
         args = es.return_value.bulk_index.call_args[0]
         self.assertEqual(3, len(args))
@@ -58,7 +58,7 @@ class ESRegulationsTest(TestCase):
         esr = ESRegulations()
         results = esr.listing('lll')
         self.assertTrue('ll' in str(es.return_value.search.call_args[0][0]))
-        self.assertEqual(['ver1', 'aaa', '333', 'four'], results)
+        self.assertEqual(['333', 'aaa', 'four', 'ver1'], results)
 
 
 class ESLayersTest(TestCase):
@@ -92,7 +92,7 @@ class ESLayersTest(TestCase):
         layers = [
             {'111-22': [], '111-22-a': [], 'label': '111-22'},
             {'111-23': [], 'label': '111-23'}]
-        esl.bulk_put(layers, 'verver', 'name')
+        esl.bulk_put(layers, 'verver', 'name', '111')
         self.assertTrue(es.return_value.bulk_index.called)
         args = es.return_value.bulk_index.call_args[0]
         self.assertEqual(3, len(args))

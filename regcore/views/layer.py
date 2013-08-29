@@ -36,7 +36,7 @@ def add(request, name, label_id, version):
             return user_error('label mismatch: %s, %s' % (label_id, key))
 
     db.Layers().bulk_put(child_layers(name, label_id, version, layer),
-                         version, name)
+                         version, name, label_id)
 
     return success()
 

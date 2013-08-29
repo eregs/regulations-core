@@ -30,7 +30,7 @@ class ESRegulations(object):
         node['id'] = version + '/' + node['label_string']
         return node
 
-    def bulk_put(self, regs, version):
+    def bulk_put(self, regs, version, root_label):
         """Store all reg objects"""
         self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree', 
                 map(lambda r: self._transform(r, version), regs))
@@ -41,7 +41,8 @@ class ESRegulations(object):
         query = {'fields': ['version'], 'query': query}
         result = self.es.search(query, index=settings.ELASTIC_SEARCH_INDEX,
                                 doc_type='reg_tree', size=100)
-        return [res['fields']['version'] for res in result['hits']['hits']]
+        return sorted(res['fields']['version']
+                      for res in result['hits']['hits'])
 
 
 class ESLayers(object):
@@ -62,7 +63,7 @@ class ESLayers(object):
             'layer': layer
         }
 
-    def bulk_put(self, layers, version, layer_name):
+    def bulk_put(self, layers, version, layer_name, root_label):
         """Store all layer objects"""
         self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'layer',
                 map(lambda l: self._transform(l, version, layer_name),

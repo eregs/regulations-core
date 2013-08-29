@@ -20,13 +20,14 @@ class Regulations(object):
         """Documentation method. Returns a regulation node or None"""
         raise NotImplementedError
 
-    def bulk_put(self, regs):
-        """Documentation method. Add many entries, each with an id field"""
+    def bulk_put(self, regs, version, root_label):
+        """Documentation method. Add many entries, with a root of root_label.
+           Each should have the provided version"""
         raise NotImplementedError
 
     def listing(self, label):
         """Documentation method. List regulation versions that match this
-        label"""
+        label, sorted"""
         raise NotImplementedError
 
 
@@ -36,8 +37,10 @@ class Layers(object):
     def __new__(cls):
         return _select('layers')
 
-    def bulk_put(self, layers):
-        """Documentation method. Add many entries, each with an id field"""
+    def bulk_put(self, layers, version, layer_name, root_label):
+        """Documentation method. Add many entries, with the root of the
+        entries having root_label and all entries having layer_name and
+        version"""
         raise NotImplementedError
 
     def get(self, name, label, version):

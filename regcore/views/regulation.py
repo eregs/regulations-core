@@ -81,7 +81,7 @@ def add(request, label_id, version):
             add_node(child)
     add_node(node)
 
-    db.Regulations().bulk_put(to_save, version)
+    db.Regulations().bulk_put(to_save, version, label_id)
 
     return success()
 

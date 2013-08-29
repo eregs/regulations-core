@@ -16,7 +16,7 @@ DATABASES = {
     }
 }
 
-TEST_RUNNER = 'testing.DatabaselessTestRunner'
+TEST_RUNNER = 'django_nose.runner.NoseTestSuiteRunner'
 
 ROOT_URLCONF = 'regcore.urls'
 
