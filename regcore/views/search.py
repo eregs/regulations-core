@@ -4,17 +4,38 @@ from pyelasticsearch import ElasticSearch
 from regcore.responses import success, user_error
 
 
+PAGE_SIZE = 50
+
+
 def search(request):
     """Search elastic search for any matches in the node's text"""
     term = request.GET.get('q', '')
+    version = request.GET.get('version', '')
+    try:
+        page = int(request.GET.get('page', '0'))
+    except ValueError:
+        page = 0
+
     if not term:
         return user_error('No query term')
 
     query = {
         'fields': ['text', 'label', 'version'],
-        'query': {'match': {'text': term}}
+        'from': page*PAGE_SIZE,
+        'size': PAGE_SIZE,
     }
+    text_match = {'match': {'text': term}}
+    if version:
+        query['query'] = {'filtered': {
+            'query': text_match,
+            'filter': {'term': {'version': version}}
+        }}
+    else:
+        query['query'] = text_match
     es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
     results = es.search(query, index=settings.ELASTIC_SEARCH_INDEX)
 
-    return success({'results': results['hits']['hits']})
+    return success({
+        'total_hits': results['hits']['total'],
+        'results': map(lambda h: h['fields'], results['hits']['hits'])
+    })
