@@ -20,7 +20,7 @@ DATABASES = {
 
 TEST_RUNNER = 'django_nose.runner.NoseTestSuiteRunner'
 
-ROOT_URLCONF = 'regcore.read_write_urls'
+ROOT_URLCONF = 'regcore.urls'
 
 DEBUG = True
 
