@@ -4,7 +4,7 @@ from unittest import TestCase
 from django.test.client import Client
 from mock import patch
 
-from regcore.views.layer import *
+from regcore_write.views.layer import *
 
 
 class ViewsLayerTest(TestCase):
@@ -30,7 +30,7 @@ class ViewsLayerTest(TestCase):
                                  data=json.dumps({'lablab': []}))
         self.assertEqual(405, response.status_code)
 
-    @patch('regcore.views.layer.db')
+    @patch('regcore_write.views.layer.db')
     def test_add_success(self, db):
         url = '/layer/layname/lablab/verver'
 
@@ -67,7 +67,7 @@ class ViewsLayerTest(TestCase):
         message['label'] = 'lablab-b-4'
         self.assertEqual(message, args[2])
 
-    @patch('regcore.views.layer.db')
+    @patch('regcore_write.views.layer.db')
     def test_add_skip_level(self, db):
         url = '/layer/layname/lablab/verver'
 
@@ -101,7 +101,7 @@ class ViewsLayerTest(TestCase):
         message['label'] = 'lablab-b-4'
         self.assertEqual(message, args[2])
 
-    @patch('regcore.views.layer.db')
+    @patch('regcore_write.views.layer.db')
     def test_add_interp_children(self, db):
         url = '/layer/layname/99/verver'
 
@@ -133,7 +133,7 @@ class ViewsLayerTest(TestCase):
         self.assertFalse('99-5-Interp' in args[3])
         self.assertTrue('99-5-a-Interp' in args[3])
 
-    @patch('regcore.views.layer.db')
+    @patch('regcore_write.views.layer.db')
     def test_add_subpart_children(self, db):
         url = '/layer/layname/99/verver'
 
@@ -164,7 +164,7 @@ class ViewsLayerTest(TestCase):
         self.assertTrue('99-1-a' in args[2])
         self.assertTrue('99-1-a' in args[3])
 
-    @patch('regcore.views.layer.db')
+    @patch('regcore_write.views.layer.db')
     def test_add_referenced(self, db):
         url = '/layer/layname/99/verver'
 
@@ -191,7 +191,7 @@ class ViewsLayerTest(TestCase):
         self.assertTrue('referenced' in args[2])
         self.assertTrue('referenced' in args[3])
 
-    @patch('regcore.views.layer.db')
+    @patch('regcore_write.views.layer.db')
     def test_child_layers_no_results(self, db):
         db.Regulations.return_value.get.return_value = None
         self.assertEqual([], child_layers('layname', 'lll', 'vvv', {}))
@@ -200,29 +200,6 @@ class ViewsLayerTest(TestCase):
                          db.Regulations.return_value.get.call_args[0][0])
         self.assertEqual('vvv',
                          db.Regulations.return_value.get.call_args[0][1])
-
-    @patch('regcore.views.layer.db')
-    def test_get_none(self, db):
-        url = '/layer/layname/lablab/verver'
-
-        db.Layers.return_value.get.return_value = None
-        response = Client().get(url)
-        self.assertEqual(404, response.status_code)
-
-    @patch('regcore.views.layer.db')
-    def test_get_results(self, db):
-        db.Layers.return_value.get.return_value = {'example': 'response'}
-        response = Client().get('/layer/nnn/lll/vvv')
-        self.assertEqual(200, response.status_code)
-        self.assertEqual({'example': 'response'},
-                         json.loads(response.content))
-
-    @patch('regcore.views.layer.db')
-    def test_get_results_empty_layer(self, db):
-        db.Layers.return_value.get.return_value = {}
-        response = Client().get('/layer/nnn/lll/vvv')
-        self.assertEqual(200, response.status_code)
-        self.assertEqual({}, json.loads(response.content))
 
     def test_child_label_of(self):
         self.assertTrue(child_label_of('1005-5-a-1-Interp-1',

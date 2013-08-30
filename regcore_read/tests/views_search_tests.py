@@ -3,7 +3,7 @@ from unittest import TestCase
 from django.test.client import Client
 from mock import patch
 
-from regcore.views.search import *
+from regcore_read.views.search import *
 
 
 class ViewsSearchTest(TestCase):
@@ -12,7 +12,7 @@ class ViewsSearchTest(TestCase):
         response = Client().get('/search?non_q=test')
         self.assertEqual(400, response.status_code)
 
-    @patch('regcore.views.search.ElasticSearch')
+    @patch('regcore_read.views.search.ElasticSearch')
     def test_search_success(self, es):
         es.return_value.search.return_value = {'hits': {'hits': [],
                                                         'total': 0}}
@@ -21,7 +21,7 @@ class ViewsSearchTest(TestCase):
         self.assertTrue(es.called)
         self.assertTrue(es.return_value.search.called)
 
-    @patch('regcore.views.search.ElasticSearch')
+    @patch('regcore_read.views.search.ElasticSearch')
     def test_search_version(self, es):
         es.return_value.search.return_value = {'hits': {'hits': [],
                                                         'total': 0}}
@@ -31,7 +31,7 @@ class ViewsSearchTest(TestCase):
         self.assertTrue(es.return_value.search.called)
         self.assertTrue('12345678' in str(es.return_value.search.call_args))
 
-    @patch('regcore.views.search.ElasticSearch')
+    @patch('regcore_read.views.search.ElasticSearch')
     def test_search_paging(self, es):
         es.return_value.search.return_value = {'hits': {'hits': [],
                                                         'total': 0}}

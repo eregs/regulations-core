@@ -1,6 +1,10 @@
 from django.conf.urls import patterns
 
-from regcore.views import diff, layer, notice, regulation, search
+from regcore_read.views import diff as rdiff, layer as rlayer
+from regcore_read.views import notice as rnotice, regulation as rregulation
+from regcore_read.views import search
+from regcore_write.views import diff as wdiff, layer as wlayer
+from regcore_write.views import notice as wnotice, regulation as wregulation
 from regcore.urls_utils import by_verb_url
 
 
@@ -14,23 +18,23 @@ urlpatterns = patterns(
     by_verb_url(r'^diff/%s/%s/%s$' % (seg('label_id'), seg('old_version'),
                                       seg('new_version')),
                 'diff',
-                GET=diff.get,
-                PUT=diff.add),
+                GET=rdiff.get,
+                PUT=wdiff.add),
     by_verb_url(r'^layer/%s/%s/%s$' % (seg('name'), seg('label_id'),
                                        seg('version')),
                 'layer',
-                GET=layer.get,
-                PUT=layer.add),
+                GET=rlayer.get,
+                PUT=wlayer.add),
     by_verb_url(r'^notice/%s$' % seg('docnum'),
                 'notice',
-                GET=notice.get,
-                PUT=notice.add),
-    by_verb_url(r'^notice$', 'notices', GET=notice.listing),
+                GET=rnotice.get,
+                PUT=wnotice.add),
+    by_verb_url(r'^notice$', 'notices', GET=rnotice.listing),
     by_verb_url(r'^regulation/%s$' % seg('label_id'),
-                'reg-versions', GET=regulation.listing),
+                'reg-versions', GET=rregulation.listing),
     by_verb_url(r'^regulation/%s/%s$' % (seg('label_id'), seg('version')),
                 'regulation',
-                GET=regulation.get,
-                PUT=regulation.add),
+                GET=rregulation.get,
+                PUT=wregulation.add),
     by_verb_url(r'^search$', 'search', GET=search.search)
 )

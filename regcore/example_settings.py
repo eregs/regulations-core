@@ -1,5 +1,7 @@
 INSTALLED_APPS = [
     'regcore',
+    'regcore_read',
+    'regcore_write',
     'south'
 ]
 
@@ -18,7 +20,7 @@ DATABASES = {
 
 TEST_RUNNER = 'django_nose.runner.NoseTestSuiteRunner'
 
-ROOT_URLCONF = 'regcore.urls'
+ROOT_URLCONF = 'regcore.read_write_urls'
 
 DEBUG = True
 
