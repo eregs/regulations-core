@@ -4,7 +4,7 @@ from unittest import TestCase
 from django.test.client import Client
 from mock import patch
 
-from regcore.views.regulation import *
+from regcore_write.views.regulation import *
 
 
 class ViewsRegulationTest(TestCase):
@@ -50,7 +50,7 @@ class ViewsRegulationTest(TestCase):
                                  data=json.dumps(message))
         self.assertEqual(405, response.status_code)
 
-    @patch('regcore.views.regulation.db')
+    @patch('regcore_write.views.regulation.db')
     def test_add_label_success(self, db):
         url = '/regulation/p/verver'
 
@@ -83,7 +83,7 @@ class ViewsRegulationTest(TestCase):
                 found[2] = True
         self.assertEqual(found, [True, True, True])
 
-    @patch('regcore.views.regulation.db')
+    @patch('regcore_write.views.regulation.db')
     def test_add_empty_children(self, db):
         url = '/regulation/p/verver'
 
@@ -97,50 +97,3 @@ class ViewsRegulationTest(TestCase):
         self.assertTrue(db.Regulations.return_value.bulk_put.called)
         bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
         self.assertEqual(1, len(bulk_put_args[0]))
-
-    @patch('regcore.views.regulation.db')
-    def test_get_good(self, db):
-        url = '/regulation/lab/ver'
-        db.Regulations.return_value.get.return_value = {"some": "thing"}
-        response = Client().get(url)
-        self.assertTrue(db.Regulations.return_value.get.called)
-        args = db.Regulations.return_value.get.call_args[0]
-        self.assertTrue('lab' in args)
-        self.assertTrue('ver' in args)
-        self.assertEqual(200, response.status_code)
-        self.assertEqual({'some': 'thing'}, json.loads(response.content))
-
-    @patch('regcore.views.regulation.db')
-    def test_get_404(self, db):
-        url = '/regulation/lab/ver'
-        db.Regulations.return_value.get.return_value = None
-        response = Client().get(url)
-        self.assertTrue(db.Regulations.return_value.get.called)
-        args = db.Regulations.return_value.get.call_args[0]
-        self.assertTrue('lab' in args)
-        self.assertTrue('ver' in args)
-        self.assertEqual(404, response.status_code)
-
-    @patch('regcore.views.regulation.db')
-    def test_listing(self, db):
-        url = '/regulation/lablab'
-        db.Notices.return_value.listing.return_value = [
-            {'document_number': '10', 'effective_on': '2010-10-10'},
-            {'document_number': '15', 'effective_on': '2010-10-10'},
-            {'document_number': '12'},
-            {'document_number': '20', 'effective_on': '2011-11-11'},
-            {'document_number': '25', 'effective_on': '2011-11-11'}
-        ]
-        db.Regulations.return_value.listing.return_value = ['10', '15', '20']
-
-        response = Client().get(url)
-        self.assertEqual(200, response.status_code)
-        found = [False, False, False]
-        for ver in json.loads(response.content)['versions']:
-            if ver['version'] == '10' and 'by_date' not in ver:
-                found[0] = True
-            if ver['version'] == '15' and ver['by_date'] == '2010-10-10':
-                found[1] = True
-            if ver['version'] == '20' and ver['by_date'] == '2011-11-11':
-                found[2] = True
-        self.assertEqual(found, [True, True, True])

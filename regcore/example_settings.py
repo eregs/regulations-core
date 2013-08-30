@@ -1,5 +1,7 @@
 INSTALLED_APPS = [
     'regcore',
+    'regcore_read',
+    'regcore_write',
     'south'
 ]
 

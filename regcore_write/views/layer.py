@@ -1,7 +1,7 @@
 import anyjson
 
 from regcore import db
-from regcore.responses import four_oh_four, success, user_error
+from regcore.responses import success, user_error
 
 
 def child_label_of(lhs, rhs):
@@ -68,12 +68,3 @@ def child_layers(layer_name, root_label, version, root_layer):
 
     find_labels(root)
     return to_save
-
-
-def get(request, name, label_id, version):
-    """Find and return the layer with this name + version + label"""
-    layer = db.Layers().get(name, label_id, version)
-    if layer is not None:
-        return success(layer)
-    else:
-        return four_oh_four()
