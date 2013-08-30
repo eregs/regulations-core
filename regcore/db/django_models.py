@@ -38,7 +38,7 @@ class DMRegulations(object):
         Regulation.objects.filter(version=version,
                                   label_string__startswith=root_label).delete()
         Regulation.objects.bulk_create(map(
-            lambda r: self._transform(r, version), regs))
+            lambda r: self._transform(r, version), regs), batch_size=100)
 
     def listing(self, label):
         """List regulation versions that match this label"""
@@ -64,7 +64,8 @@ class DMLayers(object):
         Layer.objects.filter(version=version, name=layer_name,
                              label__startswith=root_label).delete()
         Layer.objects.bulk_create(map(
-            lambda l: self._transform(l, version, layer_name), layers))
+            lambda l: self._transform(l, version, layer_name), layers),
+            batch_size=100)
 
     def get(self, name, label, version):
         """Find the layer that matches these parameters"""
