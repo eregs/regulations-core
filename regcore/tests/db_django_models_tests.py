@@ -1,6 +1,5 @@
 from datetime import date
 
-import anyjson
 from django.test import TestCase
 
 from regcore.db.django_models import *
@@ -13,7 +12,7 @@ class ReusableDMRegulations(object):
 
     def test_get_success(self):
         model = Regulation(version='verver', label_string='a-b', text='ttt',
-                           node_type='tyty', children='[]').save()
+                           node_type='tyty', children=[]).save()
         self.assertEqual({'text': 'ttt',
                           'label': ['a', 'b'],
                           'children': [],
@@ -21,13 +20,13 @@ class ReusableDMRegulations(object):
 
     def test_listing(self):
         Regulation(version='ver1', label_string='a-b', text='textex',
-                   node_type='ty', children='[]').save()
+                   node_type='ty', children=[]).save()
         Regulation(version='aaa', label_string='a-b', text='textex',
-                   node_type='ty', children='[]').save()
+                   node_type='ty', children=[]).save()
         Regulation(version='333', label_string='a-b', text='textex',
-                   node_type='ty', children='[]').save()
+                   node_type='ty', children=[]).save()
         Regulation(version='four', label_string='a-b', text='textex',
-                   node_type='ty', children='[]').save()
+                   node_type='ty', children=[]).save()
 
         results = self.dmr.listing('a-b')
         self.assertEqual(['333', 'aaa', 'four', 'ver1'], results)
@@ -55,14 +54,14 @@ class DMRegulationsTest(TestCase, ReusableDMRegulations):
         self.assertEqual('other', regs[0].text)
         self.assertEqual('', regs[0].title)
         self.assertEqual('tyty2', regs[0].node_type)
-        self.assertEqual('[]', regs[0].children)
+        self.assertEqual([], regs[0].children)
 
         self.assertEqual('verver', regs[1].version)
         self.assertEqual('111-2', regs[1].label_string)
         self.assertEqual('some text', regs[1].text)
         self.assertEqual('', regs[1].title)
         self.assertEqual('tyty', regs[1].node_type)
-        self.assertEqual('[]', regs[1].children)
+        self.assertEqual([], regs[1].children)
 
     def test_bulk_put_overwrite(self):
         nodes = [{'text': 'other', 'label': ['111', '3'], 'children': [],
@@ -88,7 +87,7 @@ class ReusableDMLayers(object):
 
     def test_get_success(self):
         Layer(version='verver', name='namnam', label='lablab',
-              layer='{"some": "body"}').save()
+              layer={"some": "body"}).save()
 
         self.assertEqual({"some": 'body'},
                          self.dml.get('namnam', 'lablab', 'verver'))
@@ -111,13 +110,12 @@ class DMLayersTest(TestCase, ReusableDMLayers):
         self.assertEqual('verver', layers[0].version)
         self.assertEqual('name', layers[0].name)
         self.assertEqual('111-22', layers[0].label)
-        self.assertEqual({'111-22': [], '111-22-a': []},
-                         anyjson.deserialize(layers[0].layer))
+        self.assertEqual({'111-22': [], '111-22-a': []}, layers[0].layer)
 
         self.assertEqual('verver', layers[1].version)
         self.assertEqual('name', layers[1].name)
         self.assertEqual('111-23', layers[1].label)
-        self.assertEqual({'111-23': []}, anyjson.deserialize(layers[1].layer))
+        self.assertEqual({'111-23': []}, layers[1].layer)
 
     def test_bulk_put_overwrite(self):
         layers = [{'111-23': [], 'label': '111-23'}]
@@ -125,14 +123,14 @@ class DMLayersTest(TestCase, ReusableDMLayers):
 
         layers = Layer.objects.all()
         self.assertEqual(1, len(layers))
-        self.assertEqual({'111-23': []}, anyjson.deserialize(layers[0].layer))
+        self.assertEqual({'111-23': []}, layers[0].layer)
 
         layers = [{'111-23': [1], 'label': '111-23'}]
         self.dml.bulk_put(layers, 'verver', 'name', '111-23')
 
         layers = Layer.objects.all()
         self.assertEqual(1, len(layers))
-        self.assertEqual({'111-23': [1]}, anyjson.deserialize(layers[0].layer))
+        self.assertEqual({'111-23': [1]}, layers[0].layer)
 
 
 class ReusableDMNotices(object):
@@ -142,14 +140,14 @@ class ReusableDMNotices(object):
     def test_get_success(self):
         Notice(document_number='docdoc', fr_url='frfr',
                publication_date=date.today(),
-               notice='{"some": "body"}').save()
+               notice={"some": "body"}).save()
         self.assertEqual({"some": 'body'}, self.dmn.get('docdoc'))
 
     def test_listing(self):
-        Notice(document_number='22', fr_url='fr1', cfr_part='876', notice='{}',
+        Notice(document_number='22', fr_url='fr1', cfr_part='876', notice={},
                effective_on=date(2005, 5, 5),
                publication_date=date(2001, 3, 3)).save()
-        Notice(document_number='9', fr_url='fr2', cfr_part='876', notice='{}',
+        Notice(document_number='9', fr_url='fr2', cfr_part='876', notice={},
                publication_date=date(1999, 1, 1)).save()
 
         self.assertEqual([{'document_number': '22', 'fr_url': 'fr1',
@@ -184,7 +182,7 @@ class DMNoticesTest(TestCase, ReusableDMNotices):
         self.assertEqual('http://example.com', notices[0].fr_url)
         self.assertEqual(date(2010, 2, 2), notices[0].publication_date)
         self.assertEqual('222', notices[0].cfr_part)
-        self.assertEqual(doc, anyjson.deserialize(notices[0].notice))
+        self.assertEqual(doc, notices[0].notice)
 
     def test_put_overwrite(self):
         dmn = DMNotices()
@@ -213,7 +211,7 @@ class ReusableDMDiff(object):
 
     def test_get_success(self):
         Diff(label='lablab', old_version='oldold', new_version='newnew',
-             diff='{"some": "body"}').save()
+             diff={"some": "body"}).save()
 
         self.assertEqual({"some": 'body'},
                          self.dmd.get('lablab', 'oldold', 'newnew'))
@@ -234,8 +232,7 @@ class DMDiffTest(TestCase, ReusableDMDiff):
         self.assertEqual('lablab', diffs[0].label)
         self.assertEqual('oldold', diffs[0].old_version)
         self.assertEqual('newnew', diffs[0].new_version)
-        self.assertEqual({'some': 'structure'},
-                         anyjson.deserialize(diffs[0].diff))
+        self.assertEqual({'some': 'structure'}, diffs[0].diff)
 
     def test_put_overwrite(self):
         dmd = DMDiffs()
@@ -243,11 +240,9 @@ class DMDiffTest(TestCase, ReusableDMDiff):
 
         diffs = Diff.objects.all()
         self.assertEqual(1, len(diffs))
-        self.assertEqual({'some': 'structure'},
-                         anyjson.deserialize(diffs[0].diff))
+        self.assertEqual({'some': 'structure'}, diffs[0].diff)
 
         dmd.put('lablab', 'oldold', 'newnew', {"other": "structure"})
         diffs = Diff.objects.all()
         self.assertEqual(1, len(diffs))
-        self.assertEqual({'other': 'structure'},
-                         anyjson.deserialize(diffs[0].diff))
+        self.assertEqual({'other': 'structure'}, diffs[0].diff)

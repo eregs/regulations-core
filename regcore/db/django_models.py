@@ -1,4 +1,3 @@
-import anyjson
 from django.core.exceptions import ObjectDoesNotExist
 
 from regcore.models import Diff, Layer, Notice, Regulation
@@ -15,7 +14,7 @@ class DMRegulations(object):
                 'label': reg.label_string.split('-'),
                 'text': reg.text,
                 'node_type': reg.node_type,
-                'children': anyjson.deserialize(reg.children)
+                'children': reg.children
             }
             if reg.title:
                 as_dict['title'] = reg.title
@@ -30,7 +29,7 @@ class DMRegulations(object):
                           text=reg['text'],
                           title=reg.get('title', ''),
                           node_type=reg['node_type'],
-                          children=anyjson.serialize(reg['children']))
+                          children=reg['children'])
 
     def bulk_put(self, regs, version, root_label):
         """Store all reg objects"""
@@ -56,7 +55,7 @@ class DMLayers(object):
         label_id = layer['label']
         del layer['label']
         return Layer(version=version, name=layer_name, label=label_id,
-                     layer=anyjson.serialize(layer))
+                     layer=layer)
 
     def bulk_put(self, layers, version, layer_name, root_label):
         """Store all layer objects"""
@@ -72,7 +71,7 @@ class DMLayers(object):
         try:
             layer = Layer.objects.get(version=version, name=name,
                                       label=label)
-            return anyjson.deserialize(layer.layer)
+            return layer.layer
         except ObjectDoesNotExist:
             return None
 
@@ -85,7 +84,7 @@ class DMNotices(object):
                        fr_url=notice['fr_url'],
                        publication_date=notice['publication_date'],
                        cfr_part=notice['cfr_part'],
-                       notice=anyjson.serialize(notice))
+                       notice=notice)
         if 'effective_on' in notice:
             model.effective_on = notice['effective_on']
         model.save()
@@ -93,8 +92,8 @@ class DMNotices(object):
     def get(self, doc_number):
         """Find the associated notice"""
         try:
-            return anyjson.deserialize(Notice.objects.get(
-                document_number=doc_number).notice)
+            return Notice.objects.get(
+                document_number=doc_number).notice
         except ObjectDoesNotExist:
             return None
 
@@ -121,13 +120,13 @@ class DMDiffs(object):
         Diff.objects.filter(label=label, old_version=old_version,
                             new_version=new_version).delete()
         Diff(label=label, old_version=old_version, new_version=new_version,
-             diff=anyjson.serialize(diff)).save()
+             diff=diff).save()
 
     def get(self, label, old_version, new_version):
         """Find the associated diff"""
         try:
             diff = Diff.objects.get(label=label, old_version=old_version,
                                     new_version=new_version)
-            return anyjson.deserialize(diff.diff)
+            return diff.diff
         except ObjectDoesNotExist:
             return None
