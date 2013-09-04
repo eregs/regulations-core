@@ -1,4 +1,5 @@
 import anyjson
+from django.views.decorators.csrf import csrf_exempt
 
 from regcore import db
 from regcore.responses import success, user_error
@@ -20,6 +21,7 @@ def child_label_of(lhs, rhs):
     return False
 
 
+@csrf_exempt
 def add(request, name, label_id, version):
     """Add the layer node and all of its children to the db"""
     try:

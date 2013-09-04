@@ -5,10 +5,6 @@ INSTALLED_APPS = [
     'south'
 ]
 
-MIDDLEWARE_CLASSES = (
-    'django.middleware.common.CommonMiddleware',
-)
-
 SECRET_KEY = 'v^p)1cwc)%td*szt7lt-(nl=bf)k07t%65*t(mi1f!*18dz9m@'
 
 DATABASES = {
