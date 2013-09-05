@@ -1,5 +1,5 @@
 import anyjson
-
+from django.views.decorators.csrf import csrf_exempt
 import jsonschema
 
 from regcore import db
@@ -29,6 +29,7 @@ REGULATION_SCHEMA = {
 }
 
 
+@csrf_exempt
 def add(request, label_id, version):
     """Add this regulation node and all of its children to the db"""
     try:

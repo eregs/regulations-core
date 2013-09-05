@@ -1,9 +1,11 @@
 import anyjson
+from django.views.decorators.csrf import csrf_exempt
 
 from regcore import db
 from regcore.responses import success, user_error
 
 
+@csrf_exempt
 def add(request, label_id, old_version, new_version):
     """Add the diff to the db, indexed by the label and versions"""
     try:
