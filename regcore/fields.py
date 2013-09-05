@@ -8,7 +8,9 @@ from south.modelsinspector import add_introspection_rules
 
 class CompressedJSONField(models.TextField):
     """We store a lot of data redundantly. This field type makes each copy
-    much smaller"""
+    much smaller. We need this when inserting hundreds of regtext nodes and
+    layer nodes into relational databases, lest we blow the packet size limit
+    """
 
     __metaclass__ = models.SubfieldBase
 
