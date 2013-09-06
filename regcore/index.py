@@ -8,6 +8,7 @@ NODE_SEARCH_SCHEMA = {
     'children': {'type': 'object', 'enabled': False},
     'label': {'type': 'string'},    # An array of strings
     'label_string': {'type': 'string', 'index': 'not_analyzed'},
+    'regulation': {'type': 'string', 'index': 'not_analyzed'},
     'title': {'type': 'string'},
     'node_type': {'type': 'string', 'index': 'not_analyzed'},
     'id': {'type': 'string', 'index': 'not_analyzed'},

@@ -11,6 +11,7 @@ def search(request):
     """Search elastic search for any matches in the node's text"""
     term = request.GET.get('q', '')
     version = request.GET.get('version', '')
+    regulation = request.GET.get('regulation', '')
     try:
         page = int(request.GET.get('page', '0'))
     except ValueError:
@@ -25,10 +26,15 @@ def search(request):
         'size': PAGE_SIZE,
     }
     text_match = {'match': {'text': term}}
-    if version:
+    if version or regulation:
+        term = {}
+        if version:
+            term['version'] = version
+        if regulation:
+            term['regulation'] = regulation
         query['query'] = {'filtered': {
             'query': text_match,
-            'filter': {'term': {'version': version}}
+            'filter': {'term': term}
         }}
     else:
         query['query'] = text_match

@@ -32,6 +32,17 @@ class ViewsSearchTest(TestCase):
         self.assertTrue('12345678' in str(es.return_value.search.call_args))
 
     @patch('regcore_read.views.search.ElasticSearch')
+    def test_search_version_regulation(self, es):
+        es.return_value.search.return_value = {'hits': {'hits': [],
+                                                        'total': 0}}
+        response = Client().get('/search?q=test&version=678&regulation=123')
+        self.assertEqual(200, response.status_code)
+        self.assertTrue(es.called)
+        self.assertTrue(es.return_value.search.called)
+        self.assertTrue('678' in str(es.return_value.search.call_args))
+        self.assertTrue('123' in str(es.return_value.search.call_args))
+
+    @patch('regcore_read.views.search.ElasticSearch')
     def test_search_paging(self, es):
         es.return_value.search.return_value = {'hits': {'hits': [],
                                                         'total': 0}}

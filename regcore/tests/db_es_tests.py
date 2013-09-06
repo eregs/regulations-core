@@ -20,7 +20,8 @@ class ESRegulationsTest(TestCase):
     @patch('regcore.db.es.ElasticSearch')
     def test_get_success(self, es):
         es.return_value.get.return_value = {'_source': {
-            'first': 0, 'version': 'remove', 'id': 'also', 'label_string': 'a'
+            'first': 0, 'version': 'remove', 'id': 'also',
+            'label_string': 'a', 'regulation': '100'
         }}
         esr = ESRegulations()
 
@@ -41,10 +42,12 @@ class ESRegulationsTest(TestCase):
         self.assertEqual('reg_tree', args[1])
 
         nodes[0]['version'] = 'verver'
+        nodes[0]['regulation'] = '111'
         nodes[0]['label_string'] = '111-2'
         nodes[0]['id'] = 'verver/111-2'
         nodes[1]['version'] = 'verver'
         nodes[1]['label_string'] = '111-3'
+        nodes[1]['regulation'] = '111'
         nodes[1]['id'] = 'verver/111-3'
 
         self.assertEqual(nodes, args[2])
