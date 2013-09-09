@@ -2,7 +2,6 @@
 
 from datetime import date
 
-import anyjson
 from django.test import TestCase
 from mock import patch
 
@@ -35,14 +34,14 @@ class SplitterRegulationsTest(TestCase, dm.ReusableDMRegulations):
         self.assertEqual('other', regs[0].text)
         self.assertEqual('', regs[0].title)
         self.assertEqual('tyty2', regs[0].node_type)
-        self.assertEqual('[]', regs[0].children)
+        self.assertEqual([], regs[0].children)
 
         self.assertEqual('verver', regs[1].version)
         self.assertEqual('111-2', regs[1].label_string)
         self.assertEqual('some text', regs[1].text)
         self.assertEqual('', regs[1].title)
         self.assertEqual('tyty', regs[1].node_type)
-        self.assertEqual('[]', regs[1].children)
+        self.assertEqual([], regs[1].children)
 
         args = es.return_value.bulk_index.call_args[0]
         self.assertEqual(3, len(args))
@@ -95,14 +94,12 @@ class SplitterLayersTest(TestCase, dm.ReusableDMLayers):
         self.assertEqual('verver', layer_models[0].version)
         self.assertEqual('name', layer_models[0].name)
         self.assertEqual('111-22', layer_models[0].label)
-        self.assertEqual({'111-22': [], '111-22-a': []},
-                         anyjson.deserialize(layer_models[0].layer))
+        self.assertEqual({'111-22': [], '111-22-a': []}, layer_models[0].layer)
 
         self.assertEqual('verver', layer_models[1].version)
         self.assertEqual('name', layer_models[1].name)
         self.assertEqual('111-23', layer_models[1].label)
-        self.assertEqual({'111-23': []},
-                         anyjson.deserialize(layer_models[1].layer))
+        self.assertEqual({'111-23': []}, layer_models[1].layer)
 
         self.assertTrue(es.return_value.bulk_index.called)
         args = es.return_value.bulk_index.call_args[0]
@@ -126,14 +123,14 @@ class SplitterLayersTest(TestCase, dm.ReusableDMLayers):
 
         layers = Layer.objects.all()
         self.assertEqual(1, len(layers))
-        self.assertEqual({'111-23': []}, anyjson.deserialize(layers[0].layer))
+        self.assertEqual({'111-23': []}, layers[0].layer)
 
         layers = [{'111-23': [1], 'label': '111-23'}]
         SplitterLayers().bulk_put(layers, 'verver', 'name', '111-23')
 
         layers = Layer.objects.all()
         self.assertEqual(1, len(layers))
-        self.assertEqual({'111-23': [1]}, anyjson.deserialize(layers[0].layer))
+        self.assertEqual({'111-23': [1]}, layers[0].layer)
 
 
 class SplitterNoticesTest(TestCase, dm.ReusableDMNotices):
@@ -158,7 +155,7 @@ class SplitterNoticesTest(TestCase, dm.ReusableDMNotices):
         self.assertEqual('http://example.com', notices[0].fr_url)
         self.assertEqual(date(2010, 2, 2), notices[0].publication_date)
         self.assertEqual('222', notices[0].cfr_part)
-        self.assertEqual(doc, anyjson.deserialize(notices[0].notice))
+        self.assertEqual(doc, notices[0].notice)
 
         self.assertTrue(es.return_value.index.called)
         args, kwargs = es.return_value.index.call_args
@@ -206,8 +203,7 @@ class SplitterDiffTest(TestCase, dm.ReusableDMDiff):
         self.assertEqual('lablab', diffs[0].label)
         self.assertEqual('oldold', diffs[0].old_version)
         self.assertEqual('newnew', diffs[0].new_version)
-        self.assertEqual({'some': 'structure'},
-                         anyjson.deserialize(diffs[0].diff))
+        self.assertEqual({'some': 'structure'}, diffs[0].diff)
 
         self.assertTrue(es.return_value.index.called)
         args, kwargs = es.return_value.index.call_args
@@ -228,11 +224,9 @@ class SplitterDiffTest(TestCase, dm.ReusableDMDiff):
 
         diffs = Diff.objects.all()
         self.assertEqual(1, len(diffs))
-        self.assertEqual({'some': 'structure'},
-                         anyjson.deserialize(diffs[0].diff))
+        self.assertEqual({'some': 'structure'}, diffs[0].diff)
 
         sd.put('lablab', 'oldold', 'newnew', {"other": "structure"})
         diffs = Diff.objects.all()
         self.assertEqual(1, len(diffs))
-        self.assertEqual({'other': 'structure'},
-                         anyjson.deserialize(diffs[0].diff))
+        self.assertEqual({'other': 'structure'}, diffs[0].diff)
