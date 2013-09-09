@@ -15,6 +15,7 @@ class ESRegulations(object):
                                  version + '/' + label)
 
             reg_node = result['_source']
+            del reg_node['regulation']
             del reg_node['version']
             del reg_node['label_string']
             del reg_node['id']
@@ -27,6 +28,7 @@ class ESRegulations(object):
         node = dict(reg)    # copy
         node['version'] = version
         node['label_string'] = '-'.join(node['label'])
+        node['regulation'] = node['label'][0]
         node['id'] = version + '/' + node['label_string']
         return node
 
