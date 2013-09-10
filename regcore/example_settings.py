@@ -1,4 +1,5 @@
 INSTALLED_APPS = [
+    'haystack',
     'regcore',
     'regcore_read',
     'regcore_write',
@@ -29,6 +30,10 @@ BACKENDS = {
 
 ELASTIC_SEARCH_URLS = []
 ELASTIC_SEARCH_INDEX = 'eregs'
+
+HAYSTACK_SITECONF = 'regcore.haystack_conf'
+HAYSTACK_SEARCH_ENGINE = 'solr'
+HAYSTACK_SOLR_URL = 'http://localhost:8983/solr'
 
 try:
     from local_settings import *
