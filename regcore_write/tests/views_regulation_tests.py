@@ -41,15 +41,6 @@ class ViewsRegulationTest(TestCase):
                                 data=json.dumps(message))
         self.assertEqual(400, response.status_code)
 
-    def test_add_post(self):
-        url = '/regulation/lablab/verver'
-
-        message = {'text': '', 'children': [],
-                   'label': ['notlablab']}
-        response = Client().post(url, content_type='application/json',
-                                 data=json.dumps(message))
-        self.assertEqual(405, response.status_code)
-
     @patch('regcore_write.views.regulation.db')
     def test_add_label_success(self, db):
         url = '/regulation/p/verver'
@@ -68,6 +59,7 @@ class ViewsRegulationTest(TestCase):
                 'children': []
             }]
         }
+
         response = Client().put(url, content_type='application/json',
                                 data=json.dumps(message))
         self.assertTrue(db.Regulations.return_value.bulk_put.called)
@@ -82,6 +74,13 @@ class ViewsRegulationTest(TestCase):
             if arg['label'] == ['p', 'c2']:
                 found[2] = True
         self.assertEqual(found, [True, True, True])
+
+        db.Regulations.return_value.bulk_put.reset_mock()
+        response = Client().post(url, content_type='application/json',
+                                 data=json.dumps(message))
+        self.assertTrue(db.Regulations.return_value.bulk_put.called)
+        bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
+        self.assertEqual(3, len(bulk_put_args[0]))
 
     @patch('regcore_write.views.regulation.db')
     def test_add_empty_children(self, db):

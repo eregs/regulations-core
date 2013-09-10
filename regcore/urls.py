@@ -11,11 +11,6 @@ from regcore_write.views import notice as wnotice, regulation as wregulation
 from regcore.urls_utils import by_verb_url
 
 
-# Migration strategy for settings files
-if not hasattr(settings, 'WRITE_VERB'):
-    settings.WRITE_VERB = 'PUT'
-
-
 mapping = defaultdict(dict)
 
 
@@ -30,10 +25,12 @@ if 'regcore_read' in settings.INSTALLED_APPS:
 
 
 if 'regcore_write' in settings.INSTALLED_APPS:
-    mapping['diff'][settings.WRITE_VERB] = wdiff.add
-    mapping['layer'][settings.WRITE_VERB] = wlayer.add
-    mapping['notice'][settings.WRITE_VERB] = wnotice.add
-    mapping['regulation'][settings.WRITE_VERB] = wregulation.add
+    # Allow both PUT and POST
+    for verb in ('PUT', 'POST'):
+        mapping['diff'][verb] = wdiff.add
+        mapping['layer'][verb] = wlayer.add
+        mapping['notice'][verb] = wnotice.add
+        mapping['regulation'][verb] = wregulation.add
 
 
 # Re-usable URL patterns.

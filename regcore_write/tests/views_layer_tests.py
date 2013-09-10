@@ -23,13 +23,6 @@ class ViewsLayerTest(TestCase):
                                 data=json.dumps({'nonlab': []}))
         self.assertEqual(400, response.status_code)
 
-    def test_add_post(self):
-        url = '/layer/layname/lablab/verver'
-
-        response = Client().post(url, content_type='application/json',
-                                 data=json.dumps({'lablab': []}))
-        self.assertEqual(405, response.status_code)
-
     @patch('regcore_write.views.layer.db')
     def test_add_success(self, db):
         url = '/layer/layname/lablab/verver'

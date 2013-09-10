@@ -18,8 +18,6 @@ TEST_RUNNER = 'django_nose.runner.NoseTestSuiteRunner'
 
 ROOT_URLCONF = 'regcore.urls'
 
-WRITE_VERB = 'PUT'
-
 DEBUG = True
 
 BACKENDS = {
