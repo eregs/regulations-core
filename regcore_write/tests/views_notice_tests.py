@@ -16,13 +16,6 @@ class ViewsNoticeTest(TestCase):
                                 data='{Invalid}')
         self.assertEqual(400, response.status_code)
 
-    def test_add_post(self):
-        url = '/notice/docdoc'
-
-        response = Client().post(url, content_type='application/json',
-                                 data=json.dumps({'some': 'struct'}))
-        self.assertEqual(405, response.status_code)
-
     @patch('regcore_write.views.notice.db')
     def test_add_label_success(self, db):
         url = '/notice/docdoc'

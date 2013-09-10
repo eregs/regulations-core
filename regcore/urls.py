@@ -25,10 +25,12 @@ if 'regcore_read' in settings.INSTALLED_APPS:
 
 
 if 'regcore_write' in settings.INSTALLED_APPS:
-    mapping['diff']['PUT'] = wdiff.add
-    mapping['layer']['PUT'] = wlayer.add
-    mapping['notice']['PUT'] = wnotice.add
-    mapping['regulation']['PUT'] = wregulation.add
+    # Allow both PUT and POST
+    for verb in ('PUT', 'POST'):
+        mapping['diff'][verb] = wdiff.add
+        mapping['layer'][verb] = wlayer.add
+        mapping['notice'][verb] = wnotice.add
+        mapping['regulation'][verb] = wregulation.add
 
 
 # Re-usable URL patterns.
