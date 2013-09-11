@@ -28,8 +28,8 @@ BACKENDS = {
     'diffs': 'regcore.db.django_models.DMDiffs'
 }
 
-#ELASTIC_SEARCH_URLS = []
-#ELASTIC_SEARCH_INDEX = 'eregs'
+ELASTIC_SEARCH_URLS = []
+ELASTIC_SEARCH_INDEX = 'eregs'
 
 HAYSTACK_SITECONF = 'regcore.haystack_conf'
 HAYSTACK_SEARCH_ENGINE = 'solr'

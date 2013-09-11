@@ -8,7 +8,7 @@ class RegulationIndex(RealTimeSearchIndex):
     label_string = CharField(model_attr='label_string')
     text = CharField(model_attr='text')
     title = CharField(model_attr='title')
-    
+
     regulation = CharField(model_attr='label_string')
     text = CharField(document=True, use_template=True)
 

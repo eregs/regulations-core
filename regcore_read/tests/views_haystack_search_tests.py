@@ -57,7 +57,7 @@ class ViewsHaystackSearchTest(TestCase):
         self.assertTrue(results.called)
         self.assertTrue(transform_results.called)
         self.assertEqual(list(range(250, 300)),
-                transform_results.call_args[0][0])
+                         transform_results.call_args[0][0])
 
     @patch('regcore_read.views.haystack_search.db')
     def test_transform_results(self, db):
@@ -72,7 +72,7 @@ class ViewsHaystackSearchTest(TestCase):
                 'lab4': {'reference': '7', 'term': 'd7'}
             }
         }
-        
+
         Result = namedtuple('Result', ('regulation', 'version',
                                        'label_string', 'text', 'title'))
         results = transform_results([
@@ -94,4 +94,3 @@ class ViewsHaystackSearchTest(TestCase):
         self.assertEqual('t5', results[5]['title'])
         self.assertEqual('t6', results[6]['title'])
         self.assertEqual('t7', results[7]['title'])
-
