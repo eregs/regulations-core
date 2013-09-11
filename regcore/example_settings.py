@@ -22,14 +22,14 @@ ROOT_URLCONF = 'regcore.urls'
 DEBUG = True
 
 BACKENDS = {
-    'regulations': 'regcore.db.es.ESRegulations',
-    'layers': 'regcore.db.es.ESLayers',
-    'notices': 'regcore.db.es.ESNotices',
-    'diffs': 'regcore.db.es.ESDiffs'
+    'regulations': 'regcore.db.django_models.DMRegulations',
+    'layers': 'regcore.db.django_models.DMLayers',
+    'notices': 'regcore.db.django_models.DMNotices',
+    'diffs': 'regcore.db.django_models.DMDiffs'
 }
 
-ELASTIC_SEARCH_URLS = []
-ELASTIC_SEARCH_INDEX = 'eregs'
+#ELASTIC_SEARCH_URLS = []
+#ELASTIC_SEARCH_INDEX = 'eregs'
 
 HAYSTACK_SITECONF = 'regcore.haystack_conf'
 HAYSTACK_SEARCH_ENGINE = 'solr'
