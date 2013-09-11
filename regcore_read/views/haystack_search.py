@@ -28,11 +28,10 @@ def search(request):
         query = query.filter(regulation=regulation)
 
     start, end = page * PAGE_SIZE, (page+1) * PAGE_SIZE
-    query = query[start:end]
 
     return success({
         'total_hits': len(query),
-        'results': transform_results(query)
+        'results': transform_results(query[start:end])
     })
 
 
