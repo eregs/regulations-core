@@ -5,8 +5,8 @@ An engine that supplies the API that allows users to read regulations and their 
 
 ## Configurable Read and Write Endpoints
 
-The read-only end points can be activated by delegating to *regcore.urls*
-and turning on the *regcore* and *regcore_read*; write end points can be
+The read-only endpoints can be activated by delegating to *regcore.urls*
+and turning on the *regcore* and *regcore_read*; write endpoints can be
 activated by turning on *regcore_write*.
 
 ## Configuration-Dependent Libraries
@@ -25,7 +25,7 @@ Optional libraries, then are
 ## Elastic Search For Data and Search
 
 If *pyelasticsearch* is installed, you can use Elastic Search for all of
-your needs. For a search end point, use *regcore_read.views.es_search.search* 
+your needs. For a search endpoint, use *regcore_read.views.es_search.search* 
 and use the following backend configuration:
 
 ```python
