@@ -1,4 +1,4 @@
-from haystack.indexes import *
+from haystack.indexes import CharField, RealTimeSearchIndex
 from haystack import site
 from regcore.models import Regulation
 
