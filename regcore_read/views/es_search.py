@@ -45,7 +45,7 @@ def search(request):
 
     return success({
         'total_hits': results['hits']['total'],
-        'results': transform_results([h['fields'] for h in 
+        'results': transform_results([h['fields'] for h in
                                       results['hits']['hits']])
     })
 

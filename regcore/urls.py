@@ -5,7 +5,7 @@ from django.conf.urls import patterns
 
 from regcore_read.views import diff as rdiff, layer as rlayer
 from regcore_read.views import notice as rnotice, regulation as rregulation
-from regcore_read.views import search
+from regcore_read.views.haystack_search import search
 from regcore_write.views import diff as wdiff, layer as wlayer
 from regcore_write.views import notice as wnotice, regulation as wregulation
 from regcore.urls_utils import by_verb_url
@@ -21,7 +21,7 @@ if 'regcore_read' in settings.INSTALLED_APPS:
     mapping['notices']['GET'] = rnotice.listing
     mapping['regulation']['GET'] = rregulation.get
     mapping['reg-versions']['GET'] = rregulation.listing
-    mapping['search']['GET'] = search.search
+    mapping['search']['GET'] = search
 
 
 if 'regcore_write' in settings.INSTALLED_APPS:
