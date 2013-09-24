@@ -1,1 +1,1 @@
-{{ object.text }}
+{{ object.text|safe }}
