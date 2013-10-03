@@ -1,26 +1,79 @@
 regulations-core
 ================
 
-An engine that supplies the API that allows users to read regulations and their various layers. 
+An engine that supplies the API that allows users to read regulations and
+their various layers. 
+
+For an overview of the eRegs project (not just the API), see our
+[landing page](http://eregs.github.io/eregulations/).
+
+## Features
+
+* Search integration with Elastic Search or Django Haystack
+* Support for storage via Elastic Search or Django Models
+* Separation of API into a read and a write portion
+* Destruction of regulations and layers into their components, allowing
+  paragraph-level access
+* Schema checking for regulations
+
+## Requirements
+
+Requirements are retrieved and/or build automatically via buildout (see
+below).
+
+* anyjson - Use Python's json or simplejson as available
+* coverage - reports on test coverage
+* django - Web framework
+* django-haystack (1.2.7) - An interface for accessing Solr, Whoosh, and
+  other search engines. This is only required if not using Elastic Search.
+  Unfortunately, we are constrained to using the pre-rewrite version of
+  haystack (though that may change in the future)
+* django-nose - plugin for Django which allows for nose integration
+* jsonschema - used to test that JSON provided fits our required data
+  structure
+* mock - makes constructing mock objects/functions easy
+* nose - A pluggable test runner
+* pyelasticsearch - required if using Elastic Search
+* pysolr - required if using solr as a search backend
+* south - Django's migration helper. Needed if using Django Models for
+  storage
+* zc.buildout - Tool used for building the application and handling
+  dependencies
+
+## API Docs
+
+@todo
+
+## Buildout
+
+Buildout is a simple tool for building and distributing python applications
+quickly. We use it to get a version of the API up and running without
+needing all of the fuss usually associated with setting up Django. Just run
+
+```bash
+$ pip install zc.buildout
+$ buildout
+```
+
+After downloading the internet, you'll notice that some helpful scripts are
+located in ```bin```, including ```bin/django``` and ```bin/test```. The
+latter will run our test suite while the former is equivalent to running
+manage.py in a traditional Django environment.
+
+With that, you just need a few additional commands to get up and running:
+```bash
+$ ./bin/django syncdb
+$ ./bin/django migrate
+$ ./bin/django runserver
+```
+
+You'll be running (without search capability) using SQLite.
 
 ## Configurable Read and Write Endpoints
 
 The read-only endpoints can be activated by delegating to *regcore.urls*
 and turning on the *regcore* and *regcore_read*; write endpoints can be
 activated by turning on *regcore_write*.
-
-## Configuration-Dependent Libraries
-
-This app can be configured with multiple backends. Elastic Search could be
-used for both data and search; Django Models can be used for data; Haystack
-(1.2.7) can be used for search (e.g. with Solr).
-
-Optional libraries, then are
-
-* django-haystack==1.2.7
-* pyelasticsearch
-* pysolr
-* south
 
 ## Elastic Search For Data and Search
 
@@ -70,3 +123,27 @@ BACKENDS = {
 ```
 
 though this is also the default.
+
+## Settings
+
+If using Elastic Search, you will need to let the application know how to
+connect to the search servers.
+
+* ```ELASTIC_SEARCH_URLS``` - a list of strings which define how to connect
+  to your search server(s). This is passed along to pyelasticsearch.
+* ```ELASTIC_SEARCH_INDEX``` - the index to be used by elastic search. This
+  defaults to 'eregs'
+
+## Building the documentation
+
+@todo
+
+##  Running Tests
+
+To run unit tests with buildout, simply run 
+
+```bash
+$ ./bin/test
+```
+
+This will include a report of test coverage.
