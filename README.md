@@ -115,7 +115,7 @@ This is the default configuration. You will need to have *haystack* (1.2.7)
 installed and *pysolr* (or *pyelasticsearch*). Use the
 *regcore_read.views.haystack_search.search* as the endpoint and
 
-``python
+```python
 BACKENDS = {
     'regulations': 'regcore.db.django_models.DMRegulations',
     'layers': 'regcore.db.django_models.DMLayers',
