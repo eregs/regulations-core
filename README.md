@@ -1,11 +1,13 @@
 regulations-core
 ================
 
+[![Build Status](https://travis-ci.org/eregs/regulations-core.png)](https://travis-ci.org/eregs/regulations-core)
+
 An engine that supplies the API that allows users to read regulations and
 their various layers. 
 
-For an overview of the eRegs project (not just the API), see our
-[landing page](http://eregs.github.io/eregulations/).
+This repository is part of a larger project. To read about it, please see 
+[http://eregs.github.io/eregulations/](http://eregs.github.io/eregulations/).
 
 ## Features
 
@@ -42,7 +44,7 @@ below).
 
 ## API Docs
 
-@todo
+@todo (Replace with RTD when that's available)
 
 ## Buildout
 
@@ -136,7 +138,23 @@ connect to the search servers.
 
 ## Building the documentation
 
-@todo
+For most tweaks, you will simply need to run the Sphinx documentation
+builder again.
+
+```
+$ ./bin/sphinx-build -b dirhtml -d docs/_build/doctrees/ docs/ docs/_build/dirhtml/
+```
+
+The output will be in ```docs/_build/dirhtml```.
+
+If you are adding new modules, you may need to re-run the skeleton build
+script first:
+
+```
+$ ./bin/sphinx-apidoc -F -o docs regcore
+$ ./bin/sphinx-apidoc -F -o docs regcore_read
+$ ./bin/sphinx-apidoc -F -o docs regcore_write
+```
 
 ##  Running Tests
 
