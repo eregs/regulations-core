@@ -1,0 +1,165 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>regcore_write.views.layer &mdash; regcore beta documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="regcore beta documentation" href="../../../../" />
+    <link rel="up" title="Module code" href="../../../" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../../../" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for regcore_write.views.layer</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">anyjson</span>
+<span class="kn">from</span> <span class="nn">django.views.decorators.csrf</span> <span class="kn">import</span> <span class="n">csrf_exempt</span>
+
+<span class="kn">from</span> <span class="nn">regcore</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">regcore.responses</span> <span class="kn">import</span> <span class="n">success</span><span class="p">,</span> <span class="n">user_error</span>
+
+
+<div class="viewcode-block" id="child_label_of"><a class="viewcode-back" href="../../../../regcore_write.views/#regcore_write.views.layer.child_label_of">[docs]</a><span class="k">def</span> <span class="nf">child_label_of</span><span class="p">(</span><span class="n">lhs</span><span class="p">,</span> <span class="n">rhs</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Is the lhs label a child of the rhs label&quot;&quot;&quot;</span>
+    <span class="c">#   Interpretations have a slightly different hierarchy</span>
+    <span class="k">if</span> <span class="s">&#39;Interp&#39;</span> <span class="ow">in</span> <span class="n">lhs</span> <span class="ow">and</span> <span class="s">&#39;Interp&#39;</span> <span class="ow">in</span> <span class="n">rhs</span><span class="p">:</span>
+        <span class="n">lhs_reg</span><span class="p">,</span> <span class="n">lhs_comment</span> <span class="o">=</span> <span class="n">lhs</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;Interp&#39;</span><span class="p">)</span>
+        <span class="n">rhs_reg</span><span class="p">,</span> <span class="n">rhs_comment</span> <span class="o">=</span> <span class="n">rhs</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&#39;Interp&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">lhs_reg</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">rhs_reg</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="c">#   Handle Interps with shared prefix as well as non-interps</span>
+    <span class="k">if</span> <span class="n">lhs</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">rhs</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="k">return</span> <span class="bp">False</span>
+
+</div>
+<span class="nd">@csrf_exempt</span>
+<div class="viewcode-block" id="add"><a class="viewcode-back" href="../../../../regcore_write.views/#regcore_write.views.layer.add">[docs]</a><span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="n">request</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">label_id</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Add the layer node and all of its children to the db&quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">layer</span> <span class="o">=</span> <span class="n">anyjson</span><span class="o">.</span><span class="n">deserialize</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">body</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">user_error</span><span class="p">(</span><span class="s">&#39;invalid format&#39;</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="nb">dict</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">user_error</span><span class="p">(</span><span class="s">&#39;invalid format&#39;</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">layer</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="c"># terms layer has a special attribute</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">child_label_of</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">label_id</span><span class="p">)</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">!=</span> <span class="s">&#39;referenced&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">user_error</span><span class="p">(</span><span class="s">&#39;label mismatch: </span><span class="si">%s</span><span class="s">, </span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">label_id</span><span class="p">,</span> <span class="n">key</span><span class="p">))</span>
+
+    <span class="n">db</span><span class="o">.</span><span class="n">Layers</span><span class="p">()</span><span class="o">.</span><span class="n">bulk_put</span><span class="p">(</span><span class="n">child_layers</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">label_id</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">layer</span><span class="p">),</span>
+                         <span class="n">version</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">label_id</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">success</span><span class="p">()</span>
+
+</div>
+<div class="viewcode-block" id="child_layers"><a class="viewcode-back" href="../../../../regcore_write.views/#regcore_write.views.layer.child_layers">[docs]</a><span class="k">def</span> <span class="nf">child_layers</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">root_label</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">root_layer</span><span class="p">):</span>
+
+    <span class="n">root</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Regulations</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">root_label</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">root</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+
+    <span class="n">to_save</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="k">def</span> <span class="nf">find_labels</span><span class="p">(</span><span class="n">node</span><span class="p">):</span>
+        <span class="n">child_labels</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="n">node</span><span class="p">[</span><span class="s">&#39;children&#39;</span><span class="p">]:</span>
+            <span class="n">child_labels</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">find_labels</span><span class="p">(</span><span class="n">child</span><span class="p">))</span>
+
+        <span class="n">label_id</span> <span class="o">=</span> <span class="s">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="s">&#39;label&#39;</span><span class="p">])</span>
+
+        <span class="n">sub_layer</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="n">label_id</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">root_layer</span><span class="p">:</span>
+            <span class="c">#   &#39;referenced&#39; is a special case of the definitions layer</span>
+            <span class="k">if</span> <span class="n">key</span> <span class="o">==</span> <span class="n">label_id</span> <span class="ow">or</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">child_labels</span> <span class="ow">or</span> <span class="n">key</span> <span class="o">==</span> <span class="s">&#39;referenced&#39;</span><span class="p">:</span>
+                <span class="n">sub_layer</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">root_layer</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+        <span class="n">to_save</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sub_layer</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">child_labels</span> <span class="o">+</span> <span class="p">[</span><span class="n">label_id</span><span class="p">]</span>
+
+    <span class="n">find_labels</span><span class="p">(</span><span class="n">root</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">to_save</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../../../" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

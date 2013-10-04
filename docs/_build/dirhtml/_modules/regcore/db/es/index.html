@@ -1,0 +1,245 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>regcore.db.es &mdash; regcore beta documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="regcore beta documentation" href="../../../../" />
+    <link rel="up" title="regcore.db" href="../" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../../../" >Module code</a> &raquo;</li>
+          <li><a href="../" accesskey="U">regcore.db</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for regcore.db.es</h1><div class="highlight"><pre>
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">pyelasticsearch</span> <span class="kn">import</span> <span class="n">ElasticSearch</span>
+<span class="kn">from</span> <span class="nn">pyelasticsearch.exceptions</span> <span class="kn">import</span> <span class="n">ElasticHttpNotFoundError</span>
+
+
+<div class="viewcode-block" id="ESRegulations"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESRegulations">[docs]</a><span class="k">class</span> <span class="nc">ESRegulations</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Implementation of Elastic Search as regulations backend&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">es</span> <span class="o">=</span> <span class="n">ElasticSearch</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">ELASTIC_SEARCH_URLS</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ESRegulations.get"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESRegulations.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find the regulation label + version&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">es</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">ELASTIC_SEARCH_INDEX</span><span class="p">,</span> <span class="s">&#39;reg_tree&#39;</span><span class="p">,</span>
+                                 <span class="n">version</span> <span class="o">+</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">)</span>
+
+            <span class="n">reg_node</span> <span class="o">=</span> <span class="n">result</span><span class="p">[</span><span class="s">&#39;_source&#39;</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">reg_node</span><span class="p">[</span><span class="s">&#39;regulation&#39;</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">reg_node</span><span class="p">[</span><span class="s">&#39;version&#39;</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">reg_node</span><span class="p">[</span><span class="s">&#39;label_string&#39;</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">reg_node</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">reg_node</span>
+        <span class="k">except</span> <span class="n">ElasticHttpNotFoundError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reg</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add some meta data fields which are ES specific&quot;&quot;&quot;</span>
+        <span class="n">node</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">reg</span><span class="p">)</span>    <span class="c"># copy</span>
+        <span class="n">node</span><span class="p">[</span><span class="s">&#39;version&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span>
+        <span class="n">node</span><span class="p">[</span><span class="s">&#39;label_string&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;-&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">node</span><span class="p">[</span><span class="s">&#39;label&#39;</span><span class="p">])</span>
+        <span class="n">node</span><span class="p">[</span><span class="s">&#39;regulation&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">node</span><span class="p">[</span><span class="s">&#39;label&#39;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">node</span><span class="p">[</span><span class="s">&#39;id&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">version</span> <span class="o">+</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">node</span><span class="p">[</span><span class="s">&#39;label_string&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">node</span>
+
+<div class="viewcode-block" id="ESRegulations.bulk_put"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESRegulations.bulk_put">[docs]</a>    <span class="k">def</span> <span class="nf">bulk_put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regs</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">root_label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Store all reg objects&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">es</span><span class="o">.</span><span class="n">bulk_index</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">ELASTIC_SEARCH_INDEX</span><span class="p">,</span> <span class="s">&#39;reg_tree&#39;</span><span class="p">,</span>
+                           <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">version</span><span class="p">),</span> <span class="n">regs</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="ESRegulations.listing"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESRegulations.listing">[docs]</a>    <span class="k">def</span> <span class="nf">listing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;List regulation versions that match this label&quot;&quot;&quot;</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;match&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;label_string&#39;</span><span class="p">:</span> <span class="n">label</span><span class="p">}}</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;version&#39;</span><span class="p">],</span> <span class="s">&#39;query&#39;</span><span class="p">:</span> <span class="n">query</span><span class="p">}</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">es</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">ELASTIC_SEARCH_INDEX</span><span class="p">,</span>
+                                <span class="n">doc_type</span><span class="o">=</span><span class="s">&#39;reg_tree&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s">&#39;fields&#39;</span><span class="p">][</span><span class="s">&#39;version&#39;</span><span class="p">]</span>
+                      <span class="k">for</span> <span class="n">res</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s">&#39;hits&#39;</span><span class="p">][</span><span class="s">&#39;hits&#39;</span><span class="p">])</span>
+
+</div></div>
+<div class="viewcode-block" id="ESLayers"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESLayers">[docs]</a><span class="k">class</span> <span class="nc">ESLayers</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Implementation of Elastic Search as layers backend&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">es</span> <span class="o">=</span> <span class="n">ElasticSearch</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">ELASTIC_SEARCH_URLS</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_transform</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layer</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Add some meta data fields which are ES specific&quot;&quot;&quot;</span>
+        <span class="n">layer</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>     <span class="c"># copy</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="n">layer</span><span class="p">[</span><span class="s">&#39;label&#39;</span><span class="p">]</span>
+        <span class="k">del</span> <span class="n">layer</span><span class="p">[</span><span class="s">&#39;label&#39;</span><span class="p">]</span>
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s">&#39;id&#39;</span><span class="p">:</span> <span class="s">&#39;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="n">version</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">label</span><span class="p">),</span>
+            <span class="s">&#39;version&#39;</span><span class="p">:</span> <span class="n">version</span><span class="p">,</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="n">layer_name</span><span class="p">,</span>
+            <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+            <span class="s">&#39;layer&#39;</span><span class="p">:</span> <span class="n">layer</span>
+        <span class="p">}</span>
+
+<div class="viewcode-block" id="ESLayers.bulk_put"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESLayers.bulk_put">[docs]</a>    <span class="k">def</span> <span class="nf">bulk_put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">root_label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Store all layer objects&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">es</span><span class="o">.</span><span class="n">bulk_index</span><span class="p">(</span>
+            <span class="n">settings</span><span class="o">.</span><span class="n">ELASTIC_SEARCH_INDEX</span><span class="p">,</span> <span class="s">&#39;layer&#39;</span><span class="p">,</span>
+            <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">l</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">_transform</span><span class="p">(</span><span class="n">l</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">),</span>
+                <span class="n">layers</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="ESLayers.get"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESLayers.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find the layer that matches these parameters&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">es</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">ELASTIC_SEARCH_INDEX</span><span class="p">,</span> <span class="s">&#39;layer&#39;</span><span class="p">,</span>
+                                 <span class="n">version</span> <span class="o">+</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">name</span> <span class="o">+</span> <span class="s">&#39;/&#39;</span> <span class="o">+</span> <span class="n">label</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="s">&#39;_source&#39;</span><span class="p">][</span><span class="s">&#39;layer&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="n">ElasticHttpNotFoundError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+
+</div></div>
+<div class="viewcode-block" id="ESNotices"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESNotices">[docs]</a><span class="k">class</span> <span class="nc">ESNotices</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Implementation of Elastic Search as notice backend&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">es</span> <span class="o">=</span> <span class="n">ElasticSearch</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">ELASTIC_SEARCH_URLS</span><span class="p">)</span>
+
+<div class="viewcode-block" id="ESNotices.put"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESNotices.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc_number</span><span class="p">,</span> <span class="n">notice</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Store a single notice&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">es</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">ELASTIC_SEARCH_INDEX</span><span class="p">,</span> <span class="s">&#39;notice&#39;</span><span class="p">,</span> <span class="n">notice</span><span class="p">,</span>
+                      <span class="nb">id</span><span class="o">=</span><span class="n">doc_number</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ESNotices.get"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESNotices.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc_number</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find the associated notice&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">es</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">ELASTIC_SEARCH_INDEX</span><span class="p">,</span> <span class="s">&#39;notice&#39;</span><span class="p">,</span>
+                                 <span class="n">doc_number</span><span class="p">)</span>
+
+            <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="s">&#39;_source&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="n">ElasticHttpNotFoundError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span>
+</div>
+<div class="viewcode-block" id="ESNotices.listing"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESNotices.listing">[docs]</a>    <span class="k">def</span> <span class="nf">listing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;All notices or filtered by cfr_part&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">part</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;match&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;cfr_part&#39;</span><span class="p">:</span> <span class="n">part</span><span class="p">}}</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;match_all&#39;</span><span class="p">:</span> <span class="p">{}}</span>
+        <span class="n">query</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;fields&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;effective_on&#39;</span><span class="p">,</span> <span class="s">&#39;fr_url&#39;</span><span class="p">,</span> <span class="s">&#39;publication_date&#39;</span><span class="p">],</span>
+                 <span class="s">&#39;query&#39;</span><span class="p">:</span> <span class="n">query</span><span class="p">}</span>
+        <span class="n">notices</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">es</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">doc_type</span><span class="o">=</span><span class="s">&#39;notice&#39;</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
+                                 <span class="n">index</span><span class="o">=</span><span class="n">settings</span><span class="o">.</span><span class="n">ELASTIC_SEARCH_INDEX</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">notice</span> <span class="ow">in</span> <span class="n">results</span><span class="p">[</span><span class="s">&#39;hits&#39;</span><span class="p">][</span><span class="s">&#39;hits&#39;</span><span class="p">]:</span>
+            <span class="n">notice</span><span class="p">[</span><span class="s">&#39;fields&#39;</span><span class="p">][</span><span class="s">&#39;document_number&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">notice</span><span class="p">[</span><span class="s">&#39;_id&#39;</span><span class="p">]</span>
+            <span class="n">notices</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">notice</span><span class="p">[</span><span class="s">&#39;fields&#39;</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">notices</span>
+
+</div></div>
+<div class="viewcode-block" id="ESDiffs"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESDiffs">[docs]</a><span class="k">class</span> <span class="nc">ESDiffs</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Implementation of Elastic Search as diff backend&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">es</span> <span class="o">=</span> <span class="n">ElasticSearch</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">ELASTIC_SEARCH_URLS</span><span class="p">)</span>
+
+    <span class="nd">@staticmethod</span>
+<div class="viewcode-block" id="ESDiffs.to_id"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESDiffs.to_id">[docs]</a>    <span class="k">def</span> <span class="nf">to_id</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s">&quot;</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">/</span><span class="si">%s</span><span class="s">&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">old</span><span class="p">,</span> <span class="n">new</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ESDiffs.put"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESDiffs.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">old_version</span><span class="p">,</span> <span class="n">new_version</span><span class="p">,</span> <span class="n">diff</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Store a diff between two versions of a regulation node&quot;&quot;&quot;</span>
+        <span class="n">struct</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="n">label</span><span class="p">,</span>
+            <span class="s">&#39;old_version&#39;</span><span class="p">:</span> <span class="n">old_version</span><span class="p">,</span>
+            <span class="s">&#39;new_version&#39;</span><span class="p">:</span> <span class="n">new_version</span><span class="p">,</span>
+            <span class="s">&#39;diff&#39;</span><span class="p">:</span> <span class="n">diff</span>
+        <span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">es</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">ELASTIC_SEARCH_INDEX</span><span class="p">,</span> <span class="s">&#39;diff&#39;</span><span class="p">,</span> <span class="n">struct</span><span class="p">,</span>
+                      <span class="nb">id</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">to_id</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">old_version</span><span class="p">,</span> <span class="n">new_version</span><span class="p">))</span>
+</div>
+<div class="viewcode-block" id="ESDiffs.get"><a class="viewcode-back" href="../../../../regcore.db/#regcore.db.es.ESDiffs.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">old_version</span><span class="p">,</span> <span class="n">new_version</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Find the associated diff&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">es</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">ELASTIC_SEARCH_INDEX</span><span class="p">,</span> <span class="s">&#39;diff&#39;</span><span class="p">,</span>
+                                 <span class="bp">self</span><span class="o">.</span><span class="n">to_id</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="n">old_version</span><span class="p">,</span> <span class="n">new_version</span><span class="p">))</span>
+            <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="s">&#39;_source&#39;</span><span class="p">][</span><span class="s">&#39;diff&#39;</span><span class="p">]</span>
+        <span class="k">except</span> <span class="n">ElasticHttpNotFoundError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">None</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../../../" >Module code</a> &raquo;</li>
+          <li><a href="../" >regcore.db</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

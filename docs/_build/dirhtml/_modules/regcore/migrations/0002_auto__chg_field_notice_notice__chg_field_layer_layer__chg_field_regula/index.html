@@ -1,0 +1,169 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>regcore.migrations.0002_auto__chg_field_notice_notice__chg_field_layer_layer__chg_field_regula &mdash; regcore beta documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="regcore beta documentation" href="../../../../" />
+    <link rel="up" title="Module code" href="../../../" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../../../" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for regcore.migrations.0002_auto__chg_field_notice_notice__chg_field_layer_layer__chg_field_regula</h1><div class="highlight"><pre>
+<span class="c"># -*- coding: utf-8 -*-</span>
+<span class="kn">import</span> <span class="nn">datetime</span>
+<span class="kn">from</span> <span class="nn">south.db</span> <span class="kn">import</span> <span class="n">db</span>
+<span class="kn">from</span> <span class="nn">south.v2</span> <span class="kn">import</span> <span class="n">SchemaMigration</span>
+<span class="kn">from</span> <span class="nn">django.db</span> <span class="kn">import</span> <span class="n">models</span>
+
+
+<div class="viewcode-block" id="Migration"><a class="viewcode-back" href="../../../../regcore.migrations/#regcore.migrations.0002_auto__chg_field_notice_notice__chg_field_layer_layer__chg_field_regula.Migration">[docs]</a><span class="k">class</span> <span class="nc">Migration</span><span class="p">(</span><span class="n">SchemaMigration</span><span class="p">):</span>
+
+<div class="viewcode-block" id="Migration.forwards"><a class="viewcode-back" href="../../../../regcore.migrations/#regcore.migrations.0002_auto__chg_field_notice_notice__chg_field_layer_layer__chg_field_regula.Migration.forwards">[docs]</a>    <span class="k">def</span> <span class="nf">forwards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orm</span><span class="p">):</span>
+
+        <span class="c"># Changing field &#39;Notice.notice&#39;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">alter_column</span><span class="p">(</span><span class="s">u&#39;regcore_notice&#39;</span><span class="p">,</span> <span class="s">&#39;notice&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gf</span><span class="p">(</span><span class="s">&#39;regcore.fields.CompressedJSONField&#39;</span><span class="p">)())</span>
+
+        <span class="c"># Changing field &#39;Layer.layer&#39;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">alter_column</span><span class="p">(</span><span class="s">u&#39;regcore_layer&#39;</span><span class="p">,</span> <span class="s">&#39;layer&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gf</span><span class="p">(</span><span class="s">&#39;regcore.fields.CompressedJSONField&#39;</span><span class="p">)())</span>
+
+        <span class="c"># Changing field &#39;Regulation.children&#39;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">alter_column</span><span class="p">(</span><span class="s">u&#39;regcore_regulation&#39;</span><span class="p">,</span> <span class="s">&#39;children&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gf</span><span class="p">(</span><span class="s">&#39;regcore.fields.CompressedJSONField&#39;</span><span class="p">)())</span>
+
+        <span class="c"># Changing field &#39;Diff.diff&#39;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">alter_column</span><span class="p">(</span><span class="s">u&#39;regcore_diff&#39;</span><span class="p">,</span> <span class="s">&#39;diff&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gf</span><span class="p">(</span><span class="s">&#39;regcore.fields.CompressedJSONField&#39;</span><span class="p">)())</span>
+</div>
+<div class="viewcode-block" id="Migration.backwards"><a class="viewcode-back" href="../../../../regcore.migrations/#regcore.migrations.0002_auto__chg_field_notice_notice__chg_field_layer_layer__chg_field_regula.Migration.backwards">[docs]</a>    <span class="k">def</span> <span class="nf">backwards</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orm</span><span class="p">):</span>
+
+        <span class="c"># Changing field &#39;Notice.notice&#39;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">alter_column</span><span class="p">(</span><span class="s">u&#39;regcore_notice&#39;</span><span class="p">,</span> <span class="s">&#39;notice&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gf</span><span class="p">(</span><span class="s">&#39;django.db.models.fields.TextField&#39;</span><span class="p">)())</span>
+
+        <span class="c"># Changing field &#39;Layer.layer&#39;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">alter_column</span><span class="p">(</span><span class="s">u&#39;regcore_layer&#39;</span><span class="p">,</span> <span class="s">&#39;layer&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gf</span><span class="p">(</span><span class="s">&#39;django.db.models.fields.TextField&#39;</span><span class="p">)())</span>
+
+        <span class="c"># Changing field &#39;Regulation.children&#39;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">alter_column</span><span class="p">(</span><span class="s">u&#39;regcore_regulation&#39;</span><span class="p">,</span> <span class="s">&#39;children&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gf</span><span class="p">(</span><span class="s">&#39;django.db.models.fields.TextField&#39;</span><span class="p">)())</span>
+
+        <span class="c"># Changing field &#39;Diff.diff&#39;</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">alter_column</span><span class="p">(</span><span class="s">u&#39;regcore_diff&#39;</span><span class="p">,</span> <span class="s">&#39;diff&#39;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">gf</span><span class="p">(</span><span class="s">&#39;django.db.models.fields.TextField&#39;</span><span class="p">)())</span>
+</div>
+    <span class="n">models</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">u&#39;regcore.diff&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&#39;Meta&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;unique_together&#39;</span><span class="p">:</span> <span class="s">&quot;((&#39;label&#39;, &#39;old_version&#39;, &#39;new_version&#39;),)&quot;</span><span class="p">,</span> <span class="s">&#39;object_name&#39;</span><span class="p">:</span> <span class="s">&#39;Diff&#39;</span><span class="p">,</span> <span class="s">&#39;index_together&#39;</span><span class="p">:</span> <span class="s">&quot;((&#39;label&#39;, &#39;old_version&#39;, &#39;new_version&#39;),)&quot;</span><span class="p">},</span>
+            <span class="s">&#39;diff&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;regcore.fields.CompressedJSONField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{}),</span>
+            <span class="s">u&#39;id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.AutoField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;primary_key&#39;</span><span class="p">:</span> <span class="s">&#39;True&#39;</span><span class="p">}),</span>
+            <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.SlugField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;max_length&#39;</span><span class="p">:</span> <span class="s">&#39;50&#39;</span><span class="p">}),</span>
+            <span class="s">&#39;new_version&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.SlugField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;max_length&#39;</span><span class="p">:</span> <span class="s">&#39;20&#39;</span><span class="p">}),</span>
+            <span class="s">&#39;old_version&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.SlugField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;max_length&#39;</span><span class="p">:</span> <span class="s">&#39;20&#39;</span><span class="p">})</span>
+        <span class="p">},</span>
+        <span class="s">u&#39;regcore.layer&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&#39;Meta&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;unique_together&#39;</span><span class="p">:</span> <span class="s">&quot;((&#39;version&#39;, &#39;name&#39;, &#39;label&#39;),)&quot;</span><span class="p">,</span> <span class="s">&#39;object_name&#39;</span><span class="p">:</span> <span class="s">&#39;Layer&#39;</span><span class="p">,</span> <span class="s">&#39;index_together&#39;</span><span class="p">:</span> <span class="s">&quot;((&#39;version&#39;, &#39;name&#39;, &#39;label&#39;),)&quot;</span><span class="p">},</span>
+            <span class="s">u&#39;id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.AutoField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;primary_key&#39;</span><span class="p">:</span> <span class="s">&#39;True&#39;</span><span class="p">}),</span>
+            <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.SlugField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;max_length&#39;</span><span class="p">:</span> <span class="s">&#39;50&#39;</span><span class="p">}),</span>
+            <span class="s">&#39;layer&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;regcore.fields.CompressedJSONField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{}),</span>
+            <span class="s">&#39;name&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.SlugField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;max_length&#39;</span><span class="p">:</span> <span class="s">&#39;20&#39;</span><span class="p">}),</span>
+            <span class="s">&#39;version&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.SlugField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;max_length&#39;</span><span class="p">:</span> <span class="s">&#39;20&#39;</span><span class="p">})</span>
+        <span class="p">},</span>
+        <span class="s">u&#39;regcore.notice&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&#39;Meta&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;object_name&#39;</span><span class="p">:</span> <span class="s">&#39;Notice&#39;</span><span class="p">},</span>
+            <span class="s">&#39;cfr_part&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.SlugField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;max_length&#39;</span><span class="p">:</span> <span class="s">&#39;10&#39;</span><span class="p">}),</span>
+            <span class="s">&#39;document_number&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.SlugField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;max_length&#39;</span><span class="p">:</span> <span class="s">&#39;20&#39;</span><span class="p">,</span> <span class="s">&#39;primary_key&#39;</span><span class="p">:</span> <span class="s">&#39;True&#39;</span><span class="p">}),</span>
+            <span class="s">&#39;effective_on&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.DateField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;null&#39;</span><span class="p">:</span> <span class="s">&#39;True&#39;</span><span class="p">}),</span>
+            <span class="s">&#39;fr_url&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.CharField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;max_length&#39;</span><span class="p">:</span> <span class="s">&#39;200&#39;</span><span class="p">}),</span>
+            <span class="s">&#39;notice&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;regcore.fields.CompressedJSONField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{}),</span>
+            <span class="s">&#39;publication_date&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.DateField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{})</span>
+        <span class="p">},</span>
+        <span class="s">u&#39;regcore.regulation&#39;</span><span class="p">:</span> <span class="p">{</span>
+            <span class="s">&#39;Meta&#39;</span><span class="p">:</span> <span class="p">{</span><span class="s">&#39;unique_together&#39;</span><span class="p">:</span> <span class="s">&quot;((&#39;version&#39;, &#39;label_string&#39;),)&quot;</span><span class="p">,</span> <span class="s">&#39;object_name&#39;</span><span class="p">:</span> <span class="s">&#39;Regulation&#39;</span><span class="p">,</span> <span class="s">&#39;index_together&#39;</span><span class="p">:</span> <span class="s">&quot;((&#39;version&#39;, &#39;label_string&#39;),)&quot;</span><span class="p">},</span>
+            <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;regcore.fields.CompressedJSONField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{}),</span>
+            <span class="s">u&#39;id&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.AutoField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;primary_key&#39;</span><span class="p">:</span> <span class="s">&#39;True&#39;</span><span class="p">}),</span>
+            <span class="s">&#39;label_string&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.SlugField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;max_length&#39;</span><span class="p">:</span> <span class="s">&#39;50&#39;</span><span class="p">}),</span>
+            <span class="s">&#39;node_type&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.SlugField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;max_length&#39;</span><span class="p">:</span> <span class="s">&#39;10&#39;</span><span class="p">}),</span>
+            <span class="s">&#39;text&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.TextField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{}),</span>
+            <span class="s">&#39;title&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.TextField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;blank&#39;</span><span class="p">:</span> <span class="s">&#39;True&#39;</span><span class="p">}),</span>
+            <span class="s">&#39;version&#39;</span><span class="p">:</span> <span class="p">(</span><span class="s">&#39;django.db.models.fields.SlugField&#39;</span><span class="p">,</span> <span class="p">[],</span> <span class="p">{</span><span class="s">&#39;max_length&#39;</span><span class="p">:</span> <span class="s">&#39;20&#39;</span><span class="p">})</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">complete_apps</span> <span class="o">=</span> <span class="p">[</span><span class="s">&#39;regcore&#39;</span><span class="p">]</span></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../../../" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

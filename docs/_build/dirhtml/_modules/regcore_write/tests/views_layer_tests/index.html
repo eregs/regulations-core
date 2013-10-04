@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>regcore_write.tests.views_layer_tests &mdash; regcore beta documentation</title>
+    
+    <link rel="stylesheet" href="../../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../../',
+        VERSION:     'beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../../_static/doctools.js"></script>
+    <link rel="top" title="regcore beta documentation" href="../../../../" />
+    <link rel="up" title="Module code" href="../../../" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../../../" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for regcore_write.tests.views_layer_tests</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">json</span>
+<span class="kn">from</span> <span class="nn">unittest</span> <span class="kn">import</span> <span class="n">TestCase</span>
+
+<span class="kn">from</span> <span class="nn">django.test.client</span> <span class="kn">import</span> <span class="n">Client</span>
+<span class="kn">from</span> <span class="nn">mock</span> <span class="kn">import</span> <span class="n">patch</span>
+
+<span class="kn">from</span> <span class="nn">regcore_write.views.layer</span> <span class="kn">import</span> <span class="o">*</span>
+
+
+<div class="viewcode-block" id="ViewsLayerTest"><a class="viewcode-back" href="../../../../regcore_write.tests/#regcore_write.tests.views_layer_tests.ViewsLayerTest">[docs]</a><span class="k">class</span> <span class="nc">ViewsLayerTest</span><span class="p">(</span><span class="n">TestCase</span><span class="p">):</span>
+
+<div class="viewcode-block" id="ViewsLayerTest.test_add_not_json"><a class="viewcode-back" href="../../../../regcore_write.tests/#regcore_write.tests.views_layer_tests.ViewsLayerTest.test_add_not_json">[docs]</a>    <span class="k">def</span> <span class="nf">test_add_not_json</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;/layer/layname/lablab/verver&#39;</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&#39;application/json&#39;</span><span class="p">,</span>
+                                <span class="n">data</span><span class="o">=</span><span class="s">&#39;{Invalid}&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+</div>
+<div class="viewcode-block" id="ViewsLayerTest.test_add_label_mismatch"><a class="viewcode-back" href="../../../../regcore_write.tests/#regcore_write.tests.views_layer_tests.ViewsLayerTest.test_add_label_mismatch">[docs]</a>    <span class="k">def</span> <span class="nf">test_add_label_mismatch</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;/layer/layname/lablab/verver&#39;</span>
+
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&#39;application/json&#39;</span><span class="p">,</span>
+                                <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">({</span><span class="s">&#39;nonlab&#39;</span><span class="p">:</span> <span class="p">[]}))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">400</span><span class="p">,</span> <span class="n">response</span><span class="o">.</span><span class="n">status_code</span><span class="p">)</span>
+</div>
+    <span class="nd">@patch</span><span class="p">(</span><span class="s">&#39;regcore_write.views.layer.db&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="ViewsLayerTest.test_add_success"><a class="viewcode-back" href="../../../../regcore_write.tests/#regcore_write.tests.views_layer_tests.ViewsLayerTest.test_add_success">[docs]</a>    <span class="k">def</span> <span class="nf">test_add_success</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;/layer/layname/lablab/verver&#39;</span>
+
+        <span class="n">message</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;lablab&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s">&#39;lablab-b&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+            <span class="s">&#39;lablab-b-4&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Regulations</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;lablab&#39;</span><span class="p">],</span>
+            <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;lablab&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">],</span>
+                <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                    <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;lablab&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;4&#39;</span><span class="p">],</span>
+                    <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[]</span>
+                <span class="p">}]</span>
+            <span class="p">}]</span>
+        <span class="p">}</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&#39;application/json&#39;</span><span class="p">,</span>
+                                <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Layers</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">bulk_put</span><span class="o">.</span><span class="n">called</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Layers</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">bulk_put</span><span class="o">.</span><span class="n">call_args</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>   <span class="c"># switch to outside in</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+        <span class="n">message</span><span class="p">[</span><span class="s">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;lablab&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c">#   Sub layers have fewer elements</span>
+        <span class="k">del</span> <span class="n">message</span><span class="p">[</span><span class="s">&#39;lablab&#39;</span><span class="p">]</span>
+        <span class="n">message</span><span class="p">[</span><span class="s">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;lablab-b&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">del</span> <span class="n">message</span><span class="p">[</span><span class="s">&#39;lablab-b&#39;</span><span class="p">]</span>
+        <span class="n">message</span><span class="p">[</span><span class="s">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;lablab-b-4&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</div>
+    <span class="nd">@patch</span><span class="p">(</span><span class="s">&#39;regcore_write.views.layer.db&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="ViewsLayerTest.test_add_skip_level"><a class="viewcode-back" href="../../../../regcore_write.tests/#regcore_write.tests.views_layer_tests.ViewsLayerTest.test_add_skip_level">[docs]</a>    <span class="k">def</span> <span class="nf">test_add_skip_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;/layer/layname/lablab/verver&#39;</span>
+
+        <span class="n">message</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;lablab&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+            <span class="s">&#39;lablab-b-4&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Regulations</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;lablab&#39;</span><span class="p">],</span>
+            <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;lablab&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">],</span>
+                <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                    <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;lablab&#39;</span><span class="p">,</span> <span class="s">&#39;b&#39;</span><span class="p">,</span> <span class="s">&#39;4&#39;</span><span class="p">],</span>
+                    <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[]</span>
+                <span class="p">}]</span>
+            <span class="p">}]</span>
+        <span class="p">}</span>
+        <span class="n">response</span> <span class="o">=</span> <span class="n">Client</span><span class="p">()</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&#39;application/json&#39;</span><span class="p">,</span>
+                                <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Layers</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">bulk_put</span><span class="o">.</span><span class="n">called</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Layers</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">bulk_put</span><span class="o">.</span><span class="n">call_args</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>   <span class="c"># switch to outside in</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+        <span class="n">message</span><span class="p">[</span><span class="s">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;lablab&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="c">#   Sub layers have fewer elements</span>
+        <span class="k">del</span> <span class="n">message</span><span class="p">[</span><span class="s">&#39;lablab&#39;</span><span class="p">]</span>
+        <span class="n">message</span><span class="p">[</span><span class="s">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;lablab-b&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">message</span><span class="p">[</span><span class="s">&#39;label&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s">&#39;lablab-b-4&#39;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">message</span><span class="p">,</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</div>
+    <span class="nd">@patch</span><span class="p">(</span><span class="s">&#39;regcore_write.views.layer.db&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="ViewsLayerTest.test_add_interp_children"><a class="viewcode-back" href="../../../../regcore_write.tests/#regcore_write.tests.views_layer_tests.ViewsLayerTest.test_add_interp_children">[docs]</a>    <span class="k">def</span> <span class="nf">test_add_interp_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;/layer/layname/99/verver&#39;</span>
+
+        <span class="n">message</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;99-5-Interp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s">&#39;99-5-a-Interp&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]}</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Regulations</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;99&#39;</span><span class="p">],</span>
+            <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;99&#39;</span><span class="p">,</span> <span class="s">&#39;Interp&#39;</span><span class="p">],</span>
+                <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                    <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;99&#39;</span><span class="p">,</span> <span class="s">&#39;5&#39;</span><span class="p">,</span> <span class="s">&#39;Interp&#39;</span><span class="p">],</span>
+                    <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                        <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;99&#39;</span><span class="p">,</span> <span class="s">&#39;5&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">,</span> <span class="s">&#39;Interp&#39;</span><span class="p">],</span>
+                        <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[],</span>
+                    <span class="p">}]</span>
+                <span class="p">}]</span>
+            <span class="p">}]</span>
+        <span class="p">}</span>
+        <span class="n">Client</span><span class="p">()</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&#39;application/json&#39;</span><span class="p">,</span>
+                     <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Layers</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">bulk_put</span><span class="o">.</span><span class="n">call_args</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>   <span class="c"># switch to outside in</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;99-5-Interp&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;99-5-a-Interp&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;99-5-Interp&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;99-5-a-Interp&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;99-5-Interp&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;99-5-a-Interp&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="s">&#39;99-5-Interp&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;99-5-a-Interp&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+</div>
+    <span class="nd">@patch</span><span class="p">(</span><span class="s">&#39;regcore_write.views.layer.db&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="ViewsLayerTest.test_add_subpart_children"><a class="viewcode-back" href="../../../../regcore_write.tests/#regcore_write.tests.views_layer_tests.ViewsLayerTest.test_add_subpart_children">[docs]</a>    <span class="k">def</span> <span class="nf">test_add_subpart_children</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;/layer/layname/99/verver&#39;</span>
+
+        <span class="n">message</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;99-1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s">&#39;99-1-a&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]}</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Regulations</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;99&#39;</span><span class="p">],</span>
+            <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;99&#39;</span><span class="p">,</span> <span class="s">&#39;Subpart&#39;</span><span class="p">,</span> <span class="s">&#39;A&#39;</span><span class="p">],</span>
+                <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                    <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;99&#39;</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">],</span>
+                    <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                        <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;99&#39;</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">],</span>
+                        <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[]</span>
+                    <span class="p">}]</span>
+                <span class="p">}]</span>
+            <span class="p">}]</span>
+        <span class="p">}</span>
+        <span class="n">Client</span><span class="p">()</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&#39;application/json&#39;</span><span class="p">,</span>
+                     <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Layers</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">bulk_put</span><span class="o">.</span><span class="n">call_args</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">reversed</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>   <span class="c"># switch to outside in</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;99-1&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;99-1&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;99-1&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;99-1-a&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;99-1-a&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;99-1-a&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;99-1-a&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+</div>
+    <span class="nd">@patch</span><span class="p">(</span><span class="s">&#39;regcore_write.views.layer.db&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="ViewsLayerTest.test_add_referenced"><a class="viewcode-back" href="../../../../regcore_write.tests/#regcore_write.tests.views_layer_tests.ViewsLayerTest.test_add_referenced">[docs]</a>    <span class="k">def</span> <span class="nf">test_add_referenced</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s">&#39;/layer/layname/99/verver&#39;</span>
+
+        <span class="n">message</span> <span class="o">=</span> <span class="p">{</span><span class="s">&#39;99-1&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="s">&#39;99-1-a&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="s">&#39;referenced&#39;</span><span class="p">:</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">]}</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Regulations</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;99&#39;</span><span class="p">],</span>
+            <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;99&#39;</span><span class="p">,</span> <span class="s">&#39;Subpart&#39;</span><span class="p">,</span> <span class="s">&#39;A&#39;</span><span class="p">],</span>
+                <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                    <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;99&#39;</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">],</span>
+                    <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[{</span>
+                        <span class="s">&#39;label&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s">&#39;99&#39;</span><span class="p">,</span> <span class="s">&#39;1&#39;</span><span class="p">,</span> <span class="s">&#39;a&#39;</span><span class="p">],</span>
+                        <span class="s">&#39;children&#39;</span><span class="p">:</span> <span class="p">[]</span>
+                    <span class="p">}]</span>
+                <span class="p">}]</span>
+            <span class="p">}]</span>
+        <span class="p">}</span>
+        <span class="n">Client</span><span class="p">()</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">content_type</span><span class="o">=</span><span class="s">&#39;application/json&#39;</span><span class="p">,</span>
+                     <span class="n">data</span><span class="o">=</span><span class="n">json</span><span class="o">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">message</span><span class="p">))</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Layers</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">bulk_put</span><span class="o">.</span><span class="n">call_args</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;referenced&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;referenced&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;referenced&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="s">&#39;referenced&#39;</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+</div>
+    <span class="nd">@patch</span><span class="p">(</span><span class="s">&#39;regcore_write.views.layer.db&#39;</span><span class="p">)</span>
+<div class="viewcode-block" id="ViewsLayerTest.test_child_layers_no_results"><a class="viewcode-back" href="../../../../regcore_write.tests/#regcore_write.tests.views_layer_tests.ViewsLayerTest.test_child_layers_no_results">[docs]</a>    <span class="k">def</span> <span class="nf">test_child_layers_no_results</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">db</span><span class="p">):</span>
+        <span class="n">db</span><span class="o">.</span><span class="n">Regulations</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">return_value</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">([],</span> <span class="n">child_layers</span><span class="p">(</span><span class="s">&#39;layname&#39;</span><span class="p">,</span> <span class="s">&#39;lll&#39;</span><span class="p">,</span> <span class="s">&#39;vvv&#39;</span><span class="p">,</span> <span class="p">{}))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">db</span><span class="o">.</span><span class="n">Regulations</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">called</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">&#39;lll&#39;</span><span class="p">,</span>
+                         <span class="n">db</span><span class="o">.</span><span class="n">Regulations</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">call_args</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">&#39;vvv&#39;</span><span class="p">,</span>
+                         <span class="n">db</span><span class="o">.</span><span class="n">Regulations</span><span class="o">.</span><span class="n">return_value</span><span class="o">.</span><span class="n">get</span><span class="o">.</span><span class="n">call_args</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
+</div>
+<div class="viewcode-block" id="ViewsLayerTest.test_child_label_of"><a class="viewcode-back" href="../../../../regcore_write.tests/#regcore_write.tests.views_layer_tests.ViewsLayerTest.test_child_label_of">[docs]</a>    <span class="k">def</span> <span class="nf">test_child_label_of</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">child_label_of</span><span class="p">(</span><span class="s">&#39;1005-5-a-1-Interp-1&#39;</span><span class="p">,</span>
+                        <span class="s">&#39;1005-5-Interp&#39;</span><span class="p">))</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../../../" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

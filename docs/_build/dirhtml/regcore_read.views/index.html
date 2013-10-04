@@ -1,0 +1,211 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>views Package &mdash; regcore beta documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="regcore beta documentation" href="../" />
+    <link rel="up" title="regcore_read Package" href="../regcore_read/" />
+    <link rel="next" title="regcore_write Package" href="../regcore_write/" />
+    <link rel="prev" title="tests Package" href="../regcore_read.tests/" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../regcore_write/" title="regcore_write Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../regcore_read.tests/" title="tests Package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../regcore_read/" accesskey="U">regcore_read Package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="views-package">
+<h1>views Package<a class="headerlink" href="#views-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-regcore_read.views.diff">
+<span id="diff-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">diff</span></tt> Module<a class="headerlink" href="#module-regcore_read.views.diff" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="regcore_read.views.diff.get">
+<tt class="descclassname">regcore_read.views.diff.</tt><tt class="descname">get</tt><big>(</big><em>request</em>, <em>label_id</em>, <em>old_version</em>, <em>new_version</em><big>)</big><a class="reference internal" href="../_modules/regcore_read/views/diff/#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_read.views.diff.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find and return the diff with the provided label / versions</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-regcore_read.views.es_search">
+<span id="es-search-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">es_search</span></tt> Module<a class="headerlink" href="#module-regcore_read.views.es_search" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="regcore_read.views.es_search.search">
+<tt class="descclassname">regcore_read.views.es_search.</tt><tt class="descname">search</tt><big>(</big><em>request</em><big>)</big><a class="reference internal" href="../_modules/regcore_read/views/es_search/#search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_read.views.es_search.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Search elastic search for any matches in the node&#8217;s text</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="regcore_read.views.es_search.transform_results">
+<tt class="descclassname">regcore_read.views.es_search.</tt><tt class="descname">transform_results</tt><big>(</big><em>results</em><big>)</big><a class="reference internal" href="../_modules/regcore_read/views/es_search/#transform_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_read.views.es_search.transform_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pull out unused fields, add title field from layers if possible</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-regcore_read.views.haystack_search">
+<span id="haystack-search-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">haystack_search</span></tt> Module<a class="headerlink" href="#module-regcore_read.views.haystack_search" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="regcore_read.views.haystack_search.search">
+<tt class="descclassname">regcore_read.views.haystack_search.</tt><tt class="descname">search</tt><big>(</big><em>request</em><big>)</big><a class="reference internal" href="../_modules/regcore_read/views/haystack_search/#search"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_read.views.haystack_search.search" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use haystack to find search results</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="regcore_read.views.haystack_search.transform_results">
+<tt class="descclassname">regcore_read.views.haystack_search.</tt><tt class="descname">transform_results</tt><big>(</big><em>results</em><big>)</big><a class="reference internal" href="../_modules/regcore_read/views/haystack_search/#transform_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_read.views.haystack_search.transform_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add title field from layers if possible</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-regcore_read.views.layer">
+<span id="layer-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">layer</span></tt> Module<a class="headerlink" href="#module-regcore_read.views.layer" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="regcore_read.views.layer.get">
+<tt class="descclassname">regcore_read.views.layer.</tt><tt class="descname">get</tt><big>(</big><em>request</em>, <em>name</em>, <em>label_id</em>, <em>version</em><big>)</big><a class="reference internal" href="../_modules/regcore_read/views/layer/#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_read.views.layer.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find and return the layer with this name + version + label</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-regcore_read.views.notice">
+<span id="notice-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">notice</span></tt> Module<a class="headerlink" href="#module-regcore_read.views.notice" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="regcore_read.views.notice.get">
+<tt class="descclassname">regcore_read.views.notice.</tt><tt class="descname">get</tt><big>(</big><em>request</em>, <em>docnum</em><big>)</big><a class="reference internal" href="../_modules/regcore_read/views/notice/#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_read.views.notice.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find and return the notice with this docnum</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="regcore_read.views.notice.listing">
+<tt class="descclassname">regcore_read.views.notice.</tt><tt class="descname">listing</tt><big>(</big><em>request</em><big>)</big><a class="reference internal" href="../_modules/regcore_read/views/notice/#listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_read.views.notice.listing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find and return all notices</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-regcore_read.views.regulation">
+<span id="regulation-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">regulation</span></tt> Module<a class="headerlink" href="#module-regcore_read.views.regulation" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="regcore_read.views.regulation.get">
+<tt class="descclassname">regcore_read.views.regulation.</tt><tt class="descname">get</tt><big>(</big><em>request</em>, <em>label_id</em>, <em>version</em><big>)</big><a class="reference internal" href="../_modules/regcore_read/views/regulation/#get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_read.views.regulation.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find and return the regulation with this version and label</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="regcore_read.views.regulation.listing">
+<tt class="descclassname">regcore_read.views.regulation.</tt><tt class="descname">listing</tt><big>(</big><em>request</em>, <em>label_id</em><big>)</big><a class="reference internal" href="../_modules/regcore_read/views/regulation/#listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_read.views.regulation.listing" title="Permalink to this definition">¶</a></dt>
+<dd><p>List versions of this regulation</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">views Package</a><ul>
+<li><a class="reference internal" href="#module-regcore_read.views.diff"><tt class="docutils literal"><span class="pre">diff</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-regcore_read.views.es_search"><tt class="docutils literal"><span class="pre">es_search</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-regcore_read.views.haystack_search"><tt class="docutils literal"><span class="pre">haystack_search</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-regcore_read.views.layer"><tt class="docutils literal"><span class="pre">layer</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-regcore_read.views.notice"><tt class="docutils literal"><span class="pre">notice</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-regcore_read.views.regulation"><tt class="docutils literal"><span class="pre">regulation</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../regcore_read.tests/"
+                        title="previous chapter">tests Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../regcore_write/"
+                        title="next chapter">regcore_write Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/regcore_read.views.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../regcore_write/" title="regcore_write Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../regcore_read.tests/" title="tests Package"
+             >previous</a> |</li>
+        <li><a href="../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../regcore_read/" >regcore_read Package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

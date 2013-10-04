@@ -1,0 +1,521 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>tests Package &mdash; regcore beta documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="regcore beta documentation" href="../" />
+    <link rel="up" title="regcore Package" href="../regcore/" />
+    <link rel="next" title="regcore_read Package" href="../regcore_read/" />
+    <link rel="prev" title="migrations Package" href="../regcore.migrations/" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../regcore_read/" title="regcore_read Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../regcore.migrations/" title="migrations Package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../regcore/" accesskey="U">regcore Package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="tests-package">
+<h1>tests Package<a class="headerlink" href="#tests-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-regcore.tests.db_django_models_tests">
+<span id="db-django-models-tests-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">db_django_models_tests</span></tt> Module<a class="headerlink" href="#module-regcore.tests.db_django_models_tests" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="regcore.tests.db_django_models_tests.DMDiffTest">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_django_models_tests.</tt><tt class="descname">DMDiffTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMDiffTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMDiffTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.test.testcases.TestCase</span></tt>, <a class="reference internal" href="#regcore.tests.db_django_models_tests.ReusableDMDiff" title="regcore.tests.db_django_models_tests.ReusableDMDiff"><tt class="xref py py-class docutils literal"><span class="pre">regcore.tests.db_django_models_tests.ReusableDMDiff</span></tt></a></p>
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.DMDiffTest.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMDiffTest.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMDiffTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.DMDiffTest.test_put">
+<tt class="descname">test_put</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMDiffTest.test_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMDiffTest.test_put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.DMDiffTest.test_put_overwrite">
+<tt class="descname">test_put_overwrite</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMDiffTest.test_put_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMDiffTest.test_put_overwrite" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.tests.db_django_models_tests.DMLayersTest">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_django_models_tests.</tt><tt class="descname">DMLayersTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMLayersTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMLayersTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.test.testcases.TestCase</span></tt>, <a class="reference internal" href="#regcore.tests.db_django_models_tests.ReusableDMLayers" title="regcore.tests.db_django_models_tests.ReusableDMLayers"><tt class="xref py py-class docutils literal"><span class="pre">regcore.tests.db_django_models_tests.ReusableDMLayers</span></tt></a></p>
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.DMLayersTest.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMLayersTest.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMLayersTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.DMLayersTest.test_bulk_put">
+<tt class="descname">test_bulk_put</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMLayersTest.test_bulk_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMLayersTest.test_bulk_put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.DMLayersTest.test_bulk_put_overwrite">
+<tt class="descname">test_bulk_put_overwrite</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMLayersTest.test_bulk_put_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMLayersTest.test_bulk_put_overwrite" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.tests.db_django_models_tests.DMNoticesTest">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_django_models_tests.</tt><tt class="descname">DMNoticesTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMNoticesTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMNoticesTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.test.testcases.TestCase</span></tt>, <a class="reference internal" href="#regcore.tests.db_django_models_tests.ReusableDMNotices" title="regcore.tests.db_django_models_tests.ReusableDMNotices"><tt class="xref py py-class docutils literal"><span class="pre">regcore.tests.db_django_models_tests.ReusableDMNotices</span></tt></a></p>
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.DMNoticesTest.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMNoticesTest.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMNoticesTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.DMNoticesTest.test_put">
+<tt class="descname">test_put</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMNoticesTest.test_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMNoticesTest.test_put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.DMNoticesTest.test_put_overwrite">
+<tt class="descname">test_put_overwrite</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMNoticesTest.test_put_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMNoticesTest.test_put_overwrite" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.tests.db_django_models_tests.DMRegulationsTest">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_django_models_tests.</tt><tt class="descname">DMRegulationsTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMRegulationsTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMRegulationsTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.test.testcases.TestCase</span></tt>, <a class="reference internal" href="#regcore.tests.db_django_models_tests.ReusableDMRegulations" title="regcore.tests.db_django_models_tests.ReusableDMRegulations"><tt class="xref py py-class docutils literal"><span class="pre">regcore.tests.db_django_models_tests.ReusableDMRegulations</span></tt></a></p>
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.DMRegulationsTest.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMRegulationsTest.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMRegulationsTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.DMRegulationsTest.test_bulk_put">
+<tt class="descname">test_bulk_put</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMRegulationsTest.test_bulk_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMRegulationsTest.test_bulk_put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.DMRegulationsTest.test_bulk_put_overwrite">
+<tt class="descname">test_bulk_put_overwrite</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#DMRegulationsTest.test_bulk_put_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.DMRegulationsTest.test_bulk_put_overwrite" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.tests.db_django_models_tests.ReusableDMDiff">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_django_models_tests.</tt><tt class="descname">ReusableDMDiff</tt><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#ReusableDMDiff"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.ReusableDMDiff" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.ReusableDMDiff.test_get_404">
+<tt class="descname">test_get_404</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#ReusableDMDiff.test_get_404"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.ReusableDMDiff.test_get_404" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.ReusableDMDiff.test_get_success">
+<tt class="descname">test_get_success</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#ReusableDMDiff.test_get_success"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.ReusableDMDiff.test_get_success" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.tests.db_django_models_tests.ReusableDMLayers">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_django_models_tests.</tt><tt class="descname">ReusableDMLayers</tt><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#ReusableDMLayers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.ReusableDMLayers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.ReusableDMLayers.test_get_404">
+<tt class="descname">test_get_404</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#ReusableDMLayers.test_get_404"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.ReusableDMLayers.test_get_404" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.ReusableDMLayers.test_get_success">
+<tt class="descname">test_get_success</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#ReusableDMLayers.test_get_success"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.ReusableDMLayers.test_get_success" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.tests.db_django_models_tests.ReusableDMNotices">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_django_models_tests.</tt><tt class="descname">ReusableDMNotices</tt><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#ReusableDMNotices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.ReusableDMNotices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.ReusableDMNotices.test_get_404">
+<tt class="descname">test_get_404</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#ReusableDMNotices.test_get_404"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.ReusableDMNotices.test_get_404" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.ReusableDMNotices.test_get_success">
+<tt class="descname">test_get_success</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#ReusableDMNotices.test_get_success"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.ReusableDMNotices.test_get_success" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.ReusableDMNotices.test_listing">
+<tt class="descname">test_listing</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#ReusableDMNotices.test_listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.ReusableDMNotices.test_listing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.tests.db_django_models_tests.ReusableDMRegulations">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_django_models_tests.</tt><tt class="descname">ReusableDMRegulations</tt><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#ReusableDMRegulations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.ReusableDMRegulations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.ReusableDMRegulations.test_get_404">
+<tt class="descname">test_get_404</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#ReusableDMRegulations.test_get_404"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.ReusableDMRegulations.test_get_404" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.ReusableDMRegulations.test_get_success">
+<tt class="descname">test_get_success</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#ReusableDMRegulations.test_get_success"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.ReusableDMRegulations.test_get_success" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_django_models_tests.ReusableDMRegulations.test_listing">
+<tt class="descname">test_listing</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_django_models_tests/#ReusableDMRegulations.test_listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_django_models_tests.ReusableDMRegulations.test_listing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-regcore.tests.db_es_tests">
+<span id="db-es-tests-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">db_es_tests</span></tt> Module<a class="headerlink" href="#module-regcore.tests.db_es_tests" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="regcore.tests.db_es_tests.ESDiffTest">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_es_tests.</tt><tt class="descname">ESDiffTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESDiffTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESDiffTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<dl class="method">
+<dt id="regcore.tests.db_es_tests.ESDiffTest.test_get_404">
+<tt class="descname">test_get_404</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESDiffTest.test_get_404"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESDiffTest.test_get_404" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_es_tests.ESDiffTest.test_get_success">
+<tt class="descname">test_get_success</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESDiffTest.test_get_success"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESDiffTest.test_get_success" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_es_tests.ESDiffTest.test_put">
+<tt class="descname">test_put</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESDiffTest.test_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESDiffTest.test_put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.tests.db_es_tests.ESLayersTest">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_es_tests.</tt><tt class="descname">ESLayersTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESLayersTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESLayersTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<dl class="method">
+<dt id="regcore.tests.db_es_tests.ESLayersTest.test_bulk_put">
+<tt class="descname">test_bulk_put</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESLayersTest.test_bulk_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESLayersTest.test_bulk_put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_es_tests.ESLayersTest.test_get_404">
+<tt class="descname">test_get_404</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESLayersTest.test_get_404"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESLayersTest.test_get_404" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_es_tests.ESLayersTest.test_get_success">
+<tt class="descname">test_get_success</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESLayersTest.test_get_success"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESLayersTest.test_get_success" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.tests.db_es_tests.ESNoticesTest">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_es_tests.</tt><tt class="descname">ESNoticesTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESNoticesTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESNoticesTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<dl class="method">
+<dt id="regcore.tests.db_es_tests.ESNoticesTest.test_get_404">
+<tt class="descname">test_get_404</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESNoticesTest.test_get_404"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESNoticesTest.test_get_404" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_es_tests.ESNoticesTest.test_get_success">
+<tt class="descname">test_get_success</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESNoticesTest.test_get_success"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESNoticesTest.test_get_success" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_es_tests.ESNoticesTest.test_listing">
+<tt class="descname">test_listing</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESNoticesTest.test_listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESNoticesTest.test_listing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_es_tests.ESNoticesTest.test_put">
+<tt class="descname">test_put</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESNoticesTest.test_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESNoticesTest.test_put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.tests.db_es_tests.ESRegulationsTest">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_es_tests.</tt><tt class="descname">ESRegulationsTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESRegulationsTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESRegulationsTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<dl class="method">
+<dt id="regcore.tests.db_es_tests.ESRegulationsTest.test_bulk_put">
+<tt class="descname">test_bulk_put</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESRegulationsTest.test_bulk_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESRegulationsTest.test_bulk_put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_es_tests.ESRegulationsTest.test_get_404">
+<tt class="descname">test_get_404</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESRegulationsTest.test_get_404"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESRegulationsTest.test_get_404" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_es_tests.ESRegulationsTest.test_get_success">
+<tt class="descname">test_get_success</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESRegulationsTest.test_get_success"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESRegulationsTest.test_get_success" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_es_tests.ESRegulationsTest.test_listing">
+<tt class="descname">test_listing</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_es_tests/#ESRegulationsTest.test_listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_es_tests.ESRegulationsTest.test_listing" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-regcore.tests.db_splitter_tests">
+<span id="db-splitter-tests-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">db_splitter_tests</span></tt> Module<a class="headerlink" href="#module-regcore.tests.db_splitter_tests" title="Permalink to this headline">¶</a></h2>
+<p>This delegates all GET tests to the DM Regulations tests</p>
+<dl class="class">
+<dt id="regcore.tests.db_splitter_tests.SplitterDiffTest">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_splitter_tests.</tt><tt class="descname">SplitterDiffTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterDiffTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterDiffTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.test.testcases.TestCase</span></tt>, <a class="reference internal" href="#regcore.tests.db_django_models_tests.ReusableDMDiff" title="regcore.tests.db_django_models_tests.ReusableDMDiff"><tt class="xref py py-class docutils literal"><span class="pre">regcore.tests.db_django_models_tests.ReusableDMDiff</span></tt></a></p>
+<dl class="method">
+<dt id="regcore.tests.db_splitter_tests.SplitterDiffTest.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterDiffTest.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterDiffTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_splitter_tests.SplitterDiffTest.test_put">
+<tt class="descname">test_put</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterDiffTest.test_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterDiffTest.test_put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_splitter_tests.SplitterDiffTest.test_put_overwrite">
+<tt class="descname">test_put_overwrite</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterDiffTest.test_put_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterDiffTest.test_put_overwrite" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.tests.db_splitter_tests.SplitterLayersTest">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_splitter_tests.</tt><tt class="descname">SplitterLayersTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterLayersTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterLayersTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.test.testcases.TestCase</span></tt>, <a class="reference internal" href="#regcore.tests.db_django_models_tests.ReusableDMLayers" title="regcore.tests.db_django_models_tests.ReusableDMLayers"><tt class="xref py py-class docutils literal"><span class="pre">regcore.tests.db_django_models_tests.ReusableDMLayers</span></tt></a></p>
+<dl class="method">
+<dt id="regcore.tests.db_splitter_tests.SplitterLayersTest.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterLayersTest.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterLayersTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_splitter_tests.SplitterLayersTest.test_bulk_put">
+<tt class="descname">test_bulk_put</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterLayersTest.test_bulk_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterLayersTest.test_bulk_put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_splitter_tests.SplitterLayersTest.test_bulk_put_overwrite">
+<tt class="descname">test_bulk_put_overwrite</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterLayersTest.test_bulk_put_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterLayersTest.test_bulk_put_overwrite" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.tests.db_splitter_tests.SplitterNoticesTest">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_splitter_tests.</tt><tt class="descname">SplitterNoticesTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterNoticesTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterNoticesTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.test.testcases.TestCase</span></tt>, <a class="reference internal" href="#regcore.tests.db_django_models_tests.ReusableDMNotices" title="regcore.tests.db_django_models_tests.ReusableDMNotices"><tt class="xref py py-class docutils literal"><span class="pre">regcore.tests.db_django_models_tests.ReusableDMNotices</span></tt></a></p>
+<dl class="method">
+<dt id="regcore.tests.db_splitter_tests.SplitterNoticesTest.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterNoticesTest.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterNoticesTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_splitter_tests.SplitterNoticesTest.test_put">
+<tt class="descname">test_put</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterNoticesTest.test_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterNoticesTest.test_put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_splitter_tests.SplitterNoticesTest.test_put_overwrite">
+<tt class="descname">test_put_overwrite</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterNoticesTest.test_put_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterNoticesTest.test_put_overwrite" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.tests.db_splitter_tests.SplitterRegulationsTest">
+<em class="property">class </em><tt class="descclassname">regcore.tests.db_splitter_tests.</tt><tt class="descname">SplitterRegulationsTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterRegulationsTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterRegulationsTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">django.test.testcases.TestCase</span></tt>, <a class="reference internal" href="#regcore.tests.db_django_models_tests.ReusableDMRegulations" title="regcore.tests.db_django_models_tests.ReusableDMRegulations"><tt class="xref py py-class docutils literal"><span class="pre">regcore.tests.db_django_models_tests.ReusableDMRegulations</span></tt></a></p>
+<dl class="method">
+<dt id="regcore.tests.db_splitter_tests.SplitterRegulationsTest.setUp">
+<tt class="descname">setUp</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterRegulationsTest.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterRegulationsTest.setUp" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_splitter_tests.SplitterRegulationsTest.test_bulk_put">
+<tt class="descname">test_bulk_put</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterRegulationsTest.test_bulk_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterRegulationsTest.test_bulk_put" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.db_splitter_tests.SplitterRegulationsTest.test_bulk_put_overwrite">
+<tt class="descname">test_bulk_put_overwrite</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/db_splitter_tests/#SplitterRegulationsTest.test_bulk_put_overwrite"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.db_splitter_tests.SplitterRegulationsTest.test_bulk_put_overwrite" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-regcore.tests.index_tests">
+<span id="index-tests-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">index_tests</span></tt> Module<a class="headerlink" href="#module-regcore.tests.index_tests" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="regcore.tests.index_tests.IndexTest">
+<em class="property">class </em><tt class="descclassname">regcore.tests.index_tests.</tt><tt class="descname">IndexTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/index_tests/#IndexTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.index_tests.IndexTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<dl class="method">
+<dt id="regcore.tests.index_tests.IndexTest.test_init_schema">
+<tt class="descname">test_init_schema</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/index_tests/#IndexTest.test_init_schema"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.index_tests.IndexTest.test_init_schema" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.index_tests.IndexTest.test_init_schema_index_exists">
+<tt class="descname">test_init_schema_index_exists</tt><big>(</big><em>*args</em>, <em>**keywargs</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/index_tests/#IndexTest.test_init_schema_index_exists"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.index_tests.IndexTest.test_init_schema_index_exists" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-regcore.tests.responses_tests">
+<span id="responses-tests-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">responses_tests</span></tt> Module<a class="headerlink" href="#module-regcore.tests.responses_tests" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="regcore.tests.responses_tests.ResponsesTest">
+<em class="property">class </em><tt class="descclassname">regcore.tests.responses_tests.</tt><tt class="descname">ResponsesTest</tt><big>(</big><em>methodName='runTest'</em><big>)</big><a class="reference internal" href="../_modules/regcore/tests/responses_tests/#ResponsesTest"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.responses_tests.ResponsesTest" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></tt></p>
+<dl class="method">
+<dt id="regcore.tests.responses_tests.ResponsesTest.test_success_empty">
+<tt class="descname">test_success_empty</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/responses_tests/#ResponsesTest.test_success_empty"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.responses_tests.ResponsesTest.test_success_empty" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.responses_tests.ResponsesTest.test_success_full">
+<tt class="descname">test_success_full</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/responses_tests/#ResponsesTest.test_success_full"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.responses_tests.ResponsesTest.test_success_full" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="regcore.tests.responses_tests.ResponsesTest.test_user_error">
+<tt class="descname">test_user_error</tt><big>(</big><big>)</big><a class="reference internal" href="../_modules/regcore/tests/responses_tests/#ResponsesTest.test_user_error"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.tests.responses_tests.ResponsesTest.test_user_error" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">tests Package</a><ul>
+<li><a class="reference internal" href="#module-regcore.tests.db_django_models_tests"><tt class="docutils literal"><span class="pre">db_django_models_tests</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-regcore.tests.db_es_tests"><tt class="docutils literal"><span class="pre">db_es_tests</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-regcore.tests.db_splitter_tests"><tt class="docutils literal"><span class="pre">db_splitter_tests</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-regcore.tests.index_tests"><tt class="docutils literal"><span class="pre">index_tests</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-regcore.tests.responses_tests"><tt class="docutils literal"><span class="pre">responses_tests</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../regcore.migrations/"
+                        title="previous chapter">migrations Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../regcore_read/"
+                        title="next chapter">regcore_read Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/regcore.tests.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../regcore_read/" title="regcore_read Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../regcore.migrations/" title="migrations Package"
+             >previous</a> |</li>
+        <li><a href="../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../regcore/" >regcore Package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
