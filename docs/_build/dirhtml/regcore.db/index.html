@@ -1,0 +1,473 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>db Package &mdash; regcore beta documentation</title>
+    
+    <link rel="stylesheet" href="../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     'beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <link rel="top" title="regcore beta documentation" href="../" />
+    <link rel="up" title="regcore Package" href="../regcore/" />
+    <link rel="next" title="migrations Package" href="../regcore.migrations/" />
+    <link rel="prev" title="regcore Package" href="../regcore/" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../regcore.migrations/" title="migrations Package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="../regcore/" title="regcore Package"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../regcore/" accesskey="U">regcore Package</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="db-package">
+<h1>db Package<a class="headerlink" href="#db-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="id1">
+<h2><tt class="xref py py-mod docutils literal"><span class="pre">db</span></tt> Package<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-regcore.db"></span><dl class="class">
+<dt id="regcore.db.Diffs">
+<em class="property">class </em><tt class="descclassname">regcore.db.</tt><tt class="descname">Diffs</tt><a class="reference internal" href="../_modules/regcore/db/#Diffs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.Diffs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A level of indirection for our database abstraction. All backends
+should provide the same interface.</p>
+<dl class="method">
+<dt id="regcore.db.Diffs.get">
+<tt class="descname">get</tt><big>(</big><em>label</em>, <em>old_version</em>, <em>new_version</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/#Diffs.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.Diffs.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Documentation method. Return matching diff or None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.Diffs.put">
+<tt class="descname">put</tt><big>(</big><em>label</em>, <em>old_version</em>, <em>new_version</em>, <em>diff</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/#Diffs.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.Diffs.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Documentation method. label, old_version, new_version:String,
+diff:Dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.db.Layers">
+<em class="property">class </em><tt class="descclassname">regcore.db.</tt><tt class="descname">Layers</tt><a class="reference internal" href="../_modules/regcore/db/#Layers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.Layers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A level of indirection for our database abstraction. All backends
+should provide the same interface.</p>
+<dl class="method">
+<dt id="regcore.db.Layers.bulk_put">
+<tt class="descname">bulk_put</tt><big>(</big><em>layers</em>, <em>version</em>, <em>layer_name</em>, <em>root_label</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/#Layers.bulk_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.Layers.bulk_put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Documentation method. Add many entries, with the root of the
+entries having root_label and all entries having layer_name and
+version</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.Layers.get">
+<tt class="descname">get</tt><big>(</big><em>name</em>, <em>label</em>, <em>version</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/#Layers.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.Layers.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Doc method. Return a single layer (no meta data) or None</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.db.Notices">
+<em class="property">class </em><tt class="descclassname">regcore.db.</tt><tt class="descname">Notices</tt><a class="reference internal" href="../_modules/regcore/db/#Notices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.Notices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A level of indirection for our database abstraction. All backends
+should provide the same interface.</p>
+<dl class="method">
+<dt id="regcore.db.Notices.get">
+<tt class="descname">get</tt><big>(</big><em>doc_number</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/#Notices.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.Notices.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Documentation method. Return matching notice or None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.Notices.listing">
+<tt class="descname">listing</tt><big>(</big><em>part=None</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/#Notices.listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.Notices.listing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Documentation method. Return all notices or notices by part</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.Notices.put">
+<tt class="descname">put</tt><big>(</big><em>doc_number</em>, <em>notice</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/#Notices.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.Notices.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Documentation method. doc_number:String, notice:Dict</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.db.Regulations">
+<em class="property">class </em><tt class="descclassname">regcore.db.</tt><tt class="descname">Regulations</tt><a class="reference internal" href="../_modules/regcore/db/#Regulations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.Regulations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>A level of indirection for our database abstraction. All backends
+should provide the same interface.</p>
+<dl class="method">
+<dt id="regcore.db.Regulations.bulk_put">
+<tt class="descname">bulk_put</tt><big>(</big><em>regs</em>, <em>version</em>, <em>root_label</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/#Regulations.bulk_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.Regulations.bulk_put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Documentation method. Add many entries, with a root of root_label.
+Each should have the provided version</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.Regulations.get">
+<tt class="descname">get</tt><big>(</big><em>label</em>, <em>version</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/#Regulations.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.Regulations.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Documentation method. Returns a regulation node or None</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.Regulations.listing">
+<tt class="descname">listing</tt><big>(</big><em>label</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/#Regulations.listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.Regulations.listing" title="Permalink to this definition">¶</a></dt>
+<dd><p>Documentation method. List regulation versions that match this
+label, sorted</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-regcore.db.django_models">
+<span id="django-models-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">django_models</span></tt> Module<a class="headerlink" href="#module-regcore.db.django_models" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="regcore.db.django_models.DMDiffs">
+<em class="property">class </em><tt class="descclassname">regcore.db.django_models.</tt><tt class="descname">DMDiffs</tt><a class="reference internal" href="../_modules/regcore/db/django_models/#DMDiffs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.django_models.DMDiffs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Implementation of Django-models as diff backend</p>
+<dl class="method">
+<dt id="regcore.db.django_models.DMDiffs.get">
+<tt class="descname">get</tt><big>(</big><em>label</em>, <em>old_version</em>, <em>new_version</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/django_models/#DMDiffs.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.django_models.DMDiffs.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the associated diff</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.django_models.DMDiffs.put">
+<tt class="descname">put</tt><big>(</big><em>label</em>, <em>old_version</em>, <em>new_version</em>, <em>diff</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/django_models/#DMDiffs.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.django_models.DMDiffs.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store a diff between two versions of a regulation node</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.db.django_models.DMLayers">
+<em class="property">class </em><tt class="descclassname">regcore.db.django_models.</tt><tt class="descname">DMLayers</tt><a class="reference internal" href="../_modules/regcore/db/django_models/#DMLayers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.django_models.DMLayers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Implementation of Django-models as layers backend</p>
+<dl class="method">
+<dt id="regcore.db.django_models.DMLayers.bulk_put">
+<tt class="descname">bulk_put</tt><big>(</big><em>layers</em>, <em>version</em>, <em>layer_name</em>, <em>root_label</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/django_models/#DMLayers.bulk_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.django_models.DMLayers.bulk_put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store all layer objects</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.django_models.DMLayers.get">
+<tt class="descname">get</tt><big>(</big><em>name</em>, <em>label</em>, <em>version</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/django_models/#DMLayers.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.django_models.DMLayers.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the layer that matches these parameters</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.db.django_models.DMNotices">
+<em class="property">class </em><tt class="descclassname">regcore.db.django_models.</tt><tt class="descname">DMNotices</tt><a class="reference internal" href="../_modules/regcore/db/django_models/#DMNotices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.django_models.DMNotices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Implementation of Django-models as notice backend</p>
+<dl class="method">
+<dt id="regcore.db.django_models.DMNotices.get">
+<tt class="descname">get</tt><big>(</big><em>doc_number</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/django_models/#DMNotices.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.django_models.DMNotices.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the associated notice</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.django_models.DMNotices.listing">
+<tt class="descname">listing</tt><big>(</big><em>part=None</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/django_models/#DMNotices.listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.django_models.DMNotices.listing" title="Permalink to this definition">¶</a></dt>
+<dd><p>All notices or filtered by cfr_part</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.django_models.DMNotices.put">
+<tt class="descname">put</tt><big>(</big><em>doc_number</em>, <em>notice</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/django_models/#DMNotices.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.django_models.DMNotices.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store a single notice</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.db.django_models.DMRegulations">
+<em class="property">class </em><tt class="descclassname">regcore.db.django_models.</tt><tt class="descname">DMRegulations</tt><a class="reference internal" href="../_modules/regcore/db/django_models/#DMRegulations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.django_models.DMRegulations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Implementation of Django-models as regulations backend</p>
+<dl class="method">
+<dt id="regcore.db.django_models.DMRegulations.bulk_put">
+<tt class="descname">bulk_put</tt><big>(</big><em>regs</em>, <em>version</em>, <em>root_label</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/django_models/#DMRegulations.bulk_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.django_models.DMRegulations.bulk_put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store all reg objects</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.django_models.DMRegulations.get">
+<tt class="descname">get</tt><big>(</big><em>label</em>, <em>version</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/django_models/#DMRegulations.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.django_models.DMRegulations.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the regulation label + version</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.django_models.DMRegulations.listing">
+<tt class="descname">listing</tt><big>(</big><em>label</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/django_models/#DMRegulations.listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.django_models.DMRegulations.listing" title="Permalink to this definition">¶</a></dt>
+<dd><p>List regulation versions that match this label</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-regcore.db.es">
+<span id="es-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">es</span></tt> Module<a class="headerlink" href="#module-regcore.db.es" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="regcore.db.es.ESDiffs">
+<em class="property">class </em><tt class="descclassname">regcore.db.es.</tt><tt class="descname">ESDiffs</tt><a class="reference internal" href="../_modules/regcore/db/es/#ESDiffs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESDiffs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Implementation of Elastic Search as diff backend</p>
+<dl class="method">
+<dt id="regcore.db.es.ESDiffs.get">
+<tt class="descname">get</tt><big>(</big><em>label</em>, <em>old_version</em>, <em>new_version</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/es/#ESDiffs.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESDiffs.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the associated diff</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.es.ESDiffs.put">
+<tt class="descname">put</tt><big>(</big><em>label</em>, <em>old_version</em>, <em>new_version</em>, <em>diff</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/es/#ESDiffs.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESDiffs.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store a diff between two versions of a regulation node</p>
+</dd></dl>
+
+<dl class="staticmethod">
+<dt id="regcore.db.es.ESDiffs.to_id">
+<em class="property">static </em><tt class="descname">to_id</tt><big>(</big><em>label</em>, <em>old</em>, <em>new</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/es/#ESDiffs.to_id"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESDiffs.to_id" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.db.es.ESLayers">
+<em class="property">class </em><tt class="descclassname">regcore.db.es.</tt><tt class="descname">ESLayers</tt><a class="reference internal" href="../_modules/regcore/db/es/#ESLayers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESLayers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Implementation of Elastic Search as layers backend</p>
+<dl class="method">
+<dt id="regcore.db.es.ESLayers.bulk_put">
+<tt class="descname">bulk_put</tt><big>(</big><em>layers</em>, <em>version</em>, <em>layer_name</em>, <em>root_label</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/es/#ESLayers.bulk_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESLayers.bulk_put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store all layer objects</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.es.ESLayers.get">
+<tt class="descname">get</tt><big>(</big><em>name</em>, <em>label</em>, <em>version</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/es/#ESLayers.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESLayers.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the layer that matches these parameters</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.db.es.ESNotices">
+<em class="property">class </em><tt class="descclassname">regcore.db.es.</tt><tt class="descname">ESNotices</tt><a class="reference internal" href="../_modules/regcore/db/es/#ESNotices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESNotices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Implementation of Elastic Search as notice backend</p>
+<dl class="method">
+<dt id="regcore.db.es.ESNotices.get">
+<tt class="descname">get</tt><big>(</big><em>doc_number</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/es/#ESNotices.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESNotices.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the associated notice</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.es.ESNotices.listing">
+<tt class="descname">listing</tt><big>(</big><em>part=None</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/es/#ESNotices.listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESNotices.listing" title="Permalink to this definition">¶</a></dt>
+<dd><p>All notices or filtered by cfr_part</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.es.ESNotices.put">
+<tt class="descname">put</tt><big>(</big><em>doc_number</em>, <em>notice</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/es/#ESNotices.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESNotices.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store a single notice</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.db.es.ESRegulations">
+<em class="property">class </em><tt class="descclassname">regcore.db.es.</tt><tt class="descname">ESRegulations</tt><a class="reference internal" href="../_modules/regcore/db/es/#ESRegulations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESRegulations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Implementation of Elastic Search as regulations backend</p>
+<dl class="method">
+<dt id="regcore.db.es.ESRegulations.bulk_put">
+<tt class="descname">bulk_put</tt><big>(</big><em>regs</em>, <em>version</em>, <em>root_label</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/es/#ESRegulations.bulk_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESRegulations.bulk_put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Store all reg objects</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.es.ESRegulations.get">
+<tt class="descname">get</tt><big>(</big><em>label</em>, <em>version</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/es/#ESRegulations.get"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESRegulations.get" title="Permalink to this definition">¶</a></dt>
+<dd><p>Find the regulation label + version</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="regcore.db.es.ESRegulations.listing">
+<tt class="descname">listing</tt><big>(</big><em>label</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/es/#ESRegulations.listing"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.es.ESRegulations.listing" title="Permalink to this definition">¶</a></dt>
+<dd><p>List regulation versions that match this label</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-regcore.db.splitter">
+<span id="splitter-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">splitter</span></tt> Module<a class="headerlink" href="#module-regcore.db.splitter" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="regcore.db.splitter.SplitterDiffs">
+<em class="property">class </em><tt class="descclassname">regcore.db.splitter.</tt><tt class="descname">SplitterDiffs</tt><a class="reference internal" href="../_modules/regcore/db/splitter/#SplitterDiffs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.splitter.SplitterDiffs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Implementation of django+elastic search as regulations backend</p>
+<dl class="method">
+<dt id="regcore.db.splitter.SplitterDiffs.put">
+<tt class="descname">put</tt><big>(</big><em>label</em>, <em>old_version</em>, <em>new_version</em>, <em>diff</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/splitter/#SplitterDiffs.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.splitter.SplitterDiffs.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write to both</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.db.splitter.SplitterLayers">
+<em class="property">class </em><tt class="descclassname">regcore.db.splitter.</tt><tt class="descname">SplitterLayers</tt><a class="reference internal" href="../_modules/regcore/db/splitter/#SplitterLayers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.splitter.SplitterLayers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Implementation of django+elastic search as layers backend</p>
+<dl class="method">
+<dt id="regcore.db.splitter.SplitterLayers.bulk_put">
+<tt class="descname">bulk_put</tt><big>(</big><em>layers</em>, <em>version</em>, <em>layer_name</em>, <em>root_label</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/splitter/#SplitterLayers.bulk_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.splitter.SplitterLayers.bulk_put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write to both</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.db.splitter.SplitterNotices">
+<em class="property">class </em><tt class="descclassname">regcore.db.splitter.</tt><tt class="descname">SplitterNotices</tt><a class="reference internal" href="../_modules/regcore/db/splitter/#SplitterNotices"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.splitter.SplitterNotices" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Implementation of django+elastic search as notices backend</p>
+<dl class="method">
+<dt id="regcore.db.splitter.SplitterNotices.put">
+<tt class="descname">put</tt><big>(</big><em>doc_number</em>, <em>notice</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/splitter/#SplitterNotices.put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.splitter.SplitterNotices.put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write to both</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="regcore.db.splitter.SplitterRegulations">
+<em class="property">class </em><tt class="descclassname">regcore.db.splitter.</tt><tt class="descname">SplitterRegulations</tt><a class="reference internal" href="../_modules/regcore/db/splitter/#SplitterRegulations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.splitter.SplitterRegulations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<p>Implementation of django+elastic search as regulations backend</p>
+<dl class="method">
+<dt id="regcore.db.splitter.SplitterRegulations.bulk_put">
+<tt class="descname">bulk_put</tt><big>(</big><em>regs</em>, <em>version</em>, <em>root_label</em><big>)</big><a class="reference internal" href="../_modules/regcore/db/splitter/#SplitterRegulations.bulk_put"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore.db.splitter.SplitterRegulations.bulk_put" title="Permalink to this definition">¶</a></dt>
+<dd><p>Write to both</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">db Package</a><ul>
+<li><a class="reference internal" href="#id1"><tt class="docutils literal"><span class="pre">db</span></tt> Package</a></li>
+<li><a class="reference internal" href="#module-regcore.db.django_models"><tt class="docutils literal"><span class="pre">django_models</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-regcore.db.es"><tt class="docutils literal"><span class="pre">es</span></tt> Module</a></li>
+<li><a class="reference internal" href="#module-regcore.db.splitter"><tt class="docutils literal"><span class="pre">splitter</span></tt> Module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../regcore/"
+                        title="previous chapter">regcore Package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../regcore.migrations/"
+                        title="next chapter">migrations Package</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../_sources/regcore.db.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../regcore.migrations/" title="migrations Package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="../regcore/" title="regcore Package"
+             >previous</a> |</li>
+        <li><a href="../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../regcore/" >regcore Package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

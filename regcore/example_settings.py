@@ -28,6 +28,11 @@ BACKENDS = {
     'diffs': 'regcore.db.django_models.DMDiffs'
 }
 
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=regcore,regcore_read,regcore_write'
+]
+
 ELASTIC_SEARCH_URLS = []
 ELASTIC_SEARCH_INDEX = 'eregs'
 

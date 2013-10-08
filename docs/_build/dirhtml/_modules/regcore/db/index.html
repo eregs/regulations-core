@@ -1,0 +1,176 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>regcore.db &mdash; regcore beta documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     'beta',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <link rel="top" title="regcore beta documentation" href="../../../" />
+    <link rel="up" title="Module code" href="../../" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex/" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../../" accesskey="U">Module code</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <h1>Source code for regcore.db</h1><div class="highlight"><pre>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+<span class="kn">from</span> <span class="nn">django.conf</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">django.utils.importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
+
+
+<span class="k">def</span> <span class="nf">_select</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
+    <span class="n">module</span><span class="p">,</span> <span class="n">class_name</span> <span class="o">=</span> <span class="n">settings</span><span class="o">.</span><span class="n">BACKENDS</span><span class="p">[</span><span class="n">key</span><span class="p">]</span><span class="o">.</span><span class="n">rsplit</span><span class="p">(</span><span class="s">&#39;.&#39;</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">module</span> <span class="o">=</span> <span class="n">import_module</span><span class="p">(</span><span class="n">module</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">module</span><span class="p">,</span> <span class="n">class_name</span><span class="p">)()</span>
+
+
+<div class="viewcode-block" id="Regulations"><a class="viewcode-back" href="../../../regcore.db/#regcore.db.Regulations">[docs]</a><span class="k">class</span> <span class="nc">Regulations</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A level of indirection for our database abstraction. All backends</span>
+<span class="sd">    should provide the same interface.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_select</span><span class="p">(</span><span class="s">&#39;regulations&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Regulations.get"><a class="viewcode-back" href="../../../regcore.db/#regcore.db.Regulations.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Documentation method. Returns a regulation node or None&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</div>
+<div class="viewcode-block" id="Regulations.bulk_put"><a class="viewcode-back" href="../../../regcore.db/#regcore.db.Regulations.bulk_put">[docs]</a>    <span class="k">def</span> <span class="nf">bulk_put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">regs</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">root_label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Documentation method. Add many entries, with a root of root_label.</span>
+<span class="sd">           Each should have the provided version&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</div>
+<div class="viewcode-block" id="Regulations.listing"><a class="viewcode-back" href="../../../regcore.db/#regcore.db.Regulations.listing">[docs]</a>    <span class="k">def</span> <span class="nf">listing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Documentation method. List regulation versions that match this</span>
+<span class="sd">        label, sorted&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+</div></div>
+<div class="viewcode-block" id="Layers"><a class="viewcode-back" href="../../../regcore.db/#regcore.db.Layers">[docs]</a><span class="k">class</span> <span class="nc">Layers</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A level of indirection for our database abstraction. All backends</span>
+<span class="sd">    should provide the same interface.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_select</span><span class="p">(</span><span class="s">&#39;layers&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Layers.bulk_put"><a class="viewcode-back" href="../../../regcore.db/#regcore.db.Layers.bulk_put">[docs]</a>    <span class="k">def</span> <span class="nf">bulk_put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">layers</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">layer_name</span><span class="p">,</span> <span class="n">root_label</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Documentation method. Add many entries, with the root of the</span>
+<span class="sd">        entries having root_label and all entries having layer_name and</span>
+<span class="sd">        version&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</div>
+<div class="viewcode-block" id="Layers.get"><a class="viewcode-back" href="../../../regcore.db/#regcore.db.Layers.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">version</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Doc method. Return a single layer (no meta data) or None&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+</div></div>
+<div class="viewcode-block" id="Notices"><a class="viewcode-back" href="../../../regcore.db/#regcore.db.Notices">[docs]</a><span class="k">class</span> <span class="nc">Notices</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A level of indirection for our database abstraction. All backends</span>
+<span class="sd">    should provide the same interface.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_select</span><span class="p">(</span><span class="s">&#39;notices&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Notices.put"><a class="viewcode-back" href="../../../regcore.db/#regcore.db.Notices.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc_number</span><span class="p">,</span> <span class="n">notice</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Documentation method. doc_number:String, notice:Dict&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</div>
+<div class="viewcode-block" id="Notices.get"><a class="viewcode-back" href="../../../regcore.db/#regcore.db.Notices.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">doc_number</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Documentation method. Return matching notice or None&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</div>
+<div class="viewcode-block" id="Notices.listing"><a class="viewcode-back" href="../../../regcore.db/#regcore.db.Notices.listing">[docs]</a>    <span class="k">def</span> <span class="nf">listing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">part</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Documentation method. Return all notices or notices by part&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+</div></div>
+<div class="viewcode-block" id="Diffs"><a class="viewcode-back" href="../../../regcore.db/#regcore.db.Diffs">[docs]</a><span class="k">class</span> <span class="nc">Diffs</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;A level of indirection for our database abstraction. All backends</span>
+<span class="sd">    should provide the same interface.&quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">_select</span><span class="p">(</span><span class="s">&#39;diffs&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Diffs.put"><a class="viewcode-back" href="../../../regcore.db/#regcore.db.Diffs.put">[docs]</a>    <span class="k">def</span> <span class="nf">put</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">old_version</span><span class="p">,</span> <span class="n">new_version</span><span class="p">,</span> <span class="n">diff</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Documentation method. label, old_version, new_version:String,</span>
+<span class="sd">        diff:Dict&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+</div>
+<div class="viewcode-block" id="Diffs.get"><a class="viewcode-back" href="../../../regcore.db/#regcore.db.Diffs.get">[docs]</a>    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">old_version</span><span class="p">,</span> <span class="n">new_version</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Documentation method. Return matching diff or None&quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span></div></div>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search/" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex/" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex/" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="../../../">regcore beta documentation</a> &raquo;</li>
+          <li><a href="../../" >Module code</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>
