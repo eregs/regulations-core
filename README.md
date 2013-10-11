@@ -44,7 +44,7 @@ below).
 
 ## API Docs
 
-@todo (Replace with RTD when that's available)
+[Read The Docs](http://regulations-core.readthedocs.org/en/latest/)
 
 ## Buildout
 
