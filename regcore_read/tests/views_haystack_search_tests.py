@@ -76,14 +76,14 @@ class ViewsHaystackSearchTest(TestCase):
         Result = namedtuple('Result', ('regulation', 'version',
                                        'label_string', 'text', 'title'))
         results = transform_results([
-            Result('r', 'v', '0', '', ''),
-            Result('rr', 'v', '1', '', ''),
-            Result('r', 'vv', '2', '', ''),
-            Result('r', 'v', '3', '', ''),
-            Result('rr', 'vv', '4', '', 't4'),
-            Result('r', 'vv', '5', '', 't5'),
-            Result('rr', 'v', '6', '', 't6'),
-            Result('r', 'v', '7', '', 't7'),
+            Result('r', 'v', '0', '', []),
+            Result('rr', 'v', '1', '', []),
+            Result('r', 'vv', '2', '', []),
+            Result('r', 'v', '3', '', []),
+            Result('rr', 'vv', '4', '', ['t4']),
+            Result('r', 'vv', '5', '', ['t5']),
+            Result('rr', 'v', '6', '', ['t6']),
+            Result('r', 'v', '7', '', ['t7']),
         ])
 
         self.assertFalse('title' in results[0])
