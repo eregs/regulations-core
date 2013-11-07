@@ -63,7 +63,10 @@ def transform_results(results):
             'label_string': result.label_string
         }
 
-        title = result.title
+        if result.title:
+            title = result.title[0]
+        else:
+            title = None
         ident = (result.regulation, result.version)
         keyterms = layers[ident]['keyterms']
         terms = layers[ident]['terms']
