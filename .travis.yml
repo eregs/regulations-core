@@ -5,5 +5,8 @@ python:
 install: 
     - pip install zc.buildout distribute
     - buildout
+    - pip install coveralls
 script:
     - ./bin/test
+after_success:
+    coveralls
