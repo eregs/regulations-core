@@ -2,6 +2,7 @@ regulations-core
 ================
 
 [![Build Status](https://travis-ci.org/eregs/regulations-core.png)](https://travis-ci.org/eregs/regulations-core)
+[![Coverage Status](https://coveralls.io/repos/eregs/regulations-core/badge.png)](https://coveralls.io/r/eregs/regulations-core)
 
 An engine that supplies the API that allows users to read regulations and
 their various layers. 
