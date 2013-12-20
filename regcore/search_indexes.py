@@ -1,9 +1,8 @@
-from haystack.indexes import CharField, MultiValueField, RealTimeSearchIndex
-from haystack import site
+from haystack.indexes import CharField, Indexable, MultiValueField, SearchIndex
 from regcore.models import Regulation
 
 
-class RegulationIndex(RealTimeSearchIndex):
+class RegulationIndex(Indexable, SearchIndex):
     version = CharField(model_attr='version')
     label_string = CharField(model_attr='label_string')
     text = CharField(model_attr='text')
@@ -22,4 +21,5 @@ class RegulationIndex(RealTimeSearchIndex):
         else:
             return []
 
-site.register(Regulation, RegulationIndex)
+    def get_model(self):
+        return Regulation

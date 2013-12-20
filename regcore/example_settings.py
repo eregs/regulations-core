@@ -36,9 +36,12 @@ NOSE_ARGS = [
 ELASTIC_SEARCH_URLS = []
 ELASTIC_SEARCH_INDEX = 'eregs'
 
-HAYSTACK_SITECONF = 'regcore.haystack_conf'
-HAYSTACK_SEARCH_ENGINE = 'solr'
-HAYSTACK_SOLR_URL = 'http://localhost:8983/solr'
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://localhost:8983/solr'
+    }
+}
 
 try:
     from local_settings import *
