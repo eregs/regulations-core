@@ -27,10 +27,10 @@ below).
 * anyjson - Use Python's json or simplejson as available
 * coverage - reports on test coverage
 * django - Web framework
-* django-haystack (1.2.7) - An interface for accessing Solr, Whoosh, and
-  other search engines. This is only required if not using Elastic Search.
-  Unfortunately, we are constrained to using the pre-rewrite version of
-  haystack (though that may change in the future)
+* django-haystack - An interface for accessing Solr, Whoosh, and other search
+  engines. This is only required if not using Elastic Search. Unfortunately, 
+  we are constrained to using the pre-rewrite version of haystack (though 
+  that may change in the future)
 * django-nose - plugin for Django which allows for nose integration
 * jsonschema - used to test that JSON provided fits our required data
   structure
@@ -112,7 +112,7 @@ Be sure to also run south migration
 
 ## Django Models For Data, Haystack For Search
 
-This is the default configuration. You will need to have *haystack* (1.2.7)
+This is the default configuration. You will need to have *haystack*
 installed and *pysolr* (or *pyelasticsearch*). Use the
 *regcore_read.views.haystack_search.search* as the endpoint and
 
