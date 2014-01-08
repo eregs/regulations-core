@@ -1,59 +1,70 @@
-tests Package
-=============
+regcore_read.tests package
+==========================
 
-:mod:`urls` Module
-------------------
+Submodules
+----------
+
+regcore_read.tests.urls module
+------------------------------
 
 .. automodule:: regcore_read.tests.urls
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`views_diff_tests` Module
-------------------------------
+regcore_read.tests.views_diff_tests module
+------------------------------------------
 
 .. automodule:: regcore_read.tests.views_diff_tests
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`views_es_search_tests` Module
------------------------------------
+regcore_read.tests.views_es_search_tests module
+-----------------------------------------------
 
 .. automodule:: regcore_read.tests.views_es_search_tests
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`views_haystack_search_tests` Module
------------------------------------------
+regcore_read.tests.views_haystack_search_tests module
+-----------------------------------------------------
 
 .. automodule:: regcore_read.tests.views_haystack_search_tests
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`views_layer_tests` Module
--------------------------------
+regcore_read.tests.views_layer_tests module
+-------------------------------------------
 
 .. automodule:: regcore_read.tests.views_layer_tests
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`views_notice_tests` Module
---------------------------------
+regcore_read.tests.views_notice_tests module
+--------------------------------------------
 
 .. automodule:: regcore_read.tests.views_notice_tests
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`views_regulation_tests` Module
-------------------------------------
+regcore_read.tests.views_regulation_tests module
+------------------------------------------------
 
 .. automodule:: regcore_read.tests.views_regulation_tests
     :members:
     :undoc-members:
     :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: regcore_read.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:

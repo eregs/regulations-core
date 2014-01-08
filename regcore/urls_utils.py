@@ -4,6 +4,10 @@ from django.views.decorators.csrf import csrf_exempt
 
 
 def by_verb_url(regex, name, by_verb):
+    """Relatively clean way to segment url end points by HTTP Verb.
+        @regex is the url regex as would be found in urls.py
+        @name is also as would be found in urls.py
+        @by_verb is a dictionary from verb (uppercase) to handler"""
     def wrapper(request, *args, **kwargs):
         verb = request.method.upper()
         if not by_verb:

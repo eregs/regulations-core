@@ -3,6 +3,7 @@ from regcore.models import Regulation
 
 
 class RegulationIndex(Indexable, SearchIndex):
+    """Search index used by Haystack"""
     version = CharField(model_attr='version')
     label_string = CharField(model_attr='label_string')
     text = CharField(model_attr='text')

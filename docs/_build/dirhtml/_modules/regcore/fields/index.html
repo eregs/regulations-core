@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -73,6 +71,7 @@
     <span class="k">def</span> <span class="nf">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span> <span class="n">attrs</span><span class="p">):</span>
         <span class="n">new_class</span> <span class="o">=</span> <span class="nb">super</span><span class="p">(</span><span class="n">PatchedSubFieldBase</span><span class="p">,</span> <span class="n">cls</span><span class="p">)</span><span class="o">.</span><span class="n">__new__</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">bases</span><span class="p">,</span>
                                                             <span class="n">attrs</span><span class="p">)</span>
+
         <span class="k">def</span> <span class="nf">contrib</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">attrs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;contrib_to_class&#39;</span><span class="p">):</span>
                 <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cls</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
@@ -81,6 +80,7 @@
             <span class="nb">setattr</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">PatchedSubFieldBase</span><span class="o">.</span><span class="n">PatchedCreator</span><span class="p">(</span><span class="bp">self</span><span class="p">))</span>
         <span class="n">new_class</span><span class="o">.</span><span class="n">contribute_to_class</span> <span class="o">=</span> <span class="n">contrib</span>
         <span class="k">return</span> <span class="n">new_class</span>
+
 </div>
 <div class="viewcode-block" id="CompressedJSONField"><a class="viewcode-back" href="../../../regcore/#regcore.fields.CompressedJSONField">[docs]</a><span class="k">class</span> <span class="nc">CompressedJSONField</span><span class="p">(</span><span class="n">models</span><span class="o">.</span><span class="n">TextField</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;We store a lot of data redundantly. This field type makes each copy</span>
@@ -89,9 +89,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">__metaclass__</span> <span class="o">=</span> <span class="n">PatchedSubFieldBase</span>
 
-
     <span class="c"># Now returning to regularly scheduled class definition</span>
-
     <span class="k">def</span> <span class="nf">to_python</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">value</span><span class="p">,</span> <span class="nb">unicode</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">value</span>
@@ -111,7 +109,7 @@
         <span class="n">value</span> <span class="o">=</span> <span class="n">anyjson</span><span class="o">.</span><span class="n">serialize</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
         <span class="n">encoding</span> <span class="o">=</span> <span class="s">&#39;j&#39;</span>
 
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span> <span class="c"># somewhat arbitrary length to start compression</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1000</span><span class="p">:</span>  <span class="c"># somewhat arbitrary length to start compression</span>
             <span class="c"># check if compressing is smaller</span>
             <span class="n">compressed</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">encodestring</span><span class="p">(</span><span class="n">bz2</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">compressed</span><span class="p">)</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
@@ -123,6 +121,7 @@
     <span class="k">def</span> <span class="nf">__get__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">instance</span><span class="p">,</span> <span class="n">instance_type</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">instance</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span>
+
 </div>
 <span class="n">add_introspection_rules</span><span class="p">([],</span> <span class="p">[</span><span class="s">&quot;^regcore\.fields\.CompressedJSONField&quot;</span><span class="p">])</span>
 </pre></div>
@@ -163,7 +162,7 @@
       </ul>
     </div>
     <div class="footer">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

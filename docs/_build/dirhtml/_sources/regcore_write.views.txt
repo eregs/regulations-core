@@ -1,35 +1,46 @@
-views Package
-=============
+regcore_write.views package
+===========================
 
-:mod:`diff` Module
-------------------
+Submodules
+----------
+
+regcore_write.views.diff module
+-------------------------------
 
 .. automodule:: regcore_write.views.diff
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`layer` Module
--------------------
+regcore_write.views.layer module
+--------------------------------
 
 .. automodule:: regcore_write.views.layer
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`notice` Module
---------------------
+regcore_write.views.notice module
+---------------------------------
 
 .. automodule:: regcore_write.views.notice
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`regulation` Module
-------------------------
+regcore_write.views.regulation module
+-------------------------------------
 
 .. automodule:: regcore_write.views.regulation
     :members:
     :undoc-members:
     :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: regcore_write.views
+    :members:
+    :undoc-members:
+    :show-inheritance:

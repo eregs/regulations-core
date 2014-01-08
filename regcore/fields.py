@@ -8,9 +8,9 @@ from south.modelsinspector import add_introspection_rules
 
 
 class PatchedSubFieldBase(type):
-    """These next bits all related to a bug in django custom fields which
+    """These next bits all related to a bug in Django custom fields which
     prevent autodoc from succeeding. Once the associated fix is in our
-    version of django, we can uncomment the metaclass line and delete
+    version of Django, we can uncomment the metaclass line and delete
     PatchedCreator and make_contrib
     https://code.djangoproject.com/ticket/12568"""
     class PatchedCreator(Creator):
@@ -22,6 +22,7 @@ class PatchedSubFieldBase(type):
     def __new__(cls, name, bases, attrs):
         new_class = super(PatchedSubFieldBase, cls).__new__(cls, name, bases,
                                                             attrs)
+
         def contrib(self, cls, name):
             if attrs.get('contrib_to_class'):
                 func(self, cls, name)
@@ -31,6 +32,7 @@ class PatchedSubFieldBase(type):
         new_class.contribute_to_class = contrib
         return new_class
 
+
 class CompressedJSONField(models.TextField):
     """We store a lot of data redundantly. This field type makes each copy
     much smaller. We need this when inserting hundreds of regtext nodes and
@@ -38,9 +40,7 @@ class CompressedJSONField(models.TextField):
     """
     __metaclass__ = PatchedSubFieldBase
 
-
     # Now returning to regularly scheduled class definition
-
     def to_python(self, value):
         if not isinstance(value, str) and not isinstance(value, unicode):
             return value
@@ -60,7 +60,7 @@ class CompressedJSONField(models.TextField):
         value = anyjson.serialize(value)
         encoding = 'j'
 
-        if len(value) > 1000: # somewhat arbitrary length to start compression
+        if len(value) > 1000:  # somewhat arbitrary length to start compression
             # check if compressing is smaller
             compressed = base64.encodestring(bz2.compress(value))
             if len(compressed) < len(value):
@@ -72,5 +72,6 @@ class CompressedJSONField(models.TextField):
     def __get__(self, instance, instance_type=None):
         if instance is None:
             return self
+
 
 add_introspection_rules([], ["^regcore\.fields\.CompressedJSONField"])

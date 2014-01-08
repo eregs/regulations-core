@@ -1,3 +1,6 @@
+"""If using the haystack backend, this endpoing provides search results. If
+using Elastic Search, see es_search.py"""
+
 from haystack.query import SearchQuerySet
 
 from regcore import db

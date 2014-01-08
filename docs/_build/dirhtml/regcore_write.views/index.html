@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -8,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>views Package &mdash; regcore beta documentation</title>
+    <title>regcore_write.views package &mdash; regcore beta documentation</title>
     
     <link rel="stylesheet" href="../_static/default.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -26,8 +24,8 @@
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <link rel="top" title="regcore beta documentation" href="../" />
-    <link rel="up" title="regcore_write Package" href="../regcore_write/" />
-    <link rel="prev" title="tests Package" href="../regcore_write.tests/" /> 
+    <link rel="up" title="regcore_write package" href="../regcore_write/" />
+    <link rel="prev" title="regcore_write.tests package" href="../regcore_write.tests/" /> 
   </head>
   <body>
     <div class="related">
@@ -40,10 +38,10 @@
           <a href="../py-modindex/" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../regcore_write.tests/" title="tests Package"
+          <a href="../regcore_write.tests/" title="regcore_write.tests package"
              accesskey="P">previous</a> |</li>
         <li><a href="../">regcore beta documentation</a> &raquo;</li>
-          <li><a href="../regcore_write/" accesskey="U">regcore_write Package</a> &raquo;</li> 
+          <li><a href="../regcore_write/" accesskey="U">regcore_write package</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -52,10 +50,13 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="views-package">
-<h1>views Package<a class="headerlink" href="#views-package" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="regcore-write-views-package">
+<h1>regcore_write.views package<a class="headerlink" href="#regcore-write-views-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
 <div class="section" id="module-regcore_write.views.diff">
-<span id="diff-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">diff</span></tt> Module<a class="headerlink" href="#module-regcore_write.views.diff" title="Permalink to this headline">¶</a></h2>
+<span id="regcore-write-views-diff-module"></span><h2>regcore_write.views.diff module<a class="headerlink" href="#module-regcore_write.views.diff" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="regcore_write.views.diff.add">
 <tt class="descclassname">regcore_write.views.diff.</tt><tt class="descname">add</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/regcore_write/views/diff/#add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_write.views.diff.add" title="Permalink to this definition">¶</a></dt>
@@ -64,7 +65,7 @@
 
 </div>
 <div class="section" id="module-regcore_write.views.layer">
-<span id="layer-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">layer</span></tt> Module<a class="headerlink" href="#module-regcore_write.views.layer" title="Permalink to this headline">¶</a></h2>
+<span id="regcore-write-views-layer-module"></span><h2>regcore_write.views.layer module<a class="headerlink" href="#module-regcore_write.views.layer" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="regcore_write.views.layer.add">
 <tt class="descclassname">regcore_write.views.layer.</tt><tt class="descname">add</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/regcore_write/views/layer/#add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_write.views.layer.add" title="Permalink to this definition">¶</a></dt>
@@ -80,11 +81,15 @@
 <dl class="function">
 <dt id="regcore_write.views.layer.child_layers">
 <tt class="descclassname">regcore_write.views.layer.</tt><tt class="descname">child_layers</tt><big>(</big><em>layer_name</em>, <em>root_label</em>, <em>version</em>, <em>root_layer</em><big>)</big><a class="reference internal" href="../_modules/regcore_write/views/layer/#child_layers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_write.views.layer.child_layers" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>We are generally given a layer corresponding to an entire regulation.
+We need to split that layer up and store it per node within the
+regulation. If a reg has 100 nodes, but the layer only has 3 entries, it
+will still store 100 layer models &#8211; many may be empty</p>
+</dd></dl>
 
 </div>
 <div class="section" id="module-regcore_write.views.notice">
-<span id="notice-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">notice</span></tt> Module<a class="headerlink" href="#module-regcore_write.views.notice" title="Permalink to this headline">¶</a></h2>
+<span id="regcore-write-views-notice-module"></span><h2>regcore_write.views.notice module<a class="headerlink" href="#module-regcore_write.views.notice" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="regcore_write.views.notice.add">
 <tt class="descclassname">regcore_write.views.notice.</tt><tt class="descname">add</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/regcore_write/views/notice/#add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_write.views.notice.add" title="Permalink to this definition">¶</a></dt>
@@ -93,13 +98,16 @@
 
 </div>
 <div class="section" id="module-regcore_write.views.regulation">
-<span id="regulation-module"></span><h2><tt class="xref py py-mod docutils literal"><span class="pre">regulation</span></tt> Module<a class="headerlink" href="#module-regcore_write.views.regulation" title="Permalink to this headline">¶</a></h2>
+<span id="regcore-write-views-regulation-module"></span><h2>regcore_write.views.regulation module<a class="headerlink" href="#module-regcore_write.views.regulation" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="regcore_write.views.regulation.add">
 <tt class="descclassname">regcore_write.views.regulation.</tt><tt class="descname">add</tt><big>(</big><em>*args</em>, <em>**kwargs</em><big>)</big><a class="reference internal" href="../_modules/regcore_write/views/regulation/#add"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#regcore_write.views.regulation.add" title="Permalink to this definition">¶</a></dt>
 <dd><p>Add this regulation node and all of its children to the db</p>
 </dd></dl>
 
+</div>
+<div class="section" id="module-regcore_write.views">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-regcore_write.views" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
@@ -111,18 +119,20 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="../">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">views Package</a><ul>
-<li><a class="reference internal" href="#module-regcore_write.views.diff"><tt class="docutils literal"><span class="pre">diff</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-regcore_write.views.layer"><tt class="docutils literal"><span class="pre">layer</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-regcore_write.views.notice"><tt class="docutils literal"><span class="pre">notice</span></tt> Module</a></li>
-<li><a class="reference internal" href="#module-regcore_write.views.regulation"><tt class="docutils literal"><span class="pre">regulation</span></tt> Module</a></li>
+<li><a class="reference internal" href="#">regcore_write.views package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-regcore_write.views.diff">regcore_write.views.diff module</a></li>
+<li><a class="reference internal" href="#module-regcore_write.views.layer">regcore_write.views.layer module</a></li>
+<li><a class="reference internal" href="#module-regcore_write.views.notice">regcore_write.views.notice module</a></li>
+<li><a class="reference internal" href="#module-regcore_write.views.regulation">regcore_write.views.regulation module</a></li>
+<li><a class="reference internal" href="#module-regcore_write.views">Module contents</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="../regcore_write.tests/"
-                        title="previous chapter">tests Package</a></p>
+                        title="previous chapter">regcore_write.tests package</a></p>
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="../_sources/regcore_write.views.txt"
@@ -155,14 +165,14 @@
           <a href="../py-modindex/" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="../regcore_write.tests/" title="tests Package"
+          <a href="../regcore_write.tests/" title="regcore_write.tests package"
              >previous</a> |</li>
         <li><a href="../">regcore beta documentation</a> &raquo;</li>
-          <li><a href="../regcore_write/" >regcore_write Package</a> &raquo;</li> 
+          <li><a href="../regcore_write/" >regcore_write package</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

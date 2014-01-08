@@ -1,3 +1,6 @@
+"""If using the Elastic Search backend, this endpoint provides search
+results. If using haystack, see haystack_search.py"""
+
 from django.conf import settings
 from pyelasticsearch import ElasticSearch
 

@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -95,7 +93,10 @@
 
 </div>
 <div class="viewcode-block" id="child_layers"><a class="viewcode-back" href="../../../../regcore_write.views/#regcore_write.views.layer.child_layers">[docs]</a><span class="k">def</span> <span class="nf">child_layers</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">root_label</span><span class="p">,</span> <span class="n">version</span><span class="p">,</span> <span class="n">root_layer</span><span class="p">):</span>
-
+    <span class="sd">&quot;&quot;&quot;We are generally given a layer corresponding to an entire regulation.</span>
+<span class="sd">    We need to split that layer up and store it per node within the</span>
+<span class="sd">    regulation. If a reg has 100 nodes, but the layer only has 3 entries, it</span>
+<span class="sd">    will still store 100 layer models -- many may be empty&quot;&quot;&quot;</span>
     <span class="n">root</span> <span class="o">=</span> <span class="n">db</span><span class="o">.</span><span class="n">Regulations</span><span class="p">()</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">root_label</span><span class="p">,</span> <span class="n">version</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">root</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">[]</span>
@@ -159,7 +160,7 @@
       </ul>
     </div>
     <div class="footer">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>

@@ -1,3 +1,6 @@
+"""Each of the data structures relevant to the API (regulations, notices,
+etc.), implemented using Elastic Search as a data store"""
+
 from django.conf import settings
 from pyelasticsearch import ElasticSearch
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError

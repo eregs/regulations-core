@@ -1,6 +1,11 @@
+"""Schemas used by Elastic Search as well as an initialization function,
+which sends the schemas over to the Elastic Search instance."""
+
+
 from django.conf import settings
 from pyelasticsearch import ElasticSearch
 from pyelasticsearch.exceptions import IndexAlreadyExistsError
+
 
 NODE_SEARCH_SCHEMA = {
     'text': {'type': 'string'},  # Full text search

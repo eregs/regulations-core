@@ -1,3 +1,8 @@
+"""Interfaces for each of the data structures relevant to the API
+(regulations, notices, etc.). When instantiating the interface, it returns
+the associated backend class instead (e.g. for Django, elastic search, or
+the splitter backend)."""
+
 import sys
 
 from django.conf import settings

@@ -1,10 +1,14 @@
+"""Each of the data structures relevant to the API (regulations, notices,
+etc.), implemented as a 'split', writing content to both Django and Elastic
+Search, but only reading from Django"""
+
 from regcore.db.django_models import DMDiffs, DMLayers, DMNotices
 from regcore.db.django_models import DMRegulations
 from regcore.db.es import ESDiffs, ESLayers, ESNotices, ESRegulations
 
 
 class SplitterRegulations(object):
-    """Implementation of django+elastic search as regulations backend"""
+    """Implementation of Django+Elastic Search as regulations backend"""
     def __init__(self):
         self.dm = DMRegulations()
         self.es = ESRegulations()
@@ -19,7 +23,7 @@ class SplitterRegulations(object):
 
 
 class SplitterLayers(object):
-    """Implementation of django+elastic search as layers backend"""
+    """Implementation of Django+Elastic Search as layers backend"""
     def __init__(self):
         self.dm = DMLayers()
         self.es = ESLayers()
@@ -33,7 +37,7 @@ class SplitterLayers(object):
 
 
 class SplitterNotices(object):
-    """Implementation of django+elastic search as notices backend"""
+    """Implementation of Django+Elastic Search as notices backend"""
     def __init__(self):
         self.dm = DMNotices()
         self.es = ESNotices()
@@ -48,7 +52,7 @@ class SplitterNotices(object):
 
 
 class SplitterDiffs(object):
-    """Implementation of django+elastic search as regulations backend"""
+    """Implementation of Django+Elastic Search as regulations backend"""
     def __init__(self):
         self.dm = DMDiffs()
         self.es = ESDiffs()

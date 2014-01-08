@@ -1,3 +1,6 @@
+"""Each of the data structures relevant to the API (regulations, notices,
+etc.), implemented using Django models"""
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from regcore.models import Diff, Layer, Notice, Regulation
@@ -23,7 +26,7 @@ class DMRegulations(object):
             return None
 
     def _transform(self, reg, version):
-        """Create the django object"""
+        """Create the Django object"""
         return Regulation(version=version,
                           label_string='-'.join(reg['label']),
                           text=reg['text'],
@@ -50,7 +53,7 @@ class DMRegulations(object):
 class DMLayers(object):
     """Implementation of Django-models as layers backend"""
     def _transform(self, layer, version, layer_name):
-        """Create a django object"""
+        """Create a Django object"""
         layer = dict(layer)  # copy
         label_id = layer['label']
         del layer['label']
@@ -103,7 +106,7 @@ class DMNotices(object):
         if part:
             query = query.filter(cfr_part=part)
         results = query.values('document_number', 'effective_on', 'fr_url',
-                             'publication_date')
+                               'publication_date')
         for result in results:
             for key in ('effective_on', 'publication_date'):
                 if result[key]:

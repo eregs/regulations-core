@@ -1,35 +1,38 @@
-db Package
-==========
+regcore.db package
+==================
 
-:mod:`db` Package
------------------
+Submodules
+----------
 
-.. automodule:: regcore.db
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`django_models` Module
----------------------------
+regcore.db.django_models module
+-------------------------------
 
 .. automodule:: regcore.db.django_models
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`es` Module
-----------------
+regcore.db.es module
+--------------------
 
 .. automodule:: regcore.db.es
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`splitter` Module
-----------------------
+regcore.db.splitter module
+--------------------------
 
 .. automodule:: regcore.db.splitter
     :members:
     :undoc-members:
     :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: regcore.db
+    :members:
+    :undoc-members:
+    :show-inheritance:

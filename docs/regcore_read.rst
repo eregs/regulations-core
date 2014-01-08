@@ -1,4 +1,4 @@
-regcore_read Package
+regcore_read package
 ====================
 
 Subpackages
@@ -9,3 +9,10 @@ Subpackages
     regcore_read.tests
     regcore_read.views
 
+Module contents
+---------------
+
+.. automodule:: regcore_read
+    :members:
+    :undoc-members:
+    :show-inheritance:

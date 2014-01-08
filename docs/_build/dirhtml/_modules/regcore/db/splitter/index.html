@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -50,6 +48,10 @@
           <div class="body">
             
   <h1>Source code for regcore.db.splitter</h1><div class="highlight"><pre>
+<span class="sd">&quot;&quot;&quot;Each of the data structures relevant to the API (regulations, notices,</span>
+<span class="sd">etc.), implemented as a &#39;split&#39;, writing content to both django and Elastic</span>
+<span class="sd">Search, but only reading from django&quot;&quot;&quot;</span>
+
 <span class="kn">from</span> <span class="nn">regcore.db.django_models</span> <span class="kn">import</span> <span class="n">DMDiffs</span><span class="p">,</span> <span class="n">DMLayers</span><span class="p">,</span> <span class="n">DMNotices</span>
 <span class="kn">from</span> <span class="nn">regcore.db.django_models</span> <span class="kn">import</span> <span class="n">DMRegulations</span>
 <span class="kn">from</span> <span class="nn">regcore.db.es</span> <span class="kn">import</span> <span class="n">ESDiffs</span><span class="p">,</span> <span class="n">ESLayers</span><span class="p">,</span> <span class="n">ESNotices</span><span class="p">,</span> <span class="n">ESRegulations</span>
@@ -150,7 +152,7 @@
       </ul>
     </div>
     <div class="footer">
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.
     </div>
   </body>
 </html>
