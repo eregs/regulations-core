@@ -1,3 +1,6 @@
+"""Each of the data structures relevant to the API (regulations, notices,
+etc.), implemented using django models"""
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from regcore.models import Diff, Layer, Notice, Regulation
@@ -103,7 +106,7 @@ class DMNotices(object):
         if part:
             query = query.filter(cfr_part=part)
         results = query.values('document_number', 'effective_on', 'fr_url',
-                             'publication_date')
+                               'publication_date')
         for result in results:
             for key in ('effective_on', 'publication_date'):
                 if result[key]:

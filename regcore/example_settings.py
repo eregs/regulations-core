@@ -1,3 +1,8 @@
+"""Template settings file. If using buildout, these settings will be the
+base for bin/django. All settings can be overridden via a local_settings.py
+file"""
+
+
 INSTALLED_APPS = [
     'haystack',
     'regcore',

@@ -1,3 +1,7 @@
+"""Each of the data structures relevant to the API (regulations, notices,
+etc.), implemented as a 'split', writing content to both django and Elastic
+Search, but only reading from django"""
+
 from regcore.db.django_models import DMDiffs, DMLayers, DMNotices
 from regcore.db.django_models import DMRegulations
 from regcore.db.es import ESDiffs, ESLayers, ESNotices, ESRegulations

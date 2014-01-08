@@ -1,3 +1,6 @@
+"""Helper functions for creating django HTTP responses"""
+
+
 import anyjson
 from django.http import Http404, HttpResponse
 
