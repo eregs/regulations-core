@@ -1,4 +1,4 @@
-# Regulation Parser
+# Regulation Core
 
 ## Public domain
 
