@@ -203,6 +203,7 @@ If you are adding new modules, you may need to re-run the skeleton build
 script first:
 
 ```
+$ rm docs/regcore*.rst
 $ ./bin/sphinx-apidoc -F -o docs regcore
 $ ./bin/sphinx-apidoc -F -o docs regcore_read
 $ ./bin/sphinx-apidoc -F -o docs regcore_write
