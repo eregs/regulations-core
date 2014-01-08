@@ -1,4 +1,4 @@
-regcore_write Package
+regcore_write package
 =====================
 
 Subpackages
@@ -9,3 +9,10 @@ Subpackages
     regcore_write.tests
     regcore_write.views
 
+Module contents
+---------------
+
+.. automodule:: regcore_write
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -1,51 +1,62 @@
-views Package
-=============
+regcore_read.views package
+==========================
 
-:mod:`diff` Module
-------------------
+Submodules
+----------
+
+regcore_read.views.diff module
+------------------------------
 
 .. automodule:: regcore_read.views.diff
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`es_search` Module
------------------------
+regcore_read.views.es_search module
+-----------------------------------
 
 .. automodule:: regcore_read.views.es_search
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`haystack_search` Module
------------------------------
+regcore_read.views.haystack_search module
+-----------------------------------------
 
 .. automodule:: regcore_read.views.haystack_search
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`layer` Module
--------------------
+regcore_read.views.layer module
+-------------------------------
 
 .. automodule:: regcore_read.views.layer
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`notice` Module
---------------------
+regcore_read.views.notice module
+--------------------------------
 
 .. automodule:: regcore_read.views.notice
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`regulation` Module
-------------------------
+regcore_read.views.regulation module
+------------------------------------
 
 .. automodule:: regcore_read.views.regulation
     :members:
     :undoc-members:
     :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: regcore_read.views
+    :members:
+    :undoc-members:
+    :show-inheritance:
