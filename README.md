@@ -60,7 +60,7 @@ $ buildout
 
 After downloading the internet, you'll notice that some helpful scripts are
 located in ```bin```, including ```bin/django``` and ```bin/test```. The
-latter will run our test suite while the former is equivalent to running
+latter will run our test suite while the first is equivalent to running
 manage.py in a traditional Django environment.
 
 With that, you just need a few additional commands to get up and running:
@@ -81,10 +81,11 @@ in a ```local_settings.py``` file.
 This repository contains three Django apps, *regcore*, *regcore_read*, and
 *regcore_write*. The former contains shared models and libraries. The "read"
 app provides read-only end-points while the "write" app provides write-only
-end-points. We recommend using *regcore.urls* as your url router, in which
-case turning on or off read/write capabilities is as simple as including the
-appropriate applications in your Django settings file. Note that you will
-always need *regcore* installed.
+end-points (see the next section for security implications.) We recommend
+using *regcore.urls* as your url router, in which case turning on or off
+read/write capabilities is as simple as including the appropriate
+applications in your Django settings file. Note that you will always need
+*regcore* installed.
 
 
 ## Security
@@ -181,7 +182,7 @@ connect to the search servers.
 
 The ```BACKENDS``` setting (as described above) must be a dictionary of the
 appropriate model names ('regulations', 'layers', etc.) to the associated
-backend class. Backends can be mixed and match, though I can't think of a
+backend class. Backends can be mixed and matched, though I can't think of a
 good use case for that desire.
 
 All standard Django and haystack settings are also available; you will
