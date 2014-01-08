@@ -4,8 +4,8 @@ regulations-core
 [![Build Status](https://travis-ci.org/eregs/regulations-core.png)](https://travis-ci.org/eregs/regulations-core)
 [![Coverage Status](https://coveralls.io/repos/eregs/regulations-core/badge.png)](https://coveralls.io/r/eregs/regulations-core)
 
-An engine that supplies the API that allows users to read regulations and
-their various layers. 
+An API that provides an interface for storing and retrieving regulations,
+layers, etc.
 
 This repository is part of a larger project. To read about it, please see 
 [http://eregs.github.io/eregulations/](http://eregs.github.io/eregulations/).
@@ -72,28 +72,67 @@ $ ./bin/django runserver
 
 You'll be running (without search capability) using SQLite.
 
-## Configurable Read and Write Endpoints
+Buildout is configured (```buildout.cfg```) to use the
+```example_settings.py``` settings. We recommend local modifications be made
+in a ```local_settings.py``` file.
 
-The read-only endpoints can be activated by delegating to *regcore.urls*
-and turning on the *regcore* and *regcore_read*; write endpoints can be
-activated by turning on *regcore_write*.
+## Apps included
 
-## Elastic Search For Data and Search
+This repository contains three django apps, *regcore*, *regcore_read*, and
+*regcore_write*. The former contains shared models and libraries. The "read"
+app provides read-only end-points while the "write" app provides write-only
+end-points. We recommend using *regcore.urls* as your url router, in which
+case turning on or off read/write capabilities is as simple as including the
+appropriate applications in your django settings file. Note that you will
+always need *regcore* installed.
 
-If *pyelasticsearch* is installed, you can use Elastic Search for all of
-your needs. For a search endpoint, use *regcore_read.views.es_search.search* 
-and use the following backend configuration:
+
+## Security
+
+Note that *regcore_write* is designed to only be active inside an
+organization; the assumption is that data will be pushed to public facing,
+read-only (i.e. without *regcore_write*) sites separately.
+
+When using the Elastic Search backend, data is passed as JSON, preventing
+SQL-like injections. When using haystack, data is stored via django's model
+framework, which escapes SQL before it hits the db.
+
+All data types require JSON input (which is checked.) The regulation type
+has an additional schema check, which is currently not present for other
+data types. Again, this liability is limited by the segmentation of read and
+write end points.
+
+As all data is assumed to be publicly visible, data is not encrypted before
+it is sent to the storage engine. Data may be compressed, however.
+
+Be sure to override the default settings for both ```SECRET_KEY``` and to
+turn ```DEBUG``` off in your ```local_settings.py```
+
+## Storage-Backends
+
+This project allows multiple backends for storing, retrieving, and searching
+data. The default settings file uses django models for both data and search,
+but django models can be combined with Elastic Search, or Elastic Search can
+be used for both data and search. We discuss each configuration below.
+
+### Django Models For Data, Haystack For Search
+
+This is the default configuration. You will need to have *haystack*
+installed and *pysolr* (or *pyelasticsearch*). This uses the
+*regcore_read.views.haystack_search.search* as the endpoint and
 
 ```python
 BACKENDS = {
-    'regulations': 'regcore.db.es.ESRegulations',
-    'layers': 'regcore.db.es.ESLayers',
-    'notices': 'regcore.db.es.ESNotices',
-    'diffs': 'regcore.db.es.ESDiffs'
+    'regulations': 'regcore.db.django_models.DMRegulations',
+    'layers': 'regcore.db.django_models.DMLayers',
+    'notices': 'regcore.db.django_models.DMNotices',
+    'diffs': 'regcore.db.django_models.DMDiffs'
 }
 ```
 
-## Django Models For Data, Elastic Search For Search
+Remember to run south migrations.
+
+### Django Models For Data, Elastic Search For Search
 
 If *pyelasticsearch* and *south* are installed, you can combine django
 models and Elastic Search. Use the *regcore_read.views.es_search.search* and
@@ -110,24 +149,27 @@ BACKENDS = {
 
 Be sure to also run south migration
 
-## Django Models For Data, Haystack For Search
+### Elastic Search For Data and Search
 
-This is the default configuration. You will need to have *haystack*
-installed and *pysolr* (or *pyelasticsearch*). Use the
-*regcore_read.views.haystack_search.search* as the endpoint and
+If *pyelasticsearch* is installed, you can use Elastic Search for all of
+your needs. For a search endpoint, use *regcore_read.views.es_search.search* 
+and use the following backend configuration:
 
 ```python
 BACKENDS = {
-    'regulations': 'regcore.db.django_models.DMRegulations',
-    'layers': 'regcore.db.django_models.DMLayers',
-    'notices': 'regcore.db.django_models.DMNotices',
-    'diffs': 'regcore.db.django_models.DMDiffs'
+    'regulations': 'regcore.db.es.ESRegulations',
+    'layers': 'regcore.db.es.ESLayers',
+    'notices': 'regcore.db.es.ESNotices',
+    'diffs': 'regcore.db.es.ESDiffs'
 }
 ```
 
-though this is also the default.
 
 ## Settings
+
+While we provide sane defaults in the ```example_settings.py``` file, we
+recommend these defaults be overridden as needed in a
+```local_settings.py``` file.
 
 If using Elastic Search, you will need to let the application know how to
 connect to the search servers.
@@ -136,6 +178,15 @@ connect to the search servers.
   to your search server(s). This is passed along to pyelasticsearch.
 * ```ELASTIC_SEARCH_INDEX``` - the index to be used by elastic search. This
   defaults to 'eregs'
+
+The ```BACKENDS``` setting (as described above) must be a dictionary of the
+appropriate model names ('regulations', 'layers', etc.) to the associated
+backend class. Backends can be mixed and match, though I can't think of a
+good use case for that desire.
+
+All standard django and haystack settings are also available; you will
+likely want to override ```DATABASES```, ```HAYSTACK_CONNECTIONS```,
+```DEBUG``` and certainly ```SECRET_KEY```.
 
 ## Building the documentation
 
