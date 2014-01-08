@@ -78,12 +78,12 @@ in a ```local_settings.py``` file.
 
 ## Apps included
 
-This repository contains three django apps, *regcore*, *regcore_read*, and
+This repository contains three Django apps, *regcore*, *regcore_read*, and
 *regcore_write*. The former contains shared models and libraries. The "read"
 app provides read-only end-points while the "write" app provides write-only
 end-points. We recommend using *regcore.urls* as your url router, in which
 case turning on or off read/write capabilities is as simple as including the
-appropriate applications in your django settings file. Note that you will
+appropriate applications in your Django settings file. Note that you will
 always need *regcore* installed.
 
 
@@ -94,7 +94,7 @@ organization; the assumption is that data will be pushed to public facing,
 read-only (i.e. without *regcore_write*) sites separately.
 
 When using the Elastic Search backend, data is passed as JSON, preventing
-SQL-like injections. When using haystack, data is stored via django's model
+SQL-like injections. When using haystack, data is stored via Django's model
 framework, which escapes SQL before it hits the db.
 
 All data types require JSON input (which is checked.) The regulation type
@@ -111,8 +111,8 @@ turn ```DEBUG``` off in your ```local_settings.py```
 ## Storage-Backends
 
 This project allows multiple backends for storing, retrieving, and searching
-data. The default settings file uses django models for both data and search,
-but django models can be combined with Elastic Search, or Elastic Search can
+data. The default settings file uses Django models for both data and search,
+but Django models can be combined with Elastic Search, or Elastic Search can
 be used for both data and search. We discuss each configuration below.
 
 ### Django Models For Data, Haystack For Search
@@ -134,7 +134,7 @@ Remember to run south migrations.
 
 ### Django Models For Data, Elastic Search For Search
 
-If *pyelasticsearch* and *south* are installed, you can combine django
+If *pyelasticsearch* and *south* are installed, you can combine Django
 models and Elastic Search. Use the *regcore_read.views.es_search.search* and
 use the following backend configuration:
 
@@ -184,7 +184,7 @@ appropriate model names ('regulations', 'layers', etc.) to the associated
 backend class. Backends can be mixed and match, though I can't think of a
 good use case for that desire.
 
-All standard django and haystack settings are also available; you will
+All standard Django and haystack settings are also available; you will
 likely want to override ```DATABASES```, ```HAYSTACK_CONNECTIONS```,
 ```DEBUG``` and certainly ```SECRET_KEY```.
 

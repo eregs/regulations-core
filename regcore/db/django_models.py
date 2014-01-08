@@ -1,5 +1,5 @@
 """Each of the data structures relevant to the API (regulations, notices,
-etc.), implemented using django models"""
+etc.), implemented using Django models"""
 
 from django.core.exceptions import ObjectDoesNotExist
 
@@ -26,7 +26,7 @@ class DMRegulations(object):
             return None
 
     def _transform(self, reg, version):
-        """Create the django object"""
+        """Create the Django object"""
         return Regulation(version=version,
                           label_string='-'.join(reg['label']),
                           text=reg['text'],
@@ -53,7 +53,7 @@ class DMRegulations(object):
 class DMLayers(object):
     """Implementation of Django-models as layers backend"""
     def _transform(self, layer, version, layer_name):
-        """Create a django object"""
+        """Create a Django object"""
         layer = dict(layer)  # copy
         label_id = layer['label']
         del layer['label']

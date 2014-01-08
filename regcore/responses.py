@@ -1,4 +1,4 @@
-"""Helper functions for creating django HTTP responses"""
+"""Helper functions for creating Django HTTP responses"""
 
 
 import anyjson

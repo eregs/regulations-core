@@ -1,4 +1,4 @@
-"""URLs file for django. This will inspect the installed apps and only
+"""URLs file for Django. This will inspect the installed apps and only
 include the read/write end points that are associated with the regcore_read
 and regcore_write apps"""
 

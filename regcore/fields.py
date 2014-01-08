@@ -8,9 +8,9 @@ from south.modelsinspector import add_introspection_rules
 
 
 class PatchedSubFieldBase(type):
-    """These next bits all related to a bug in django custom fields which
+    """These next bits all related to a bug in Django custom fields which
     prevent autodoc from succeeding. Once the associated fix is in our
-    version of django, we can uncomment the metaclass line and delete
+    version of Django, we can uncomment the metaclass line and delete
     PatchedCreator and make_contrib
     https://code.djangoproject.com/ticket/12568"""
     class PatchedCreator(Creator):
