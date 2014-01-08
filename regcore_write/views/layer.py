@@ -44,7 +44,10 @@ def add(request, name, label_id, version):
 
 
 def child_layers(layer_name, root_label, version, root_layer):
-
+    """We are generally given a layer corresponding to an entire regulation.
+    We need to split that layer up and store it per node within the
+    regulation. If a reg has 100 nodes, but the layer only has 3 entries, it
+    will still store 100 layer models -- many may be empty"""
     root = db.Regulations().get(root_label, version)
     if not root:
         return []

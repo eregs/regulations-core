@@ -6,6 +6,7 @@ from regcore import db
 from regcore.responses import success, user_error
 
 
+#   This JSON schema is used to validate the regulation data provided
 REGULATION_SCHEMA = {
     'type': 'object',
     'id': 'reg_tree_node',
