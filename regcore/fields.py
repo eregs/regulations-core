@@ -25,7 +25,7 @@ class PatchedSubFieldBase(type):
 
         def contrib(self, cls, name):
             if attrs.get('contrib_to_class'):
-                func(self, cls, name)
+                attrs.contrib_to_class(self, cls, name)
             else:
                 super(new_class, self).contribute_to_class(cls, name)
             setattr(cls, self.name, PatchedSubFieldBase.PatchedCreator(self))
