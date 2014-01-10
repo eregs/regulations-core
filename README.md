@@ -37,6 +37,7 @@ below).
 * mock - makes constructing mock objects/functions easy
 * nose - A pluggable test runner
 * pyelasticsearch - required if using Elastic Search
+* pylint - while not strictly required, we offer it as a part of buildout
 * pysolr - required if using solr as a search backend
 * south - Django's migration helper. Needed if using Django Models for
   storage
@@ -219,3 +220,12 @@ $ ./bin/test
 ```
 
 This will include a report of test coverage.
+
+## Pylint
+
+We have included a pylint definition in the buildout config. Pylint's quite
+verbose and throws a lot of false positives, but it can be ran via
+
+```bash
+$ ./bin/pylint
+```
