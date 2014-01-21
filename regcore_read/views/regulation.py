@@ -5,7 +5,8 @@ from regcore.responses import four_oh_four, success
 
 
 def listing(request, label_id=None):
-    """List versions of this regulation"""
+    """List versions of the requested (label_id) regulation; or all regulations
+    if label_id is None"""
     if label_id:
         reg_versions = db.Regulations().listing(label_id)
         notices = db.Notices().listing(label_id.split('-')[0])
@@ -22,13 +23,13 @@ def listing(request, label_id=None):
         notices = [(n['document_number'], n['effective_on'])
                    for n in by_date[effective_date]]
         notices = sorted(notices, reverse=True)
-        found_latest = False
+        found_latest = set()
         for doc_number, date in notices:
             for version, reg_part in reg_versions:
-                if doc_number == version and found_latest:
+                if doc_number == version and reg_part in found_latest:
                     regs.append({'version': version, 'regulation': reg_part})
                 elif doc_number == version:
-                    found_latest = True
+                    found_latest.add(reg_part)
                     regs.append({'version': version, 'by_date': date,
                                  'regulation': reg_part})
 
