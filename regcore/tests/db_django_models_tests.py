@@ -31,6 +31,16 @@ class ReusableDMRegulations(object):
         results = self.dmr.listing('a-b')
         self.assertEqual(['333', 'aaa', 'four', 'ver1'], results)
 
+        Regulation(version='ver1', label_string='1111', text='aaaa',
+                   node_type='ty', root=True, children=[]).save()
+        Regulation(version='ver2', label_string='1111', text='bbbb',
+                   node_type='ty', root=True, children=[]).save()
+        Regulation(version='ver3', label_string='1111', text='cccc',
+                   node_type='ty', root=False, children=[]).save()
+
+        results = self.dmr.listing()
+        self.assertEqual(['ver1', 'ver2'], results)
+
 
 class DMRegulationsTest(TestCase, ReusableDMRegulations):
     def setUp(self):
