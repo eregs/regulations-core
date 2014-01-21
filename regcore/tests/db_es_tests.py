@@ -32,23 +32,33 @@ class ESRegulationsTest(TestCase):
     @patch('regcore.db.es.ElasticSearch')
     def test_bulk_put(self, es):
         esr = ESRegulations()
-        nodes = [
-            {'text': 'some text', 'label': ['111', '2'], 'children': []},
-            {'text': 'other', 'label': ['111', '3'], 'children': []}]
+        n2 = {'text': 'some text', 'label': ['111', '2'], 'children': []}
+        n3 = {'text': 'other', 'label': ['111', '3'], 'children': []}
+        # Use a copy of the children
+        root = {'text': 'root', 'label': ['111'], 'children': [dict(n2),
+                                                               dict(n3)]}
+        nodes = [root, n2, n3]
         esr.bulk_put(nodes, 'verver', '111')
         self.assertTrue(es.return_value.bulk_index.called)
         args = es.return_value.bulk_index.call_args[0]
         self.assertEqual(3, len(args))
         self.assertEqual('reg_tree', args[1])
 
-        nodes[0]['version'] = 'verver'
-        nodes[0]['regulation'] = '111'
-        nodes[0]['label_string'] = '111-2'
-        nodes[0]['id'] = 'verver/111-2'
-        nodes[1]['version'] = 'verver'
-        nodes[1]['label_string'] = '111-3'
-        nodes[1]['regulation'] = '111'
-        nodes[1]['id'] = 'verver/111-3'
+        root['version'] = 'verver'
+        root['regulation'] = '111'
+        root['label_string'] = '111'
+        root['id'] = 'verver/111'
+        root['root'] = True
+        n2['version'] = 'verver'
+        n2['regulation'] = '111'
+        n2['label_string'] = '111-2'
+        n2['id'] = 'verver/111-2'
+        n2['root'] = False
+        n3['version'] = 'verver'
+        n3['label_string'] = '111-3'
+        n3['regulation'] = '111'
+        n3['id'] = 'verver/111-3'
+        n3['root'] = False
 
         self.assertEqual(nodes, args[2])
 

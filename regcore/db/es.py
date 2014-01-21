@@ -33,6 +33,7 @@ class ESRegulations(object):
         node['label_string'] = '-'.join(node['label'])
         node['regulation'] = node['label'][0]
         node['id'] = version + '/' + node['label_string']
+        node['root'] = len(node['label']) == 1
         return node
 
     def bulk_put(self, regs, version, root_label):
