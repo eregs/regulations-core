@@ -32,6 +32,7 @@ class DMRegulations(object):
                           text=reg['text'],
                           title=reg.get('title', ''),
                           node_type=reg['node_type'],
+                          root=(len(reg['label']) == 1),
                           children=reg['children'])
 
     def bulk_put(self, regs, version, root_label):

@@ -10,6 +10,7 @@ class Regulation(models.Model):
     title = models.TextField(blank=True)
     node_type = models.SlugField(max_length=10)
     children = CompressedJSONField()
+    root = models.BooleanField(default=False, db_index=True)
 
     class Meta:
         index_together = (('version', 'label_string'),)

@@ -38,16 +38,19 @@ class DMRegulationsTest(TestCase, ReusableDMRegulations):
         self.dmr = DMRegulations()
 
     def test_bulk_put(self):
-        nodes = [
-            {'text': 'some text', 'label': ['111', '2'], 'children': [],
-             'node_type': 'tyty'},
-            {'text': 'other', 'label': ['111', '3'], 'children': [],
-             'node_type': 'tyty2'}]
+        n2 = {'text': 'some text', 'label': ['111', '2'], 'children': [],
+              'node_type': 'tyty'}
+        n3 = {'text': 'other', 'label': ['111', '3'], 'children': [],
+              'node_type': 'tyty2'}
+        # Use a copy of the children
+        root = {'text': 'root', 'label': ['111'], 'node_type': 'tyty3',
+                'children': [dict(n2), dict(n3)]}
+        nodes = [root, n2, n3]
         self.dmr.bulk_put(nodes, 'verver', '111')
 
         regs = Regulation.objects.all().order_by('text')
 
-        self.assertEqual(2, len(regs))
+        self.assertEqual(3, len(regs))
 
         self.assertEqual('verver', regs[0].version)
         self.assertEqual('111-3', regs[0].label_string)
@@ -55,13 +58,23 @@ class DMRegulationsTest(TestCase, ReusableDMRegulations):
         self.assertEqual('', regs[0].title)
         self.assertEqual('tyty2', regs[0].node_type)
         self.assertEqual([], regs[0].children)
+        self.assertFalse(regs[0].root)
 
         self.assertEqual('verver', regs[1].version)
-        self.assertEqual('111-2', regs[1].label_string)
-        self.assertEqual('some text', regs[1].text)
+        self.assertEqual('111', regs[1].label_string)
+        self.assertEqual('root', regs[1].text)
         self.assertEqual('', regs[1].title)
-        self.assertEqual('tyty', regs[1].node_type)
-        self.assertEqual([], regs[1].children)
+        self.assertEqual('tyty3', regs[1].node_type)
+        self.assertEqual(2, len(regs[1].children))
+        self.assertTrue(regs[1].root)
+
+        self.assertEqual('verver', regs[2].version)
+        self.assertEqual('111-2', regs[2].label_string)
+        self.assertEqual('some text', regs[2].text)
+        self.assertEqual('', regs[2].title)
+        self.assertEqual('tyty', regs[2].node_type)
+        self.assertEqual([], regs[2].children)
+        self.assertFalse(regs[2].root)
 
     def test_bulk_put_overwrite(self):
         nodes = [{'text': 'other', 'label': ['111', '3'], 'children': [],
