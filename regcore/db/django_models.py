@@ -44,14 +44,16 @@ class DMRegulations(object):
             lambda r: self._transform(r, version), regs), batch_size=100)
 
     def listing(self, label=None):
-        """List regulation versions that match this label"""
+        """List regulation version-label pairs that match this label (or are
+        root, if label is None)"""
         if label is None:
             query = Regulation.objects.filter(root=True)
         else:
             query = Regulation.objects.filter(label_string=label)
 
-        query = query.only('version').order_by('version')
-        versions = [v for v, in query.values_list('version')]  # Flattens
+        query = query.only('version', 'label_string').order_by('version')
+        # Flattens
+        versions = [v for v in query.values_list('version', 'label_string')]
         return versions
 
 

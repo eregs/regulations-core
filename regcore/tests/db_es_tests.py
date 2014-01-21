@@ -65,14 +65,17 @@ class ESRegulationsTest(TestCase):
     @patch('regcore.db.es.ElasticSearch')
     def test_listing(self, es):
         es.return_value.search.return_value = {'hits': {'hits': [
-            {'fields': {'version': 'ver1'}}, {'fields': {'version': 'aaa'}},
-            {'fields': {'version': '333'}}, {'fields': {'version': 'four'}},
+            {'fields': {'version': 'ver1', 'label_string': 'lll'}},
+            {'fields': {'version': 'aaa', 'label_string': 'lll'}},
+            {'fields': {'version': '333', 'label_string': 'lll'}},
+            {'fields': {'version': 'four', 'label_string': 'lll'}},
         ]}}
         esr = ESRegulations()
         results = esr.listing('lll')
         self.assertFalse('root' in str(es.return_value.search.call_args[0][0]))
         self.assertTrue('ll' in str(es.return_value.search.call_args[0][0]))
-        self.assertEqual(['333', 'aaa', 'four', 'ver1'], results)
+        self.assertEqual([('333', 'lll'), ('aaa', 'lll'), ('four', 'lll'),
+                          ('ver1', 'lll')], results)
 
         results = esr.listing()
         self.assertTrue('root' in str(es.return_value.search.call_args[0][0]))

@@ -42,15 +42,16 @@ class ESRegulations(object):
                            map(lambda r: self._transform(r, version), regs))
 
     def listing(self, label=None):
-        """List regulation versions that match this label"""
+        """List regulation version-label pairs that match this label (or are
+        root, if label is None)"""
         if label is None:
             query = {'match': {'root': True}}
         else:
             query = {'match': {'label_string': label}}
-        query = {'fields': ['version'], 'query': query}
+        query = {'fields': ['label_string', 'version'], 'query': query}
         result = self.es.search(query, index=settings.ELASTIC_SEARCH_INDEX,
                                 doc_type='reg_tree', size=100)
-        return sorted(res['fields']['version']
+        return sorted((res['fields']['version'], res['fields']['label_string'])
                       for res in result['hits']['hits'])
 
 

@@ -31,8 +31,9 @@ class Regulations(object):
         raise NotImplementedError
 
     def listing(self, label=None):
-        """Documentation method. List regulation versions that match this
-        label (if provided; all root regulations otherwise), sorted"""
+        """Documentation method. Return a list of (version, label) pairs for
+        regulation objects that match the provided label (or all root regs),
+        sorted by version"""
         raise NotImplementedError
 
 

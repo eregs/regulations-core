@@ -29,7 +29,8 @@ class ReusableDMRegulations(object):
                    node_type='ty', children=[]).save()
 
         results = self.dmr.listing('a-b')
-        self.assertEqual(['333', 'aaa', 'four', 'ver1'], results)
+        self.assertEqual([('333', 'a-b'), ('aaa', 'a-b'), ('four', 'a-b'),
+                          ('ver1', 'a-b')], results)
 
         Regulation(version='ver1', label_string='1111', text='aaaa',
                    node_type='ty', root=True, children=[]).save()
@@ -39,7 +40,7 @@ class ReusableDMRegulations(object):
                    node_type='ty', root=False, children=[]).save()
 
         results = self.dmr.listing()
-        self.assertEqual(['ver1', 'ver2'], results)
+        self.assertEqual([('ver1', '1111'), ('ver2', '1111')], results)
 
 
 class DMRegulationsTest(TestCase, ReusableDMRegulations):
