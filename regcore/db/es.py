@@ -41,9 +41,12 @@ class ESRegulations(object):
         self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree',
                            map(lambda r: self._transform(r, version), regs))
 
-    def listing(self, label):
+    def listing(self, label=None):
         """List regulation versions that match this label"""
-        query = {'match': {'label_string': label}}
+        if label is None:
+            query = {'match': {'root': True}}
+        else:
+            query = {'match': {'label_string': label}}
         query = {'fields': ['version'], 'query': query}
         result = self.es.search(query, index=settings.ELASTIC_SEARCH_INDEX,
                                 doc_type='reg_tree', size=100)

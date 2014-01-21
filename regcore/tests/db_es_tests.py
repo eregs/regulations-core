@@ -70,8 +70,13 @@ class ESRegulationsTest(TestCase):
         ]}}
         esr = ESRegulations()
         results = esr.listing('lll')
+        self.assertFalse('root' in str(es.return_value.search.call_args[0][0]))
         self.assertTrue('ll' in str(es.return_value.search.call_args[0][0]))
         self.assertEqual(['333', 'aaa', 'four', 'ver1'], results)
+
+        results = esr.listing()
+        self.assertTrue('root' in str(es.return_value.search.call_args[0][0]))
+        self.assertFalse('ll' in str(es.return_value.search.call_args[0][0]))
 
 
 class ESLayersTest(TestCase):
