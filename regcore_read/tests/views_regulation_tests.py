@@ -42,7 +42,8 @@ class ViewsRegulationTest(TestCase):
             {'document_number': '20', 'effective_on': '2011-11-11'},
             {'document_number': '25', 'effective_on': '2011-11-11'}
         ]
-        db.Regulations.return_value.listing.return_value = ['10', '15', '20']
+        db.Regulations.return_value.listing.return_value = [
+            ('10', 'lablab'), ('15', 'lablab'), ('20', 'lablab')]
 
         response = Client().get(url)
         self.assertEqual(200, response.status_code)
@@ -53,5 +54,33 @@ class ViewsRegulationTest(TestCase):
             if ver['version'] == '15' and ver['by_date'] == '2010-10-10':
                 found[1] = True
             if ver['version'] == '20' and ver['by_date'] == '2011-11-11':
+                found[2] = True
+        self.assertEqual(found, [True, True, True])
+
+    @patch('regcore_read.views.regulation.db')
+    def test_listing_all(self, db):
+        url = '/regulation'
+        db.Notices.return_value.listing.return_value = [
+            {'document_number': '10', 'effective_on': '2010-10-10'},
+            {'document_number': '15', 'effective_on': '2010-10-10'},
+            {'document_number': '12'},
+            {'document_number': '20', 'effective_on': '2011-11-11'},
+            {'document_number': '25', 'effective_on': '2011-11-11'}
+        ]
+        db.Regulations.return_value.listing.return_value = [
+            ('10', '1111'), ('15', '1111'), ('20', '1212')]
+
+        response = Client().get(url)
+        self.assertEqual(200, response.status_code)
+        found = [False, False, False]
+        for ver in json.loads(response.content)['versions']:
+            if (ver['version'] == '10' and 'by_date' not in ver
+                    and ver['regulation'] == '1111'):
+                found[0] = True
+            if (ver['version'] == '15' and ver['by_date'] == '2010-10-10'
+                    and ver['regulation'] == '1111'):
+                found[1] = True
+            if (ver['version'] == '20' and ver['by_date'] == '2011-11-11'
+                    and ver['regulation'] == '1212'):
                 found[2] = True
         self.assertEqual(found, [True, True, True])

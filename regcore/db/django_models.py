@@ -32,6 +32,7 @@ class DMRegulations(object):
                           text=reg['text'],
                           title=reg.get('title', ''),
                           node_type=reg['node_type'],
+                          root=(len(reg['label']) == 1),
                           children=reg['children'])
 
     def bulk_put(self, regs, version, root_label):
@@ -42,11 +43,17 @@ class DMRegulations(object):
         Regulation.objects.bulk_create(map(
             lambda r: self._transform(r, version), regs), batch_size=100)
 
-    def listing(self, label):
-        """List regulation versions that match this label"""
-        query = Regulation.objects.filter(label_string=label).only('version')
-        query = query.order_by('version')
-        versions = [v for v, in query.values_list('version')]  # Flattens
+    def listing(self, label=None):
+        """List regulation version-label pairs that match this label (or are
+        root, if label is None)"""
+        if label is None:
+            query = Regulation.objects.filter(root=True)
+        else:
+            query = Regulation.objects.filter(label_string=label)
+
+        query = query.only('version', 'label_string').order_by('version')
+        # Flattens
+        versions = [v for v in query.values_list('version', 'label_string')]
         return versions
 
 

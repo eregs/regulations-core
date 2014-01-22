@@ -33,6 +33,7 @@ class ESRegulations(object):
         node['label_string'] = '-'.join(node['label'])
         node['regulation'] = node['label'][0]
         node['id'] = version + '/' + node['label_string']
+        node['root'] = len(node['label']) == 1
         return node
 
     def bulk_put(self, regs, version, root_label):
@@ -40,13 +41,17 @@ class ESRegulations(object):
         self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree',
                            map(lambda r: self._transform(r, version), regs))
 
-    def listing(self, label):
-        """List regulation versions that match this label"""
-        query = {'match': {'label_string': label}}
-        query = {'fields': ['version'], 'query': query}
+    def listing(self, label=None):
+        """List regulation version-label pairs that match this label (or are
+        root, if label is None)"""
+        if label is None:
+            query = {'match': {'root': True}}
+        else:
+            query = {'match': {'label_string': label}}
+        query = {'fields': ['label_string', 'version'], 'query': query}
         result = self.es.search(query, index=settings.ELASTIC_SEARCH_INDEX,
                                 doc_type='reg_tree', size=100)
-        return sorted(res['fields']['version']
+        return sorted((res['fields']['version'], res['fields']['label_string'])
                       for res in result['hits']['hits'])
 
 

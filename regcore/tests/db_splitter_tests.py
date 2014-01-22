@@ -51,10 +51,12 @@ class SplitterRegulationsTest(TestCase, dm.ReusableDMRegulations):
         nodes[0]['label_string'] = '111-2'
         nodes[0]['regulation'] = '111'
         nodes[0]['id'] = 'verver/111-2'
+        nodes[0]['root'] = False
         nodes[1]['version'] = 'verver'
         nodes[1]['label_string'] = '111-3'
         nodes[1]['regulation'] = '111'
         nodes[1]['id'] = 'verver/111-3'
+        nodes[1]['root'] = False
 
         self.assertEqual(nodes, args[2])
 
