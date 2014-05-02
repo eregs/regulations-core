@@ -114,7 +114,7 @@ class ESNotices(object):
     def listing(self, part=None):
         """All notices or filtered by cfr_part"""
         if part:
-            query = {'match': {'cfr_part': part}}
+            query = {'match': {'cfr_parts': part}}
         else:
             query = {'match_all': {}}
         query = {'fields': ['effective_on', 'fr_url', 'publication_date'],

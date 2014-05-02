@@ -1,6 +1,5 @@
 """Each of the data structures relevant to the API (regulations, notices,
 etc.), implemented using Django models"""
-
 from django.core.exceptions import ObjectDoesNotExist
 
 from regcore.models import Diff, Layer, Notice, Regulation
@@ -90,13 +89,19 @@ class DMNotices(object):
     """Implementation of Django-models as notice backend"""
     def put(self, doc_number, notice):
         """Store a single notice"""
+        try:
+            Notice.objects.get(document_number=doc_number).delete()
+        except ObjectDoesNotExist:
+            pass
+
         model = Notice(document_number=doc_number,
                        fr_url=notice['fr_url'],
                        publication_date=notice['publication_date'],
-                       cfr_part=notice['cfr_part'],
                        notice=notice)
         if 'effective_on' in notice:
             model.effective_on = notice['effective_on']
+        for cfr_part in notice.get('cfr_parts', []):
+            model.noticecfrpart_set.create(cfr_part=cfr_part)
         model.save()
 
     def get(self, doc_number):
@@ -111,7 +116,7 @@ class DMNotices(object):
         """All notices or filtered by cfr_part"""
         query = Notice.objects
         if part:
-            query = query.filter(cfr_part=part)
+            query = query.filter(noticecfrpart__cfr_part=part)
         results = query.values('document_number', 'effective_on', 'fr_url',
                                'publication_date')
         for result in results:
