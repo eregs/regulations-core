@@ -171,8 +171,8 @@ class ReusableDMNotices(object):
         n = Notice(document_number='22', fr_url='fr1', notice={},
                    effective_on=date(2005, 5, 5),
                    publication_date=date(2001, 3, 3))
-        n.noticecfrpart_set.create(cfr_part='876')
         n.save()
+        n.noticecfrpart_set.create(cfr_part='876')
         n = Notice(document_number='9', fr_url='fr2', notice={},
                publication_date=date(1999, 1, 1))
         n.noticecfrpart_set.create(cfr_part='876')

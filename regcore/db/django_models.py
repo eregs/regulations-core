@@ -89,10 +89,7 @@ class DMNotices(object):
     """Implementation of Django-models as notice backend"""
     def put(self, doc_number, notice):
         """Store a single notice"""
-        try:
-            Notice.objects.get(document_number=doc_number).delete()
-        except ObjectDoesNotExist:
-            pass
+        Notice.objects.filter(document_number=doc_number).delete()
 
         model = Notice(document_number=doc_number,
                        fr_url=notice['fr_url'],

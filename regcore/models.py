@@ -37,6 +37,7 @@ class Notice(models.Model):
 
 
 class NoticeCFRPart(models.Model):
+    """Represents the one-to-many relationship between notices and CFR parts"""
     cfr_part = models.SlugField(max_length=10, db_index=True)
     notice = models.ForeignKey(Notice)
 
