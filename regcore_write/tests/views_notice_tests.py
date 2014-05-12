@@ -25,4 +25,21 @@ class ViewsNoticeTest(TestCase):
         self.assertTrue(db.Notices.return_value.put.called)
         args = db.Notices.return_value.put.call_args[0]
         self.assertEqual('docdoc', args[0])
-        self.assertEqual({'some': 'struct'}, args[1])
+        self.assertEqual({'some': 'struct', 'cfr_parts': []}, args[1])
+
+        response = Client().put(
+            url, content_type='application/json',
+            data=json.dumps({'some': 'struct', 'cfr_part': '1111'}))
+        self.assertTrue(db.Notices.return_value.put.called)
+        args = db.Notices.return_value.put.call_args[0]
+        self.assertEqual('docdoc', args[0])
+        self.assertEqual({'some': 'struct', 'cfr_parts': ['1111']}, args[1])
+
+        response = Client().put(
+            url, content_type='application/json',
+            data=json.dumps({'some': 'struct', 'cfr_parts': ['111', '222']}))
+        self.assertTrue(db.Notices.return_value.put.called)
+        args = db.Notices.return_value.put.call_args[0]
+        self.assertEqual('docdoc', args[0])
+        self.assertEqual({'some': 'struct', 'cfr_parts': ['111', '222']},
+                         args[1])

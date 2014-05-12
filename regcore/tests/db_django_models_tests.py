@@ -168,11 +168,16 @@ class ReusableDMNotices(object):
         self.assertEqual({"some": 'body'}, self.dmn.get('docdoc'))
 
     def test_listing(self):
-        Notice(document_number='22', fr_url='fr1', cfr_part='876', notice={},
-               effective_on=date(2005, 5, 5),
-               publication_date=date(2001, 3, 3)).save()
-        Notice(document_number='9', fr_url='fr2', cfr_part='876', notice={},
-               publication_date=date(1999, 1, 1)).save()
+        n = Notice(document_number='22', fr_url='fr1', notice={},
+                   effective_on=date(2005, 5, 5),
+                   publication_date=date(2001, 3, 3))
+        n.save()
+        n.noticecfrpart_set.create(cfr_part='876')
+        n = Notice(document_number='9', fr_url='fr2', notice={},
+               publication_date=date(1999, 1, 1))
+        n.noticecfrpart_set.create(cfr_part='876')
+        n.noticecfrpart_set.create(cfr_part='111')
+        n.save()
 
         self.assertEqual([{'document_number': '22', 'fr_url': 'fr1',
                            'publication_date': '2001-03-03',
@@ -196,7 +201,7 @@ class DMNoticesTest(TestCase, ReusableDMNotices):
                'effective_on': '2011-01-01',
                'fr_url': 'http://example.com',
                'publication_date': '2010-02-02',
-               'cfr_part': '222'}
+               'cfr_parts': ['222']}
         dmn.put('docdoc', doc)
 
         notices = Notice.objects.all()
@@ -205,7 +210,9 @@ class DMNoticesTest(TestCase, ReusableDMNotices):
         self.assertEqual(date(2011, 1, 1), notices[0].effective_on)
         self.assertEqual('http://example.com', notices[0].fr_url)
         self.assertEqual(date(2010, 2, 2), notices[0].publication_date)
-        self.assertEqual('222', notices[0].cfr_part)
+        ncp = notices[0].noticecfrpart_set.all()
+        self.assertEqual(1, len(ncp))
+        self.assertEqual('222', ncp[0].cfr_part)
         self.assertEqual(doc, notices[0].notice)
 
     def test_put_overwrite(self):

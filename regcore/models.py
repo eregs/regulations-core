@@ -34,7 +34,16 @@ class Notice(models.Model):
     fr_url = models.CharField(max_length=200)
     publication_date = models.DateField()
     notice = CompressedJSONField()
-    cfr_part = models.SlugField(max_length=10)
+
+
+class NoticeCFRPart(models.Model):
+    """Represents the one-to-many relationship between notices and CFR parts"""
+    cfr_part = models.SlugField(max_length=10, db_index=True)
+    notice = models.ForeignKey(Notice)
+
+    class Meta:
+        index_together = (('notice', 'cfr_part'),)
+        unique_together = (('notice', 'cfr_part'),)
 
 
 class Diff(models.Model):
