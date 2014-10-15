@@ -8,7 +8,7 @@ An API that provides an interface for storing and retrieving regulations,
 layers, etc.
 
 This repository is part of a larger project. To read about it, please see 
-[[https://cfpb.github.io/eRegulations/]].
+[https://cfpb.github.io/eRegulations/](https://cfpb.github.io/eRegulations/).
 
 ## Features
 
