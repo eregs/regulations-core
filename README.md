@@ -2,13 +2,13 @@ regulations-core
 ================
 
 [![Build Status](https://travis-ci.org/cfpb/regulations-core.png)](https://travis-ci.org/cfpb/regulations-core)
-[![Coverage Status](https://coveralls.io/repos/eregs/regulations-core/badge.png)](https://coveralls.io/r/eregs/regulations-core)
+[![Coverage Status](https://coveralls.io/repos/cfpb/regulations-core/badge.png)](https://coveralls.io/r/cfpb/regulations-core)
 
 An API that provides an interface for storing and retrieving regulations,
 layers, etc.
 
 This repository is part of a larger project. To read about it, please see 
-[http://eregs.github.io/eregulations/](http://eregs.github.io/eregulations/).
+[[https://cfpb.github.io/eRegulations/]].
 
 ## Features
 
