@@ -211,6 +211,19 @@ $ ./bin/sphinx-apidoc -F -o docs regcore_read
 $ ./bin/sphinx-apidoc -F -o docs regcore_write
 ```
 
+##  Importing Regulation JSON
+
+There is a ```django_admin``` command that facilitates the import of JSON regulation
+content into the database. The command is called ```import_reg``` and is used as follows,
+from the root ```regcore``` directory.
+
+```
+$ ./bin/django import_reg -r <regulation-number> -s <path/to/stub/root>
+```
+
+You'll need to check out the ```regulations-stub``` repo to actually have the JSON content.
+
+
 ##  Running Tests
 
 To run unit tests with buildout, simply run 
@@ -229,3 +242,5 @@ verbose and throws a lot of false positives, but it can be ran via
 ```bash
 $ ./bin/pylint
 ```
+
+
