@@ -11,7 +11,8 @@ from regcore.tests import db_django_models_tests as dm
 
 
 class SplitterRegulationsTest(TestCase, dm.ReusableDMRegulations):
-    def setUp(self):
+    @patch('regcore.db.es.ElasticSearch')
+    def setUp(self, es):
         Regulation.objects.all().delete()
         self.dmr = SplitterRegulations()
 
@@ -81,7 +82,8 @@ class SplitterRegulationsTest(TestCase, dm.ReusableDMRegulations):
 
 
 class SplitterLayersTest(TestCase, dm.ReusableDMLayers):
-    def setUp(self):
+    @patch('regcore.db.es.ElasticSearch')
+    def setUp(self, es):
         Layer.objects.all().delete()
         self.dml = SplitterLayers()
 
@@ -138,7 +140,8 @@ class SplitterLayersTest(TestCase, dm.ReusableDMLayers):
 
 
 class SplitterNoticesTest(TestCase, dm.ReusableDMNotices):
-    def setUp(self):
+    @patch('regcore.db.es.ElasticSearch')
+    def setUp(self, es):
         Notice.objects.all().delete()
         self.dmn = SplitterNotices()
 
@@ -194,7 +197,8 @@ class SplitterNoticesTest(TestCase, dm.ReusableDMNotices):
 
 
 class SplitterDiffTest(TestCase, dm.ReusableDMDiff):
-    def setUp(self):
+    @patch('regcore.db.es.ElasticSearch')
+    def setUp(self, es):
         Diff.objects.all().delete()
         self.dmd = SplitterDiffs()
 
