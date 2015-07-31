@@ -41,41 +41,32 @@ below).
 * pysolr - required if using solr as a search backend
 * south - Django's migration helper. Needed if using Django Models for
   storage
-* zc.buildout - Tool used for building the application and handling
-  dependencies
 
 ## API Docs
 
 [Read The Docs](http://regulations-core.readthedocs.org/en/latest/)
 
-## Buildout
+## Setup & Running
 
-Buildout is a simple tool for building and distributing python applications
-quickly. We use it to get a version of the API up and running without
-needing all of the fuss usually associated with setting up Django. Just run
+This project uses `requirements*.txt` files for defining dependencies, so you
+can get up and running with `pip`:
 
 ```bash
-$ pip install zc.buildout
-$ buildout
+$ pip install -r requirements.txt       # modules required for execution
+$ pip install -r requirements_test.txt  # modules required for running tests
+$ pip install -r requirements_dev.txt   # helpful modules for developers
 ```
-
-After downloading the internet, you'll notice that some helpful scripts are
-located in ```bin```, including ```bin/django``` and ```bin/test```. The
-latter will run our test suite while the first is equivalent to running
-manage.py in a traditional Django environment.
 
 With that, you just need a few additional commands to get up and running:
 ```bash
-$ ./bin/django syncdb
-$ ./bin/django migrate
-$ ./bin/django runserver
+$ python manage.py syncdb --migrate
+$ python manage.py runserver
 ```
 
 You'll be running (without search capability) using SQLite.
 
-Buildout is configured (```buildout.cfg```) to use the
-```example_settings.py``` settings. We recommend local modifications be made
-in a ```local_settings.py``` file.
+By default, you'll be using the `example_settings.py`. We recommend local
+modification be made in a `local_settings.py` file.
 
 ## Apps included
 
@@ -107,8 +98,8 @@ write end points.
 As all data is assumed to be publicly visible, data is not encrypted before
 it is sent to the storage engine. Data may be compressed, however.
 
-Be sure to override the default settings for both ```SECRET_KEY``` and to
-turn ```DEBUG``` off in your ```local_settings.py```
+Be sure to override the default settings for both `SECRET_KEY` and to
+turn `DEBUG` off in your `local_settings.py`
 
 ## Storage-Backends
 
@@ -169,63 +160,60 @@ BACKENDS = {
 
 ## Settings
 
-While we provide sane defaults in the ```example_settings.py``` file, we
-recommend these defaults be overridden as needed in a
-```local_settings.py``` file.
+While we provide sane defaults in the `example_settings.py` file, we recommend
+these defaults be overridden as needed in a `local_settings.py` file.
 
 If using Elastic Search, you will need to let the application know how to
 connect to the search servers.
 
-* ```ELASTIC_SEARCH_URLS``` - a list of strings which define how to connect
+* `ELASTIC_SEARCH_URLS` - a list of strings which define how to connect
   to your search server(s). This is passed along to pyelasticsearch.
-* ```ELASTIC_SEARCH_INDEX``` - the index to be used by elastic search. This
+* `ELASTIC_SEARCH_INDEX` - the index to be used by elastic search. This
   defaults to 'eregs'
 
-The ```BACKENDS``` setting (as described above) must be a dictionary of the
+The `BACKENDS` setting (as described above) must be a dictionary of the
 appropriate model names ('regulations', 'layers', etc.) to the associated
 backend class. Backends can be mixed and matched, though I can't think of a
 good use case for that desire.
 
-All standard Django and haystack settings are also available; you will
-likely want to override ```DATABASES```, ```HAYSTACK_CONNECTIONS```,
-```DEBUG``` and certainly ```SECRET_KEY```.
+All standard Django and haystack settings are also available; you will likely
+want to override `DATABASES`, `HAYSTACK_CONNECTIONS`, `DEBUG` and certainly
+`SECRET_KEY`.
 
 ## Building the documentation
 
 For most tweaks, you will simply need to run the Sphinx documentation
 builder again.
 
-```
-$ ./bin/sphinx-build -b dirhtml -d docs/_build/doctrees/ docs/ docs/_build/dirhtml/
+```bash
+$ sphinx-build -b dirhtml -d docs/_build/doctrees/ docs/ docs/_build/dirhtml/
 ```
 
-The output will be in ```docs/_build/dirhtml```.
+The output will be in `docs/_build/dirhtml`.
 
 If you are adding new modules, you may need to re-run the skeleton build
 script first:
 
-```
+```bash
 $ rm docs/regcore*.rst
-$ ./bin/sphinx-apidoc -F -o docs regcore
-$ ./bin/sphinx-apidoc -F -o docs regcore_read
-$ ./bin/sphinx-apidoc -F -o docs regcore_write
+$ sphinx-apidoc -F -o docs regcore
+$ sphinx-apidoc -F -o docs regcore_read
+$ sphinx-apidoc -F -o docs regcore_write
 ```
 
 ##  Running Tests
 
-To run unit tests with buildout, simply run 
-
 ```bash
-$ ./bin/test
+$ python manage.py test
 ```
 
 This will include a report of test coverage.
 
-## Pylint
+## Linting
 
-We have included a pylint definition in the buildout config. Pylint's quite
-verbose and throws a lot of false positives, but it can be ran via
+We rely on flake8 for linting and style checks. You can run it over everything
+via
 
 ```bash
-$ ./bin/pylint
+$ flake8 .
 ```
