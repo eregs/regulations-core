@@ -21,8 +21,7 @@ This repository is part of a larger project. To read about it, please see
 
 ## Requirements
 
-Requirements are retrieved and/or build automatically via buildout (see
-below).
+Requirements are retrieved and/or build automatically via pip (see below).
 
 * anyjson - Use Python's json or simplejson as available
 * coverage - reports on test coverage
@@ -37,7 +36,7 @@ below).
 * mock - makes constructing mock objects/functions easy
 * nose - A pluggable test runner
 * pyelasticsearch - required if using Elastic Search
-* pylint - while not strictly required, we offer it as a part of buildout
+* flake8 - while not strictly required, we try to meet its standards
 * pysolr - required if using solr as a search backend
 * south - Django's migration helper. Needed if using Django Models for
   storage
