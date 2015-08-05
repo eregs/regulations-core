@@ -31,7 +31,7 @@ class Layer(models.Model):
 class Notice(models.Model):
     document_number = models.SlugField(max_length=20, primary_key=True)
     effective_on = models.DateField(null=True)
-    fr_url = models.CharField(max_length=200)
+    fr_url = models.CharField(max_length=200, null=True)
     publication_date = models.DateField()
     notice = CompressedJSONField()
 
