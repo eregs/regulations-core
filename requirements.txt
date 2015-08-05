@@ -5,3 +5,8 @@ jsonschema
 pyelasticsearch
 pysolr
 south
+
+# cloud foundry
+waitress
+dj-database-url
+psycopg2
