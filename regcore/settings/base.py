@@ -51,6 +51,28 @@ HAYSTACK_CONNECTIONS = {
     }
 }
 
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'propagate': False,
+            'level': 'ERROR'
+        }
+    }
+}
+
 try:
     from local_settings import *
 except ImportError:
