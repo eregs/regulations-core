@@ -1,6 +1,12 @@
 anyjson
-django
-django-haystack==1.2.7
-jsonschema==1.3.0
-pyelasticsearch==0.5
+django==1.5
+django-haystack
+jsonschema
+pyelasticsearch
 pysolr
+south
+
+# cloud foundry
+waitress
+dj-database-url
+psycopg2
