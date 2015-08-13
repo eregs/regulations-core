@@ -1,6 +1,8 @@
-"""Template settings file. If using buildout, these settings will be the
-base for bin/django. All settings can be overridden via a local_settings.py
-file"""
+"""Base settings file; used by manage.py. All settings can be overridden via
+local_settings.py"""
+import os
+
+from django.utils.crypto import get_random_string
 
 
 INSTALLED_APPS = [
@@ -11,7 +13,8 @@ INSTALLED_APPS = [
     'south'
 ]
 
-SECRET_KEY = 'v^p)1cwc)%td*szt7lt-(nl=bf)k07t%65*t(mi1f!*18dz9m@'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', get_random_string(50))
+
 
 DATABASES = {
     'default': {
@@ -45,6 +48,28 @@ HAYSTACK_CONNECTIONS = {
     'default': {
         'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
         'URL': 'http://localhost:8983/solr'
+    }
+}
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        '': {
+            'handlers': ['console'],
+            'level': 'INFO',
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'propagate': False,
+            'level': 'ERROR'
+        }
     }
 }
 
