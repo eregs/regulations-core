@@ -1,3 +1,5 @@
+import logging
+
 import anyjson
 from django.views.decorators.csrf import csrf_exempt
 import jsonschema
@@ -38,15 +40,21 @@ def add(request, label_id, version):
         jsonschema.validate(node, REGULATION_SCHEMA)
     except ValueError:
         return user_error('invalid format')
-    except jsonschema.ValidationError, e:
+    except jsonschema.ValidationError:
         return user_error("JSON is invalid")
 
     if label_id != '-'.join(node['label']):
         return user_error('label mismatch')
 
     to_save = []
+    labels_seen = set()
 
     def add_node(node):
+        label_tuple = tuple(node['label'])
+        if label_tuple in labels_seen:
+            logging.warning("Repeat label: %s", label_tuple)
+        labels_seen.add(label_tuple)
+
         node = dict(node)   # copy
         to_save.append(node)
         for child in node['children']:
