@@ -73,6 +73,10 @@ LOGGING = {
     }
 }
 
+_envvars = ('HTTP_AUTH_USER', 'HTTP_AUTH_PASSWORD')
+for var in _envvars:
+    globals()[var] = os.environ.get(var)
+
 try:
     from local_settings import *
 except ImportError:
