@@ -19,9 +19,9 @@ def _encode(username, password):
 
 class SecurityTest(TestCase):
     @override_settings(HTTP_AUTH_USER="a_user", HTTP_AUTH_PASSWORD="a_pass")
-    def test_basic_auth(self):
+    def test_secure_write(self):
         """Basic Auth must match the configuration"""
-        fn = security.basic_auth(_wrapped_fn)
+        fn = security.secure_write(_wrapped_fn)
 
         request = RequestFactory().get('/')
         self.assertEqual(fn(request).status_code, 401)
@@ -40,4 +40,18 @@ class SecurityTest(TestCase):
 
         request = RequestFactory().get(
             '/', HTTP_AUTHORIZATION=_encode('a_user', 'a_pass'))
+        self.assertEqual(fn(request).status_code, 204)
+
+    @override_settings(HTTP_AUTH_USER=None, HTTP_AUTH_PASSWORD=None)
+    def test_secure_write_unset(self):
+        """Basic Auth should not be required when the environment isn't set"""
+        fn = security.secure_write(_wrapped_fn)
+        request = RequestFactory().get('/')
+        self.assertEqual(fn(request).status_code, 204)
+
+    @override_settings(HTTP_AUTH_USER="", HTTP_AUTH_PASSWORD="")
+    def test_secure_write_empty(self):
+        """Basic Auth should not be required when the environment is empty"""
+        fn = security.secure_write(_wrapped_fn)
+        request = RequestFactory().get('/')
         self.assertEqual(fn(request).status_code, 204)

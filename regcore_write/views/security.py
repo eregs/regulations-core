@@ -39,9 +39,7 @@ def secure_write(func):
     """Depending on configuration, wrap each request in the appropriate
     security checks"""
     func = csrf_exempt(func)
-    enable_auth = (hasattr(settings, 'HTTP_AUTH_USER') and
-                   hasattr(settings, 'HTTP_AUTH_PASSWORD'))
-    if enable_auth:
+    if settings.HTTP_AUTH_USER and settings.HTTP_AUTH_PASSWORD:
         func = basic_auth(func)
 
     return func
