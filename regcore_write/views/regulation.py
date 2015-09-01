@@ -1,11 +1,11 @@
 import logging
 
 import anyjson
-from django.views.decorators.csrf import csrf_exempt
 import jsonschema
 
 from regcore import db
 from regcore.responses import success, user_error
+from regcore_write.views.security import secure_write
 
 
 #   This JSON schema is used to validate the regulation data provided
@@ -32,7 +32,7 @@ REGULATION_SCHEMA = {
 }
 
 
-@csrf_exempt
+@secure_write
 def add(request, label_id, version):
     """Add this regulation node and all of its children to the db"""
     try:
