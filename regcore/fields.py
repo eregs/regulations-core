@@ -4,7 +4,6 @@ import bz2
 import anyjson
 from django.db import models
 from django.db.models.fields.subclassing import Creator
-from south.modelsinspector import add_introspection_rules
 
 
 class PatchedSubFieldBase(type):
@@ -72,6 +71,3 @@ class CompressedJSONField(models.TextField):
     def __get__(self, instance, instance_type=None):
         if instance is None:
             return self
-
-
-add_introspection_rules([], ["^regcore\.fields\.CompressedJSONField"])
