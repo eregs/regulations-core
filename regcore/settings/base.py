@@ -10,7 +10,6 @@ INSTALLED_APPS = [
     'regcore',
     'regcore_read',
     'regcore_write',
-    'south'
 ]
 
 SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', get_random_string(50))
