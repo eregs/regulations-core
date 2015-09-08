@@ -3,10 +3,9 @@
 the associated backend class instead (e.g. for Django, elastic search, or
 the splitter backend)."""
 
-import sys
+from importlib import import_module
 
 from django.conf import settings
-from django.utils.importlib import import_module
 
 
 def _select(key):
