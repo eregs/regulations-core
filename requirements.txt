@@ -1,11 +1,7 @@
-anyjson
-django==1.8
+# Import setup.py
+-e .
+
+# Include optional dependencies for local dev
 django-haystack
-jsonschema
 pyelasticsearch
 pysolr
-
-# cloud foundry
-waitress
-dj-database-url
-psycopg2
