@@ -24,15 +24,18 @@ This repository is part of a larger project. To read about it, please see
 Requirements are retrieved and/or build automatically via pip (see below).
 
 * anyjson - Use Python's json or simplejson as available
-* coverage - reports on test coverage
 * django - Web framework
+* jsonschema - used to test that JSON provided fits our required data
+  structure
+
+The following libraries are optionally supported
+
+* coverage - reports on test coverage
 * django-haystack - An interface for accessing Solr, Whoosh, and other search
   engines. This is only required if not using Elastic Search. Unfortunately, 
   we are constrained to using the pre-rewrite version of haystack (though 
   that may change in the future)
 * django-nose - plugin for Django which allows for nose integration
-* jsonschema - used to test that JSON provided fits our required data
-  structure
 * mock - makes constructing mock objects/functions easy
 * nose - A pluggable test runner
 * pyelasticsearch - required if using Elastic Search

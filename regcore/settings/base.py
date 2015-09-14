@@ -46,8 +46,7 @@ ELASTIC_SEARCH_INDEX = 'eregs'
 
 HAYSTACK_CONNECTIONS = {
     'default': {
-        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
-        'URL': 'http://localhost:8983/solr'
+        'ENGINE': 'haystack.backends.simple_backend.SimpleEngine',
     }
 }
 
