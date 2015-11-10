@@ -8,6 +8,7 @@ setup(
     install_requires=[
         'anyjson',
         'django==1.8',
-        'jsonschema'
+        'jsonschema',
+        'streql'
     ]
 )

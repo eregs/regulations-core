@@ -4,6 +4,7 @@ from functools import wraps
 from django.conf import settings
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
+import streql
 
 
 def _not_authorized():
@@ -28,7 +29,8 @@ def basic_auth(func):
         auth_parts = auth_str.split()
         if len(auth_parts) != 2 or auth_parts[0].upper() != 'BASIC':
             return _not_authorized()
-        elif auth_parts[1] != _basic_auth_str():
+        # Note the use of a constant-time string comparison
+        elif not streql.equals(auth_parts[1], _basic_auth_str()):
             return _not_authorized()
         else:
             return func(request, *args, **kwargs)
