@@ -2,7 +2,8 @@ from datetime import date
 
 from django.test import TestCase
 
-from regcore.db.django_models import *
+from regcore.db.django_models import (
+    DMDiffs, DMLayers, DMNotices, DMRegulations)
 from regcore.models import Diff, Layer, Notice, Regulation
 
 
@@ -11,8 +12,8 @@ class ReusableDMRegulations(object):
         self.assertEqual(None, self.dmr.get('lablab', 'verver'))
 
     def test_get_success(self):
-        model = Regulation(version='verver', label_string='a-b', text='ttt',
-                           node_type='tyty', children=[]).save()
+        Regulation(version='verver', label_string='a-b', text='ttt',
+                   node_type='tyty', children=[]).save()
         self.assertEqual({'text': 'ttt',
                           'label': ['a', 'b'],
                           'children': [],
@@ -174,7 +175,7 @@ class ReusableDMNotices(object):
         n.save()
         n.noticecfrpart_set.create(cfr_part='876')
         n = Notice(document_number='9', fr_url='fr2', notice={},
-               publication_date=date(1999, 1, 1))
+                   publication_date=date(1999, 1, 1))
         n.noticecfrpart_set.create(cfr_part='876')
         n.noticecfrpart_set.create(cfr_part='111')
         n.save()

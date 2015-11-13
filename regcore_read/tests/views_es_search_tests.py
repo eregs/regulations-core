@@ -1,8 +1,7 @@
 from django.test import TestCase
 from django.test.client import Client
 from mock import patch
-
-from regcore_read.views.es_search import *
+from regcore_read.views.es_search import transform_results
 
 
 class ViewsESSearchTest(TestCase):

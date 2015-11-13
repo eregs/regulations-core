@@ -4,8 +4,6 @@ from unittest import TestCase
 from django.test.client import Client
 from mock import patch
 
-from regcore_read.views.regulation import *
-
 
 class ViewsRegulationTest(TestCase):
 
