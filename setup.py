@@ -7,7 +7,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         'anyjson',
-        'django==1.8',
+        'django>=1.8',
         'jsonschema'
     ]
 )
