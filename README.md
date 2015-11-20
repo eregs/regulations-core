@@ -23,7 +23,6 @@ This repository is part of a larger project. To read about it, please see
 
 Requirements are retrieved and/or build automatically via pip (see below).
 
-* anyjson - Use Python's json or simplejson as available
 * django - Web framework
 * jsonschema - used to test that JSON provided fits our required data
   structure

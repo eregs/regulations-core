@@ -52,6 +52,7 @@ class ViewsHaystackSearchTest(TestCase):
     def test_search_paging(self, transform_results, sqs):
         results = sqs.return_value.models.return_value.filter
         results.return_value = list(range(500))
+        transform_results.return_value = {}
         response = Client().get('/haystack_search?q=test&page=5')
         self.assertEqual(200, response.status_code)
         self.assertTrue(results.called)

@@ -1,6 +1,6 @@
+import json
 import logging
 
-import anyjson
 import jsonschema
 
 from regcore import db
@@ -36,7 +36,7 @@ REGULATION_SCHEMA = {
 def add(request, label_id, version):
     """Add this regulation node and all of its children to the db"""
     try:
-        node = anyjson.deserialize(request.body)
+        node = json.loads(request.body)
         jsonschema.validate(node, REGULATION_SCHEMA)
     except ValueError:
         return user_error('invalid format')

@@ -6,7 +6,6 @@ setup(
     license="public domain",
     packages=find_packages(),
     install_requires=[
-        'anyjson',
         'django==1.8',
         'jsonschema'
     ]
