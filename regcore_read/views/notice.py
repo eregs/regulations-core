@@ -5,7 +5,7 @@ from regcore.responses import four_oh_four, success
 def get(request, docnum):
     """Find and return the notice with this docnum"""
     notice = db.Notices().get(docnum)
-    if notice:
+    if notice is not None:
         return success(notice)
     else:
         return four_oh_four()
