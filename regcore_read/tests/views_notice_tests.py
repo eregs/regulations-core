@@ -6,12 +6,18 @@ from mock import patch
 
 
 class ViewsNoticeTest(TestCase):
-
     @patch('regcore_read.views.notice.db')
     def test_get_none(self, db):
         db.Notices.return_value.get.return_value = None
         response = Client().get('/notice/docdoc')
         self.assertEqual(404, response.status_code)
+
+    @patch('regcore_read.views.notice.db')
+    def test_get_empty(self, db):
+        db.Notices.return_value.get.return_value = {}
+        response = Client().get('/notice/docdoc')
+        self.assertEqual(200, response.status_code)
+        self.assertEqual({}, json.loads(response.content))
 
     @patch('regcore_read.views.notice.db')
     def test_get_results(self, db):

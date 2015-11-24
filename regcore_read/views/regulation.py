@@ -42,7 +42,7 @@ def listing(request, label_id=None):
 def get(request, label_id, version):
     """Find and return the regulation with this version and label"""
     regulation = db.Regulations().get(label_id, version)
-    if regulation:
+    if regulation is not None:
         return success(regulation)
     else:
         return four_oh_four()
