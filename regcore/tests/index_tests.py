@@ -1,7 +1,8 @@
-from regcore.index import *
 from mock import patch
 from pyelasticsearch.exceptions import IndexAlreadyExistsError
 from unittest import TestCase
+
+from regcore.index import init_schema
 
 
 class IndexTest(TestCase):

@@ -4,11 +4,8 @@ from unittest import TestCase
 from django.test.client import Client
 from mock import patch
 
-from regcore_read.views.regulation import *
-
 
 class ViewsRegulationTest(TestCase):
-
     @patch('regcore_read.views.regulation.db')
     def test_get_good(self, db):
         url = '/regulation/lab/ver'
@@ -20,6 +17,18 @@ class ViewsRegulationTest(TestCase):
         self.assertTrue('ver' in args)
         self.assertEqual(200, response.status_code)
         self.assertEqual({'some': 'thing'}, json.loads(response.content))
+
+    @patch('regcore_read.views.regulation.db')
+    def test_get_empty(self, db):
+        url = '/regulation/lab/ver'
+        db.Regulations.return_value.get.return_value = {}
+        response = Client().get(url)
+        self.assertTrue(db.Regulations.return_value.get.called)
+        args = db.Regulations.return_value.get.call_args[0]
+        self.assertTrue('lab' in args)
+        self.assertTrue('ver' in args)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual({}, json.loads(response.content))
 
     @patch('regcore_read.views.regulation.db')
     def test_get_404(self, db):

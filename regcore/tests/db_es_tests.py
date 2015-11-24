@@ -3,7 +3,7 @@ from unittest import TestCase
 from mock import patch
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 
-from regcore.db.es import *
+from regcore.db.es import ESDiffs, ESLayers, ESNotices, ESRegulations
 
 
 class ESRegulationsTest(TestCase):

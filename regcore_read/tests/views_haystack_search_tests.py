@@ -2,10 +2,9 @@ from collections import namedtuple
 
 from django.test import TestCase
 from django.test.client import Client
-from mock import Mock, patch
+from mock import patch
 
-from regcore.search_indexes import RegulationIndex
-from regcore_read.views.haystack_search import *
+from regcore_read.views.haystack_search import transform_results
 
 
 class ViewsHaystackSearchTest(TestCase):

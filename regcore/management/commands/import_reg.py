@@ -3,9 +3,7 @@
 from __future__ import print_function
 
 import requests
-import sys
 import os
-import argparse
 import json
 import urlparse
 import logging
@@ -15,49 +13,42 @@ from optparse import make_option
 from regcore_write.views import regulation, diff, layer, notice
 
 logging.basicConfig(
-        format='%(asctime)s %(levelname)s: %(message)s', 
-        datefmt='%m/%d/%Y %I:%M:%S %p')
+    format='%(asctime)s %(levelname)s: %(message)s',
+    datefmt='%m/%d/%Y %I:%M:%S %p')
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 # This is an adaptation of the send_to.py script from regulations-stub as a
 # management command to import files into the DB
 
+
 class Command(BaseCommand):
 
     help = 'Import the regulation JSON into the database.'
 
-        # parser.add_option('-s', '--stub-base', action='store',
-        #         default=os.path.join(os.getcwd(), 'stub'),
-        #         help='the base filesystem path for regulations JSON (default: ./stub)')
-        #
-        # # We need to know what we're uploading, either a whole regulation's
-        # # worth of JSON or a specific file or files
-        # parser.add_argument('-r', '--regulation', nargs='?', action='store',
-        #         help='the specific regulation part number to upload (eg: 1026)')
-        # parser.add_argument('-f', '--files', nargs='*', action='store',
-        #         default=[], help='specific JSON files to upload')
-
     option_list = BaseCommand.option_list + (
-        make_option('-r',
-                    '--regulation',
-                    nargs=1,
-                    action='store',
-                    type=str,
-                    help='the specific regulation part number to upload (e.g.: 1026)'),
+        make_option(
+            '-r',
+            '--regulation',
+            nargs=1,
+            action='store',
+            type=str,
+            help='the specific regulation part number to upload (e.g.: 1026)'),
 
-        make_option('-s',
-                    '--stub-base',
-                    nargs=1,
-                    action='store',
-                    type=str,
-                    help='the base filesystem path for regulations JSON (default: ./stub)',
-                    default=os.path.join(os.getcwd(), 'stub')),
+        make_option(
+            '-s',
+            '--stub-base',
+            nargs=1,
+            action='store',
+            type=str,
+            help=('the base filesystem path for regulations JSON (default: '
+                  './stub)'),
+            default=os.path.join(os.getcwd(), 'stub')),
 
         # note: because we're supporting Django 1.5, we are limited to using
-        # optparse rather than the much better argparse. This means that we can only
-        # accept one file per -f argument because there's no way to accept an
-        # arbitrary number of arguments with optparse.
+        # optparse rather than the much better argparse. This means that we
+        # can only accept one file per -f argument because there's no way to
+        # accept an arbitrary number of arguments with optparse.
         make_option('-f',
                     '--files',
                     action='append',
@@ -100,40 +91,48 @@ class Command(BaseCommand):
         logger.info("getting files for regulation {}...".format(regulation))
         regulation_base = os.path.join(stub_base, 'regulation', regulation)
         if not os.path.isdir(regulation_base):
-            logger.error("Can't find regulation JSON for {} at {}".format(regulation, regulation_base))
+            logger.error("Can't find regulation JSON for {} at {}".format(
+                regulation, regulation_base))
             return []
         for dirname, subdirs, files in os.walk(regulation_base):
             notice_names = files
             regulation_files.extend([os.path.join(dirname, f) for f in files])
 
         # Get notice JSON
-        logger.info("getting notice files for regulation {}...".format(regulation))
-        for dirname, subdirs, files in os.walk(os.path.join(stub_base, 'notice')):
+        logger.info("getting notice files for regulation {}...".format(
+            regulation))
+        for dirname, subdirs, files in os.walk(
+                os.path.join(stub_base, 'notice')):
             # Notices are not stored in a regulation-part-number
             # subdirectory. Use notice_names, from above, to just grab the
             # ones we want.
-            notice_files = [os.path.join(dirname, f) for f in files if f in notice_names]
+            notice_files = [os.path.join(dirname, f)
+                            for f in files if f in notice_names]
             regulation_files.extend(notice_files)
 
         # Get layer JSON
-        logger.info("getting layer files for regulation {}...".format(regulation))
-        for dirname, subdirs, files in os.walk(os.path.join(stub_base, 'layer')):
+        logger.info("getting layer files for regulation {}...".format(
+            regulation))
+        for dirname, subdirs, files in os.walk(
+                os.path.join(stub_base, 'layer')):
             # For layers, dig into each subdirectory of the layer path until
             # we find one with our regulation part number.
             if dirname.endswith(regulation):
-                layer_files = [os.path.join(dirname, f) for f in files if f in notice_names]
+                layer_files = [os.path.join(dirname, f)
+                               for f in files if f in notice_names]
                 regulation_files.extend(layer_files)
 
         # Get diff JSON
-        logger.info("getting diff files for regulation {}...".format(regulation))
-        for dirname, subdirs, files in os.walk(os.path.join(stub_base, 'diff', regulation)):
+        logger.info("getting diff files for regulation {}...".format(
+            regulation))
+        for dirname, subdirs, files in os.walk(
+                os.path.join(stub_base, 'diff', regulation)):
             # For diffs, each regulation directory has a notice directory
             # with json files corrosponding to each other notice.
             diff_files = [os.path.join(dirname, f) for f in files]
             regulation_files.extend(diff_files)
 
         return regulation_files
-
 
     def send_to_server(self, api_base, stub_base, path):
         """
@@ -152,24 +151,13 @@ class Command(BaseCommand):
 
         # regulations-core returns 204 on a successful POST
         if r.status_code != 204:
-            logger.error("error sending {}: {}".format(r.status_code, r.reason))
+            logger.error("error sending {}: {}".format(
+                r.status_code, r.reason))
 
     def add_arguments(self, parser):
 
         pass
         # this is a stub for when we go to argparse and can actually use it
-
-        # We need to know where the JSON is coming from
-        # parser.add_option('-s', '--stub-base', action='store',
-        #         default=os.path.join(os.getcwd(), 'stub'),
-        #         help='the base filesystem path for regulations JSON (default: ./stub)')
-        #
-        # # We need to know what we're uploading, either a whole regulation's
-        # # worth of JSON or a specific file or files
-        # parser.add_argument('-r', '--regulation', nargs='?', action='store',
-        #         help='the specific regulation part number to upload (eg: 1026)')
-        # parser.add_argument('-f', '--files', nargs='*', action='store',
-        #         default=[], help='specific JSON files to upload')
 
     def handle(self, *args, **options):
 
@@ -178,10 +166,12 @@ class Command(BaseCommand):
         stub_base = options['stub_base']
 
         if options['regulation'] is None and options['files'] == []:
-            raise CommandError('Must supply either a regulation to import or a specific JSON file.')
+            raise CommandError('Must supply either a regulation to import or '
+                               'a specific JSON file.')
 
         elif options['regulation'] is not None and options['files'] != []:
-            raise CommandError('Cannot specify both regulation and files at the same time.')
+            raise CommandError('Cannot specify both regulation and files at '
+                               'the same time.')
 
         elif options['regulation'] is None and options['files'] != []:
             files = [os.path.join(stub_base, f) for f in options['files']]
@@ -190,8 +180,8 @@ class Command(BaseCommand):
             reg = options['regulation']
             files = self.find_regulation_files(stub_base, reg)
 
-        # the request dummy is meant to fool the regcore_write api into thinking that
-        # this is a request object
+        # the request dummy is meant to fool the regcore_write api into
+        # thinking that this is a request object
 
         class RequestDummy:
             def __init__(self):
@@ -201,7 +191,7 @@ class Command(BaseCommand):
             data = json.dumps(json.load(open(f, 'r')))
             request = RequestDummy()
             request.body = data
-            
+
             filename_data = f.replace(stub_base + '/', '').split('/')
             file_type = filename_data[0]
 
