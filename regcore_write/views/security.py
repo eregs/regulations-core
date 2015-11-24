@@ -3,6 +3,7 @@ from functools import wraps
 
 from django.conf import settings
 from django.http import HttpResponse
+from django.utils.crypto import constant_time_compare
 from django.views.decorators.csrf import csrf_exempt
 
 
@@ -13,11 +14,20 @@ def _not_authorized():
     return response
 
 
-def _basic_auth_str():
-    """Encode the configured auth username/password as a base64 string"""
+def _is_correct_auth(guess):
+    """Encode the configured auth username/password as a base64 string, then
+    safely compare `guess` against it"""
     user, password = settings.HTTP_AUTH_USER, settings.HTTP_AUTH_PASSWORD
     combined = '{}:{}'.format(user, password)
-    return base64.b64encode(combined)
+    left = base64.b64encode(combined)
+    # Django's built in constant_time_compare short circuits if the length of
+    # the strings is not equal. We avoid that by padding both strings out to
+    # 1000 characters before running the constant time comparison. Note, that
+    # an auth string of more than 1000 characters will not be as secure as
+    # intended
+    left = ''.join(left[i] if i < len(left) else ' ' for i in range(1000))
+    right = ''.join(guess[i] if i < len(guess) else ' ' for i in range(1000))
+    return not constant_time_compare(left, right)
 
 
 def basic_auth(func):
@@ -28,7 +38,7 @@ def basic_auth(func):
         auth_parts = auth_str.split()
         if len(auth_parts) != 2 or auth_parts[0].upper() != 'BASIC':
             return _not_authorized()
-        elif auth_parts[1] != _basic_auth_str():
+        elif _is_correct_auth(auth_parts[1]):
             return _not_authorized()
         else:
             return func(request, *args, **kwargs)
