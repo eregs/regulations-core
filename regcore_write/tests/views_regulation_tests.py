@@ -4,8 +4,6 @@ from unittest import TestCase
 from django.test.client import Client
 from mock import patch
 
-from regcore_write.views.regulation import *
-
 
 class ViewsRegulationTest(TestCase):
 
@@ -60,8 +58,8 @@ class ViewsRegulationTest(TestCase):
             }]
         }
 
-        response = Client().put(url, content_type='application/json',
-                                data=json.dumps(message))
+        Client().put(url, content_type='application/json',
+                     data=json.dumps(message))
         self.assertTrue(db.Regulations.return_value.bulk_put.called)
         bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
         self.assertEqual(3, len(bulk_put_args[0]))
@@ -76,8 +74,8 @@ class ViewsRegulationTest(TestCase):
         self.assertEqual(found, [True, True, True])
 
         db.Regulations.return_value.bulk_put.reset_mock()
-        response = Client().post(url, content_type='application/json',
-                                 data=json.dumps(message))
+        Client().post(url, content_type='application/json',
+                      data=json.dumps(message))
         self.assertTrue(db.Regulations.return_value.bulk_put.called)
         bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
         self.assertEqual(3, len(bulk_put_args[0]))
@@ -91,8 +89,8 @@ class ViewsRegulationTest(TestCase):
             'label': ['p'],
             'children': []
         }
-        response = Client().put(url, content_type='application/json',
-                                data=json.dumps(message))
+        Client().put(url, content_type='application/json',
+                     data=json.dumps(message))
         self.assertTrue(db.Regulations.return_value.bulk_put.called)
         bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
         self.assertEqual(1, len(bulk_put_args[0]))

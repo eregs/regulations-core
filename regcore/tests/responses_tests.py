@@ -1,7 +1,7 @@
 import json
 from unittest import TestCase
 
-from regcore.responses import *
+from regcore.responses import success, user_error
 
 
 class ResponsesTest(TestCase):

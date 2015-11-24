@@ -5,7 +5,8 @@ from datetime import date
 from django.test import TestCase
 from mock import patch
 
-from regcore.db.splitter import *
+from regcore.db.splitter import (
+    SplitterDiffs, SplitterLayers, SplitterNotices, SplitterRegulations)
 from regcore.models import Diff, Layer, Notice, Regulation
 from regcore.tests import db_django_models_tests as dm
 
