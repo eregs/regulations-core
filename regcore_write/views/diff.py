@@ -1,4 +1,4 @@
-import anyjson
+import json
 
 from regcore import db
 from regcore.responses import success, user_error
@@ -9,7 +9,7 @@ from regcore_write.views.security import secure_write
 def add(request, label_id, old_version, new_version):
     """Add the diff to the db, indexed by the label and versions"""
     try:
-        diff = anyjson.deserialize(request.body)
+        diff = json.loads(request.body)
     except ValueError:
         return user_error('invalid format')
 

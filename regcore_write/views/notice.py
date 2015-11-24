@@ -1,4 +1,4 @@
-import anyjson
+import json
 
 from regcore import db
 from regcore.responses import success, user_error
@@ -9,7 +9,7 @@ from regcore_write.views.security import secure_write
 def add(request, docnum):
     """Add the notice to the db"""
     try:
-        notice = anyjson.deserialize(request.body)
+        notice = json.loads(request.body)
     except ValueError:
         return user_error('invalid format')
 
