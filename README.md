@@ -3,6 +3,7 @@ regulations-core
 
 [![Build Status](https://travis-ci.org/cfpb/regulations-core.png)](https://travis-ci.org/cfpb/regulations-core)
 [![Coverage Status](https://coveralls.io/repos/cfpb/regulations-core/badge.png)](https://coveralls.io/r/cfpb/regulations-core)
+[![Code Issues](https://www.quantifiedcode.com/api/v1/project/0cdc7eb543724f60b428aa9cae42bd5f/badge.svg)](https://www.quantifiedcode.com/app/project/0cdc7eb543724f60b428aa9cae42bd5f)
 
 An API that provides an interface for storing and retrieving regulations,
 layers, etc.
