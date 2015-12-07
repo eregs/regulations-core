@@ -22,6 +22,8 @@ This repository is part of a larger project. To read about it, please see
 
 ## Requirements
 
+This application requires Python 2.7
+
 Requirements are retrieved and/or build automatically via pip (see below).
 
 * django - Web framework
