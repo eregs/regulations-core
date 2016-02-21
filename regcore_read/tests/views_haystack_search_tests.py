@@ -40,7 +40,7 @@ class ViewsHaystackSearchTest(TestCase):
 
         regulation_filter.return_value = []
         response = Client().get('/haystack_search?q=test&'
-                                + 'version=678&regulation=123')
+                                'version=678&regulation=123')
         self.assertEqual(200, response.status_code)
         self.assertTrue(regulation_filter.called)
         self.assertEqual('678', version_filter.call_args[1]['version'])

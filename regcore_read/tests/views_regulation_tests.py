@@ -83,13 +83,13 @@ class ViewsRegulationTest(TestCase):
         self.assertEqual(200, response.status_code)
         found = [False, False, False]
         for ver in json.loads(response.content)['versions']:
-            if (ver['version'] == '10' and 'by_date' not in ver
-                    and ver['regulation'] == '1111'):
+            if (ver['version'] == '10' and 'by_date' not in ver and
+                    ver['regulation'] == '1111'):
                 found[0] = True
-            if (ver['version'] == '15' and ver['by_date'] == '2010-10-10'
-                    and ver['regulation'] == '1111'):
+            if (ver['version'] == '15' and ver['by_date'] == '2010-10-10' and
+                    ver['regulation'] == '1111'):
                 found[1] = True
-            if (ver['version'] == '20' and ver['by_date'] == '2011-11-11'
-                    and ver['regulation'] == '1212'):
+            if (ver['version'] == '20' and ver['by_date'] == '2011-11-11' and
+                    ver['regulation'] == '1212'):
                 found[2] = True
         self.assertEqual(found, [True, True, True])
