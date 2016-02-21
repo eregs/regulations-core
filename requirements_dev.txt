@@ -1,2 +1,2 @@
-ipython
-sphinx
+ipython==4.1.1
+sphinx==1.3.5

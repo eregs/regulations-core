@@ -2,6 +2,6 @@
 -e .
 
 # Include optional dependencies for local dev
-django-haystack
-pyelasticsearch
-pysolr
+django-haystack==2.4.1
+pyelasticsearch==1.4
+pysolr==3.4.0
