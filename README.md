@@ -22,7 +22,7 @@ This repository is part of a larger project. To read about it, please see
 
 ## Requirements
 
-This application requires Python 2.7
+This application requires Python 2.7 (including PyPy), 3.3, 3.4, 3.5
 
 Requirements are retrieved and/or build automatically via pip (see below).
 

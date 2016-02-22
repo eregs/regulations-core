@@ -2,12 +2,12 @@ language: python
 sudo: false
 python:
     - "2.7"
-    - "3.2"
     - "3.3"
     - "3.4"
     - "3.5"
     - "pypy"
-    - "pypy3"
+    # - "3.2" pyelasticsearch is not compatible
+    # - "pypy3" requires sudo in travis
 install: 
     - pip install -r requirements.txt
     - pip install -r requirements_test.txt
