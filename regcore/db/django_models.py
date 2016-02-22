@@ -39,8 +39,8 @@ class DMRegulations(object):
         # This does not handle subparts. Ignoring that for now
         Regulation.objects.filter(version=version,
                                   label_string__startswith=root_label).delete()
-        Regulation.objects.bulk_create(map(
-            lambda r: self._transform(r, version), regs), batch_size=100)
+        Regulation.objects.bulk_create(
+            [self._transform(r, version) for r in regs], batch_size=100)
 
     def listing(self, label=None):
         """List regulation version-label pairs that match this label (or are
@@ -71,8 +71,8 @@ class DMLayers(object):
         # This does not handle subparts. Ignoring that for now
         Layer.objects.filter(version=version, name=layer_name,
                              label__startswith=root_label).delete()
-        Layer.objects.bulk_create(map(
-            lambda l: self._transform(l, version, layer_name), layers),
+        Layer.objects.bulk_create(
+            [self._transform(l, version, layer_name) for l in layers],
             batch_size=100)
 
     def get(self, name, label, version):

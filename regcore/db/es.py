@@ -39,7 +39,7 @@ class ESRegulations(object):
     def bulk_put(self, regs, version, root_label):
         """Store all reg objects"""
         self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree',
-                           map(lambda r: self._transform(r, version), regs))
+                           [self._transform(r, version) for r in regs])
 
     def listing(self, label=None):
         """List regulation version-label pairs that match this label (or are
@@ -77,8 +77,7 @@ class ESLayers(object):
         """Store all layer objects"""
         self.es.bulk_index(
             settings.ELASTIC_SEARCH_INDEX, 'layer',
-            map(lambda l: self._transform(l, version, layer_name),
-                layers))
+            [self._transform(l, version, layer_name) for l in layers])
 
     def get(self, name, label, version):
         """Find the layer that matches these parameters"""
