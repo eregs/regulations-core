@@ -10,8 +10,9 @@ class ResponsesTest(TestCase):
         response = user_error("my reason")
         self.assertEqual(400, response.status_code)
         self.assertEqual('application/json', response['Content-type'])
-        self.assertTrue('my reason' in response.content)
-        json.loads(response.content)   # valid json
+        response_text = response.content.decode('utf-8')
+        self.assertTrue('my reason' in response_text)
+        json.loads(response_text)   # valid json
 
     def test_success_empty(self):
         response = success()
@@ -23,4 +24,5 @@ class ResponsesTest(TestCase):
         response = success(structure)
         self.assertEqual(200, response.status_code)
         self.assertEqual('application/json', response['Content-type'])
-        self.assertEqual(structure, json.loads(response.content))
+        self.assertEqual(structure,
+                         json.loads(response.content.decode('utf-8')))
