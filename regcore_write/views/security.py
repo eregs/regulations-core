@@ -19,7 +19,7 @@ def _is_correct_auth(guess):
     safely compare `guess` against it"""
     user, password = settings.HTTP_AUTH_USER, settings.HTTP_AUTH_PASSWORD
     combined = '{}:{}'.format(user, password)
-    left = base64.b64encode(combined)
+    left = base64.b64encode(combined.encode()).decode('utf-8')
     # Django's built in constant_time_compare short circuits if the length of
     # the strings is not equal. We avoid that by padding both strings out to
     # 1000 characters before running the constant time comparison. Note, that
