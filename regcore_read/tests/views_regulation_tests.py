@@ -16,7 +16,8 @@ class ViewsRegulationTest(TestCase):
         self.assertTrue('lab' in args)
         self.assertTrue('ver' in args)
         self.assertEqual(200, response.status_code)
-        self.assertEqual({'some': 'thing'}, json.loads(response.content))
+        self.assertEqual({'some': 'thing'},
+                         json.loads(response.content.decode('utf-8')))
 
     @patch('regcore_read.views.regulation.db')
     def test_get_empty(self, db):
@@ -28,7 +29,7 @@ class ViewsRegulationTest(TestCase):
         self.assertTrue('lab' in args)
         self.assertTrue('ver' in args)
         self.assertEqual(200, response.status_code)
-        self.assertEqual({}, json.loads(response.content))
+        self.assertEqual({}, json.loads(response.content.decode('utf-8')))
 
     @patch('regcore_read.views.regulation.db')
     def test_get_404(self, db):
@@ -57,7 +58,7 @@ class ViewsRegulationTest(TestCase):
         response = Client().get(url)
         self.assertEqual(200, response.status_code)
         found = [False, False, False]
-        for ver in json.loads(response.content)['versions']:
+        for ver in json.loads(response.content.decode('utf-8'))['versions']:
             if ver['version'] == '10' and 'by_date' not in ver:
                 found[0] = True
             if ver['version'] == '15' and ver['by_date'] == '2010-10-10':
@@ -82,7 +83,7 @@ class ViewsRegulationTest(TestCase):
         response = Client().get(url)
         self.assertEqual(200, response.status_code)
         found = [False, False, False]
-        for ver in json.loads(response.content)['versions']:
+        for ver in json.loads(response.content.decode('utf-8'))['versions']:
             if (ver['version'] == '10' and 'by_date' not in ver and
                     ver['regulation'] == '1111'):
                 found[0] = True

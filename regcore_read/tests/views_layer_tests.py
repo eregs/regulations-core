@@ -21,11 +21,11 @@ class ViewsLayerTest(TestCase):
         response = Client().get('/layer/nnn/lll/vvv')
         self.assertEqual(200, response.status_code)
         self.assertEqual({'example': 'response'},
-                         json.loads(response.content))
+                         json.loads(response.content.decode('utf-8')))
 
     @patch('regcore_read.views.layer.db')
     def test_get_results_empty_layer(self, db):
         db.Layers.return_value.get.return_value = {}
         response = Client().get('/layer/nnn/lll/vvv')
         self.assertEqual(200, response.status_code)
-        self.assertEqual({}, json.loads(response.content))
+        self.assertEqual({}, json.loads(response.content.decode('utf-8')))

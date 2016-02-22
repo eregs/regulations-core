@@ -17,7 +17,7 @@ class ViewsDiffTest(TestCase):
         db.Diffs.return_value.get.return_value = {}
         response = Client().get('/diff/lablab/oldold/newnew')
         self.assertEqual(200, response.status_code)
-        self.assertEqual({}, json.loads(response.content))
+        self.assertEqual({}, json.loads(response.content.decode('utf-8')))
 
     @patch('regcore_read.views.diff.db')
     def test_get_results(self, db):
@@ -25,4 +25,4 @@ class ViewsDiffTest(TestCase):
         response = Client().get('/diff/lablab/oldold/newnew')
         self.assertEqual(200, response.status_code)
         self.assertEqual({'example': 'response'},
-                         json.loads(response.content))
+                         json.loads(response.content.decode('utf-8')))
