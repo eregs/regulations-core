@@ -3,33 +3,7 @@ import bz2
 import json
 
 from django.db import models
-from django.db.models.fields.subclassing import Creator
-
-
-class PatchedSubFieldBase(type):
-    """These next bits all related to a bug in Django custom fields which
-    prevent autodoc from succeeding. Once the associated fix is in our
-    version of Django, we can uncomment the metaclass line and delete
-    PatchedCreator and make_contrib
-    https://code.djangoproject.com/ticket/12568"""
-    class PatchedCreator(Creator):
-        def __get__(self, obj, type=None):
-            if obj is None:
-                return self
-            return obj.__dict__[self.field.name]
-
-    def __new__(cls, name, bases, attrs):
-        new_class = super(PatchedSubFieldBase, cls).__new__(cls, name, bases,
-                                                            attrs)
-
-        def contrib(self, cls, name):
-            if attrs.get('contrib_to_class'):
-                attrs.contrib_to_class(self, cls, name)
-            else:
-                super(new_class, self).contribute_to_class(cls, name)
-            setattr(cls, self.name, PatchedSubFieldBase.PatchedCreator(self))
-        new_class.contribute_to_class = contrib
-        return new_class
+import six
 
 
 class CompressedJSONField(models.TextField):
@@ -37,11 +11,10 @@ class CompressedJSONField(models.TextField):
     much smaller. We need this when inserting hundreds of regtext nodes and
     layer nodes into relational databases, lest we blow the packet size limit
     """
-    __metaclass__ = PatchedSubFieldBase
-
     # Now returning to regularly scheduled class definition
     def to_python(self, value):
-        if not isinstance(value, str) and not isinstance(value, unicode):
+        """Convert the string (from the database) into a JSON dictionary"""
+        if not isinstance(value, six.text_type):
             return value
 
         encoding, content = value.split('$', 1)
@@ -55,7 +28,12 @@ class CompressedJSONField(models.TextField):
                 content = bz2.decompress(content)
         return content
 
+    def from_db_value(self, value, expression, connection, context):
+        """Satisfies Django 1.8's custom field types requirements."""
+        return self.to_python(value)
+
     def get_prep_value(self, value):
+        """Convert from a JSON dictionary to a database string"""
         value = json.dumps(value)
         encoding = 'j'
 
@@ -67,7 +45,3 @@ class CompressedJSONField(models.TextField):
                 value = compressed
 
         return encoding + '$' + value
-
-    def __get__(self, instance, instance_type=None):
-        if instance is None:
-            return self
