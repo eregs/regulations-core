@@ -9,8 +9,8 @@ from regcore_write.views.security import secure_write
 def add(request, docnum):
     """Add the notice to the db"""
     try:
-        notice = json.loads(request.body)
-    except ValueError:
+        notice = json.loads(request.body.decode('utf-8'))
+    except (ValueError, UnicodeError):
         return user_error('invalid format')
 
     #   @todo: write a schema that verifies the notice's structure

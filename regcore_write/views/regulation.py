@@ -36,9 +36,9 @@ REGULATION_SCHEMA = {
 def add(request, label_id, version):
     """Add this regulation node and all of its children to the db"""
     try:
-        node = json.loads(request.body)
+        node = json.loads(request.body.decode('utf-8'))
         jsonschema.validate(node, REGULATION_SCHEMA)
-    except ValueError:
+    except (ValueError, UnicodeError):
         return user_error('invalid format')
     except jsonschema.ValidationError:
         return user_error("JSON is invalid")

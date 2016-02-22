@@ -25,8 +25,8 @@ def child_label_of(lhs, rhs):
 def add(request, name, label_id, version):
     """Add the layer node and all of its children to the db"""
     try:
-        layer = json.loads(request.body)
-    except ValueError:
+        layer = json.loads(request.body.decode('utf-8'))
+    except (ValueError, UnicodeError):
         return user_error('invalid format')
 
     if not isinstance(layer, dict):
