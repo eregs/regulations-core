@@ -13,7 +13,7 @@ class ESRegulationsTest(TestCase):
         es.return_value.get.side_effect = ElasticHttpNotFoundError
         esr = ESRegulations()
 
-        self.assertEqual(None, esr.get('lablab', 'verver'))
+        self.assertIsNone(esr.get('lablab', 'verver'))
         self.assertEqual('reg_tree', es.return_value.get.call_args[0][1])
         self.assertEqual('verver/lablab', es.return_value.get.call_args[0][2])
 
@@ -72,14 +72,14 @@ class ESRegulationsTest(TestCase):
         ]}}
         esr = ESRegulations()
         results = esr.listing('lll')
-        self.assertFalse('root' in str(es.return_value.search.call_args[0][0]))
-        self.assertTrue('ll' in str(es.return_value.search.call_args[0][0]))
+        self.assertNotIn('root', str(es.return_value.search.call_args[0][0]))
+        self.assertIn('ll', str(es.return_value.search.call_args[0][0]))
         self.assertEqual([('333', 'lll'), ('aaa', 'lll'), ('four', 'lll'),
                           ('ver1', 'lll')], results)
 
         results = esr.listing()
-        self.assertTrue('root' in str(es.return_value.search.call_args[0][0]))
-        self.assertFalse('ll' in str(es.return_value.search.call_args[0][0]))
+        self.assertIn('root', str(es.return_value.search.call_args[0][0]))
+        self.assertNotIn('ll', str(es.return_value.search.call_args[0][0]))
 
 
 class ESLayersTest(TestCase):
@@ -89,7 +89,7 @@ class ESLayersTest(TestCase):
         es.return_value.get.side_effect = ElasticHttpNotFoundError
         esl = ESLayers()
 
-        self.assertEqual(None, esl.get('namnam', 'lablab', 'verver'))
+        self.assertIsNone(esl.get('namnam', 'lablab', 'verver'))
         self.assertEqual('layer', es.return_value.get.call_args[0][1])
         self.assertEqual('verver/namnam/lablab',
                          es.return_value.get.call_args[0][2])
@@ -137,7 +137,7 @@ class ESNoticesTest(TestCase):
         es.return_value.get.side_effect = ElasticHttpNotFoundError
         esn = ESNotices()
 
-        self.assertEqual(None, esn.get('docdoc'))
+        self.assertIsNone(esn.get('docdoc'))
         self.assertEqual('notice', es.return_value.get.call_args[0][1])
         self.assertEqual('docdoc', es.return_value.get.call_args[0][2])
 
@@ -161,7 +161,7 @@ class ESNoticesTest(TestCase):
         self.assertEqual(3, len(args))
         self.assertEqual('notice', args[1])
         self.assertEqual({"some": "structure"}, args[2])
-        self.assertTrue('id' in kwargs)
+        self.assertIn('id', kwargs)
         self.assertEqual('docdoc', kwargs['id'])
 
     @patch('regcore.db.es.ElasticSearch')
@@ -184,7 +184,7 @@ class ESNoticesTest(TestCase):
                           {'document_number': 9}], esn.listing('876'))
         self.assertEqual('notice',
                          es.return_value.search.call_args[1]['doc_type'])
-        self.assertTrue('876' in str(es.return_value.search.call_args[0][0]))
+        self.assertIn('876', str(es.return_value.search.call_args[0][0]))
 
 
 class ESDiffTest(TestCase):
@@ -194,7 +194,7 @@ class ESDiffTest(TestCase):
         es.return_value.get.side_effect = ElasticHttpNotFoundError
         eds = ESDiffs()
 
-        self.assertEqual(None, eds.get('lablab', 'oldold', 'newnew'))
+        self.assertIsNone(eds.get('lablab', 'oldold', 'newnew'))
         self.assertEqual('diff', es.return_value.get.call_args[0][1])
         self.assertEqual('lablab/oldold/newnew',
                          es.return_value.get.call_args[0][2])

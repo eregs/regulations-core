@@ -9,7 +9,7 @@ from regcore.models import Diff, Layer, Notice, Regulation
 
 class ReusableDMRegulations(object):
     def test_get_404(self):
-        self.assertEqual(None, self.dmr.get('lablab', 'verver'))
+        self.assertIsNone(self.dmr.get('lablab', 'verver'))
 
     def test_get_success(self):
         Regulation(version='verver', label_string='a-b', text='ttt',
@@ -108,7 +108,7 @@ class DMRegulationsTest(TestCase, ReusableDMRegulations):
 
 class ReusableDMLayers(object):
     def test_get_404(self):
-        self.assertEqual(None, self.dml.get('namnam', 'lablab', 'verver'))
+        self.assertIsNone(self.dml.get('namnam', 'lablab', 'verver'))
 
     def test_get_success(self):
         Layer(version='verver', name='namnam', label='lablab',
@@ -160,7 +160,7 @@ class DMLayersTest(TestCase, ReusableDMLayers):
 
 class ReusableDMNotices(object):
     def test_get_404(self):
-        self.assertEqual(None, self.dmn.get('docdoc'))
+        self.assertIsNone(self.dmn.get('docdoc'))
 
     def test_get_success(self):
         Notice(document_number='docdoc', fr_url='frfr',
@@ -239,7 +239,7 @@ class DMNoticesTest(TestCase, ReusableDMNotices):
 
 class ReusableDMDiff(object):
     def test_get_404(self):
-        self.assertEqual(None, self.dmd.get('lablab', 'oldold', 'newnew'))
+        self.assertIsNone(self.dmd.get('lablab', 'oldold', 'newnew'))
 
     def test_get_success(self):
         Diff(label='lablab', old_version='oldold', new_version='newnew',

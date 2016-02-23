@@ -89,10 +89,10 @@ class ViewsLayerTest(TestCase):
             message, '99', '99-Interp', '99-5-Interp', '99-5-a-Interp',
             label='99')
         for saved in (l1, l2, l3):
-            self.assertTrue('99-5-Interp' in saved)
-            self.assertTrue('99-5-a-Interp' in saved)
-        self.assertFalse('99-5-Interp' in l4)
-        self.assertTrue('99-5-a-Interp' in l4)
+            self.assertIn('99-5-Interp', saved)
+            self.assertIn('99-5-a-Interp', saved)
+        self.assertNotIn('99-5-Interp', l4)
+        self.assertIn('99-5-a-Interp', l4)
 
     def test_add_subpart_children(self):
         """Can correctly add layer data to subparts"""
@@ -100,10 +100,10 @@ class ViewsLayerTest(TestCase):
         l1, l2, l3, l4 = self.put_with_mock_data(
             message, '99', '99-Subpart-A', '99-1', '99-1-a', label='99')
         for saved in (l1, l2, l3):
-            self.assertTrue('99-1' in saved)
-            self.assertTrue('99-1-a' in saved)
-        self.assertFalse('99-1' in l4)
-        self.assertTrue('99-1-a' in l4)
+            self.assertIn('99-1', saved)
+            self.assertIn('99-1-a', saved)
+        self.assertNotIn('99-1', l4)
+        self.assertIn('99-1-a', l4)
 
     def test_add_referenced(self):
         """The 'referenced' key is special; it should get added"""

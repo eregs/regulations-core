@@ -13,8 +13,8 @@ class ViewsRegulationTest(TestCase):
         response = Client().get(url)
         self.assertTrue(db.Regulations.return_value.get.called)
         args = db.Regulations.return_value.get.call_args[0]
-        self.assertTrue('lab' in args)
-        self.assertTrue('ver' in args)
+        self.assertIn('lab', args)
+        self.assertIn('ver', args)
         self.assertEqual(200, response.status_code)
         self.assertEqual({'some': 'thing'},
                          json.loads(response.content.decode('utf-8')))
@@ -26,8 +26,8 @@ class ViewsRegulationTest(TestCase):
         response = Client().get(url)
         self.assertTrue(db.Regulations.return_value.get.called)
         args = db.Regulations.return_value.get.call_args[0]
-        self.assertTrue('lab' in args)
-        self.assertTrue('ver' in args)
+        self.assertIn('lab', args)
+        self.assertIn('ver', args)
         self.assertEqual(200, response.status_code)
         self.assertEqual({}, json.loads(response.content.decode('utf-8')))
 
@@ -38,8 +38,8 @@ class ViewsRegulationTest(TestCase):
         response = Client().get(url)
         self.assertTrue(db.Regulations.return_value.get.called)
         args = db.Regulations.return_value.get.call_args[0]
-        self.assertTrue('lab' in args)
-        self.assertTrue('ver' in args)
+        self.assertIn('lab', args)
+        self.assertIn('ver', args)
         self.assertEqual(404, response.status_code)
 
     @patch('regcore_read.views.regulation.db')

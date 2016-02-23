@@ -11,7 +11,7 @@ class ResponsesTest(TestCase):
         self.assertEqual(400, response.status_code)
         self.assertEqual('application/json', response['Content-type'])
         response_text = response.content.decode('utf-8')
-        self.assertTrue('my reason' in response_text)
+        self.assertIn('my reason', response_text)
         json.loads(response_text)   # valid json
 
     def test_success_empty(self):

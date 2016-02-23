@@ -172,7 +172,7 @@ class SplitterNoticesTest(TestCase, dm.ReusableDMNotices):
         self.assertEqual(3, len(args))
         self.assertEqual('notice', args[1])
         self.assertEqual(doc, args[2])
-        self.assertTrue('id' in kwargs)
+        self.assertIn('id', kwargs)
         self.assertEqual('docdoc', kwargs['id'])
 
     @patch('regcore.db.es.ElasticSearch')

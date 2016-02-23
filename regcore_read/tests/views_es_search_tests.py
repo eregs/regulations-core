@@ -28,7 +28,7 @@ class ViewsESSearchTest(TestCase):
         self.assertEqual(200, response.status_code)
         self.assertTrue(es.called)
         self.assertTrue(es.return_value.search.called)
-        self.assertTrue('12345678' in str(es.return_value.search.call_args))
+        self.assertIn('12345678', str(es.return_value.search.call_args))
 
     @patch('regcore_read.views.es_search.ElasticSearch')
     def test_search_version_regulation(self, es):
@@ -38,8 +38,8 @@ class ViewsESSearchTest(TestCase):
         self.assertEqual(200, response.status_code)
         self.assertTrue(es.called)
         self.assertTrue(es.return_value.search.called)
-        self.assertTrue('678' in str(es.return_value.search.call_args))
-        self.assertTrue('123' in str(es.return_value.search.call_args))
+        self.assertIn('678', str(es.return_value.search.call_args))
+        self.assertIn('123', str(es.return_value.search.call_args))
 
     @patch('regcore_read.views.es_search.ElasticSearch')
     def test_search_paging(self, es):
@@ -80,7 +80,7 @@ class ViewsESSearchTest(TestCase):
             {'regulation': 'r', 'version': 'v', 'label_string': '7',
              'title': 't7'}])
 
-        self.assertFalse('title' in results[0])
+        self.assertNotIn('title', results[0])
         self.assertEqual('d1', results[1]['title'])
         self.assertEqual('k2', results[2]['title'])
         self.assertEqual('k3', results[3]['title'])

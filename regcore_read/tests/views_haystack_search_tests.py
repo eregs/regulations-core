@@ -86,7 +86,7 @@ class ViewsHaystackSearchTest(TestCase):
             Result('r', 'v', '7', '', ['t7']),
         ])
 
-        self.assertFalse('title' in results[0])
+        self.assertNotIn('title', results[0])
         self.assertEqual('d1', results[1]['title'])
         self.assertEqual('k2', results[2]['title'])
         self.assertEqual('k3', results[3]['title'])
