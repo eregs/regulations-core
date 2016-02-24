@@ -224,6 +224,8 @@ $ python manage.py test
 
 This will include a report of test coverage.
 
+To run tests across all supported python versions, run `tox`.
+
 ## Linting
 
 We rely on flake8 for linting and style checks. You can run it over everything

@@ -27,7 +27,7 @@ def search(request):
     query = {
         'fields': ['text', 'label', 'version', 'regulation', 'title',
                    'label_string'],
-        'from': page*PAGE_SIZE,
+        'from': page * PAGE_SIZE,
         'size': PAGE_SIZE,
     }
     text_match = {'match': {'text': term}}

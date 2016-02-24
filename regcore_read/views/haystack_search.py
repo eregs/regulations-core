@@ -30,7 +30,7 @@ def search(request):
     if regulation:
         query = query.filter(regulation=regulation)
 
-    start, end = page * PAGE_SIZE, (page+1) * PAGE_SIZE
+    start, end = page * PAGE_SIZE, (page + 1) * PAGE_SIZE
 
     return success({
         'total_hits': len(query),
