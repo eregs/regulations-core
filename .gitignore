@@ -3,4 +3,5 @@
 eregs.db
 regcore.egg-info/
 .coverage
+.tox
 local_settings.py
