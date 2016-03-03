@@ -7,7 +7,11 @@ from regcore.db.django_models import (
 from regcore.models import Diff, Layer, Notice, Regulation
 
 
-class ReusableDMRegulations(object):
+class DMRegulationsTest(TestCase):
+    def setUp(self):
+        Regulation.objects.all().delete()
+        self.dmr = DMRegulations()
+
     def test_get_404(self):
         self.assertIsNone(self.dmr.get('lablab', 'verver'))
 
@@ -42,12 +46,6 @@ class ReusableDMRegulations(object):
 
         results = self.dmr.listing()
         self.assertEqual([('ver1', '1111'), ('ver2', '1111')], results)
-
-
-class DMRegulationsTest(TestCase, ReusableDMRegulations):
-    def setUp(self):
-        Regulation.objects.all().delete()
-        self.dmr = DMRegulations()
 
     def test_bulk_put(self):
         n2 = {'text': 'some text', 'label': ['111', '2'], 'children': [],
@@ -106,7 +104,11 @@ class DMRegulationsTest(TestCase, ReusableDMRegulations):
         self.assertEqual('tyty2', regs[0].node_type)
 
 
-class ReusableDMLayers(object):
+class DMLayersTest(TestCase):
+    def setUp(self):
+        Layer.objects.all().delete()
+        self.dml = DMLayers()
+
     def test_get_404(self):
         self.assertIsNone(self.dml.get('namnam', 'lablab', 'verver'))
 
@@ -116,12 +118,6 @@ class ReusableDMLayers(object):
 
         self.assertEqual({"some": 'body'},
                          self.dml.get('namnam', 'lablab', 'verver'))
-
-
-class DMLayersTest(TestCase, ReusableDMLayers):
-    def setUp(self):
-        Layer.objects.all().delete()
-        self.dml = DMLayers()
 
     def test_bulk_put(self):
         layers = [
@@ -158,7 +154,11 @@ class DMLayersTest(TestCase, ReusableDMLayers):
         self.assertEqual({'111-23': [1]}, layers[0].layer)
 
 
-class ReusableDMNotices(object):
+class DMNoticesTest(TestCase):
+    def setUp(self):
+        Notice.objects.all().delete()
+        self.dmn = DMNotices()
+
     def test_get_404(self):
         self.assertIsNone(self.dmn.get('docdoc'))
 
@@ -189,12 +189,6 @@ class ReusableDMNotices(object):
 
         self.assertEqual(self.dmn.listing(), self.dmn.listing('876'))
         self.assertEqual([], self.dmn.listing('888'))
-
-
-class DMNoticesTest(TestCase, ReusableDMNotices):
-    def setUp(self):
-        Notice.objects.all().delete()
-        self.dmn = DMNotices()
 
     def test_put(self):
         dmn = DMNotices()
@@ -237,7 +231,11 @@ class DMNoticesTest(TestCase, ReusableDMNotices):
         self.assertEqual('url2', notices[0].fr_url)
 
 
-class ReusableDMDiff(object):
+class DMDiffTest(TestCase):
+    def setUp(self):
+        Diff.objects.all().delete()
+        self.dmd = DMDiffs()
+
     def test_get_404(self):
         self.assertIsNone(self.dmd.get('lablab', 'oldold', 'newnew'))
 
@@ -247,12 +245,6 @@ class ReusableDMDiff(object):
 
         self.assertEqual({"some": 'body'},
                          self.dmd.get('lablab', 'oldold', 'newnew'))
-
-
-class DMDiffTest(TestCase, ReusableDMDiff):
-    def setUp(self):
-        Diff.objects.all().delete()
-        self.dmd = DMDiffs()
 
     def test_put(self):
         dmd = DMDiffs()
