@@ -46,4 +46,4 @@ class CompressedJSONField(models.TextField):
                 encoding += 'b6'
                 value = compressed
 
-        return encoding + '$' + value
+        return encoding + u'$' + value
