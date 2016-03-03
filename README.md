@@ -127,23 +127,6 @@ BACKENDS = {
 
 Remember to run migrations.
 
-### Django Models For Data, Elastic Search For Search
-
-If *pyelasticsearch* is installed, you can combine Django models and Elastic
-Search. Use the *regcore_read.views.es_search.search* and use the following
-backend configuration:
-
-```python
-BACKENDS = {
-    'regulations': 'regcore.db.splitter.SplitterRegulations',
-    'layers': 'regcore.db.splitter.SplitterLayers',
-    'notices': 'regcore.db.splitter.SplitterNotices',
-    'diffs': 'regcore.db.splitter.SplitterDiffs'
-}
-```
-
-Be sure to also run migrations
-
 ### Elastic Search For Data and Search
 
 If *pyelasticsearch* is installed, you can use Elastic Search for all of
