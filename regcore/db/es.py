@@ -5,6 +5,8 @@ from django.conf import settings
 from pyelasticsearch import ElasticSearch
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 
+from regcore.db import interface
+
 
 class ESBase(object):
     """Shared code for Elastic Search storage models"""
@@ -21,7 +23,7 @@ class ESBase(object):
             return None
 
 
-class ESRegulations(ESBase):
+class ESRegulations(ESBase, interface.Regulations):
     """Implementation of Elastic Search as regulations backend"""
     def get(self, label, version):
         """Find the regulation label + version"""
@@ -62,7 +64,7 @@ class ESRegulations(ESBase):
                       for res in result['hits']['hits'])
 
 
-class ESLayers(ESBase):
+class ESLayers(ESBase, interface.Layers):
     """Implementation of Elastic Search as layers backend"""
     def _transform(self, layer, version, layer_name):
         """Add some meta data fields which are ES specific"""
@@ -90,7 +92,7 @@ class ESLayers(ESBase):
             return layer['layer']
 
 
-class ESNotices(ESBase):
+class ESNotices(ESBase, interface.Notices):
     """Implementation of Elastic Search as notice backend"""
     def put(self, doc_number, notice):
         """Store a single notice"""
@@ -118,7 +120,7 @@ class ESNotices(ESBase):
         return notices
 
 
-class ESDiffs(ESBase):
+class ESDiffs(ESBase, interface.Diffs):
     """Implementation of Elastic Search as diff backend"""
     @staticmethod
     def to_id(label, old, new):
