@@ -48,7 +48,6 @@ def add(request, label_id, version):
 
     to_save = []
     labels_seen = set()
-    manager = db.Regulations()
 
     def add_node(node, parent=None):
         label_tuple = tuple(node['label'])
@@ -57,12 +56,9 @@ def add(request, label_id, version):
         labels_seen.add(label_tuple)
 
         node = dict(node, parent=parent)   # copy
-        children = node.pop('children')
-        row = manager._transform(node, version)
-        row.parent = parent
-        to_save.append(row)
-        for child in children:
-            add_node(child, parent=row)
+        to_save.append((node, parent))
+        for child in node['children']:
+            add_node(child, parent=node)
     add_node(node)
 
     db.Regulations().bulk_put(to_save, version, label_id)

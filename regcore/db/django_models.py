@@ -45,14 +45,21 @@ class DMRegulations(object):
             ret['title'] = reg.title
         return ret
 
-    def _transform(self, reg, version):
+    def _transform(self, reg, version, parent=None):
         """Create the Django object"""
-        return Regulation(version=version,
-                          label_string='-'.join(reg['label']),
-                          text=reg['text'],
-                          title=reg.get('title', ''),
-                          node_type=reg['node_type'],
-                          root=(len(reg['label']) == 1))
+        return Regulation(
+            id=self._get_id(reg, version),
+            parent_id=self._get_id(parent, version) if parent else None,
+            version=version,
+            label_string='-'.join(reg['label']),
+            text=reg['text'],
+            title=reg.get('title', ''),
+            node_type=reg['node_type'],
+            root=(len(reg['label']) == 1),
+        )
+
+    def _get_id(self, reg, version):
+        return '{}-{}'.format(version, '-'.join(reg['label']))
 
     def bulk_put(self, regs, version, root_label):
         """Store all reg objects"""
@@ -60,20 +67,20 @@ class DMRegulations(object):
         Regulation.objects.filter(version=version,
                                   label_string__startswith=root_label).delete()
 
+        rows = [self._transform(reg, version, parent) for reg, parent in regs]
+
         # Save root node to establish `tree_id`
-        regs[0].save()
+        rows[0].save()
 
         # Bulk save children with placeholder tree values
-        for reg in regs[1:]:
-            reg.set_id()
-            reg.tree_id = regs[0].tree_id
-            reg.parent_id = reg.parent.id
-            reg.level, reg.lft, reg.rght = 1, 1, 1
+        for row in rows[1:]:
+            row.tree_id = rows[0].tree_id
+            row.level, row.lft, row.rght = 1, 1, 1
         with Regulation.objects.disable_mptt_updates():
-            Regulation.objects.bulk_create(regs[1:], batch_size=50)
+            Regulation.objects.bulk_create(rows[1:], batch_size=50)
 
         # Rebuild partial tree from root node
-        Regulation.objects.partial_rebuild(regs[0].tree_id)
+        Regulation.objects.partial_rebuild(rows[0].tree_id)
 
     def listing(self, label=None):
         """List regulation version-label pairs that match this label (or are

@@ -22,13 +22,6 @@ class Regulation(MPTTModel):
     class MPTTMeta:
         order_insertion_by = ['label_string']
 
-    def set_id(self):
-        self.id = '{}-{}'.format(self.version, self.label_string)
-
-    def save(self, *args, **kwargs):
-        self.set_id()
-        super(Regulation, self).save(*args, **kwargs)
-
 
 class Layer(models.Model):
     version = models.SlugField(max_length=20)
