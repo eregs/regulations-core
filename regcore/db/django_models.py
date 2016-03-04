@@ -1,28 +1,49 @@
 """Each of the data structures relevant to the API (regulations, notices,
 etc.), implemented using Django models"""
+import collections
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from regcore.models import Diff, Layer, Notice, Regulation
+
+
+def get_tree(regs):
+    tree = collections.defaultdict(list)
+    for reg in regs:
+        if reg.parent_id is not None:
+            tree[reg.parent_id].append(reg)
+    return tree
 
 
 class DMRegulations(object):
     """Implementation of Django-models as regulations backend"""
     def get(self, label, version):
         """Find the regulation label + version"""
-        try:
-            reg = Regulation.objects.get(version=version,
-                                         label_string=label)
-            as_dict = {
-                'label': reg.label_string.split('-'),
-                'text': reg.text,
-                'node_type': reg.node_type,
-                'children': reg.children
-            }
-            if reg.title:
-                as_dict['title'] = reg.title
-            return as_dict
-        except ObjectDoesNotExist:
+        regs = Regulation.objects.filter(
+            version=version,
+            label_string=label,
+        ).get_descendants(
+            include_self=True,
+        )
+        regs = list(regs.all())
+        if not regs:
             return None
+        tree = get_tree(regs)
+        return self.serialize(regs[0], tree)
+
+    def serialize(self, reg, tree):
+        ret = {
+            'label': reg.label_string.split('-'),
+            'text': reg.text,
+            'node_type': reg.node_type,
+            'children': [
+                self.serialize(child, tree)
+                for child in tree.get(reg.id, [])
+            ],
+        }
+        if reg.title:
+            ret['title'] = reg.title
+        return ret
 
     def _transform(self, reg, version):
         """Create the Django object"""
@@ -31,16 +52,15 @@ class DMRegulations(object):
                           text=reg['text'],
                           title=reg.get('title', ''),
                           node_type=reg['node_type'],
-                          root=(len(reg['label']) == 1),
-                          children=reg['children'])
+                          root=(len(reg['label']) == 1))
 
     def bulk_put(self, regs, version, root_label):
         """Store all reg objects"""
         # This does not handle subparts. Ignoring that for now
         Regulation.objects.filter(version=version,
                                   label_string__startswith=root_label).delete()
-        Regulation.objects.bulk_create(
-            [self._transform(r, version) for r in regs], batch_size=100)
+        for reg in regs:
+            reg.save()
 
     def listing(self, label=None):
         """List regulation version-label pairs that match this label (or are

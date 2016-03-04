@@ -3,6 +3,7 @@ import json
 from regcore import db
 from regcore.responses import success, user_error
 from regcore_write.views.security import secure_write
+from regcore.models import Regulation
 
 
 def child_label_of(lhs, rhs):
@@ -48,28 +49,35 @@ def child_layers(layer_name, root_label, version, root_layer):
     We need to split that layer up and store it per node within the
     regulation. If a reg has 100 nodes, but the layer only has 3 entries, it
     will still store 100 layer models -- many may be empty"""
-    root = db.Regulations().get(root_label, version)
-    if not root:
+    regs = Regulation.objects.filter(
+        label_string=root_layer,
+        version=version,
+    ).get_descendants(
+        include_self=True,
+    )
+    regs = list(regs)
+
+    if not regs:
         return []
 
     to_save = []
 
     def find_labels(node):
         child_labels = []
-        for child in node['children']:
+        children = [reg for reg in regs if reg.parent == node]
+        for child in children:
             child_labels.extend(find_labels(child))
 
-        label_id = '-'.join(node['label'])
-
-        sub_layer = {'label': label_id}
+        sub_layer = {'label': node.label_string}
         for key in root_layer:
-            #   'referenced' is a special case of the definitions layer
-            if key == label_id or key in child_labels or key == 'referenced':
+            # 'referenced' is a special case of the definitions layer
+            if key == node.label_string or key in child_labels or key == 'referenced':
                 sub_layer[key] = root_layer[key]
 
         to_save.append(sub_layer)
 
-        return child_labels + [label_id]
+        return child_labels + [node.label_string]
 
-    find_labels(root)
+    find_labels(regs[0])
+
     return to_save
