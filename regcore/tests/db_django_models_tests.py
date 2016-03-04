@@ -9,7 +9,6 @@ from regcore.models import Diff, Layer, Notice, Regulation
 
 class DMRegulationsTest(TestCase):
     def setUp(self):
-        Regulation.objects.all().delete()
         self.dmr = DMRegulations()
 
     def test_get_404(self):
@@ -106,7 +105,6 @@ class DMRegulationsTest(TestCase):
 
 class DMLayersTest(TestCase):
     def setUp(self):
-        Layer.objects.all().delete()
         self.dml = DMLayers()
 
     def test_get_404(self):
@@ -156,7 +154,6 @@ class DMLayersTest(TestCase):
 
 class DMNoticesTest(TestCase):
     def setUp(self):
-        Notice.objects.all().delete()
         self.dmn = DMNotices()
 
     def test_get_404(self):
@@ -233,7 +230,6 @@ class DMNoticesTest(TestCase):
 
 class DMDiffTest(TestCase):
     def setUp(self):
-        Diff.objects.all().delete()
         self.dmd = DMDiffs()
 
     def test_get_404(self):
