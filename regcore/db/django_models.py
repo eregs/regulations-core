@@ -59,8 +59,21 @@ class DMRegulations(object):
         # This does not handle subparts. Ignoring that for now
         Regulation.objects.filter(version=version,
                                   label_string__startswith=root_label).delete()
-        for reg in regs:
-            reg.save()
+
+        # Save root node to establish `tree_id`
+        regs[0].save()
+
+        # Bulk save children with placeholder tree values
+        for reg in regs[1:]:
+            reg.set_id()
+            reg.tree_id = regs[0].tree_id
+            reg.parent_id = reg.parent.id
+            reg.level, reg.lft, reg.rght = 1, 1, 1
+        with Regulation.objects.disable_mptt_updates():
+            Regulation.objects.bulk_create(regs[1:], batch_size=50)
+
+        # Rebuild partial tree from root node
+        Regulation.objects.partial_rebuild(regs[0].tree_id)
 
     def listing(self, label=None):
         """List regulation version-label pairs that match this label (or are
