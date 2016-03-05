@@ -3,6 +3,7 @@ import json
 from regcore import db
 from regcore.responses import success, user_error
 from regcore_write.views.security import secure_write
+from regcore.db.django_models import get_adjacency_map
 from regcore.models import Regulation
 
 
@@ -60,12 +61,12 @@ def child_layers(layer_name, root_label, version, root_layer):
     if not regs:
         return []
 
+    adjacency_map = get_adjacency_map(regs)
     to_save = []
 
     def find_labels(node):
         child_labels = []
-        children = [reg for reg in regs if reg.parent_id == node.id]
-        for child in children:
+        for child in adjacency_map.get(node.id, []):
             child_labels.extend(find_labels(child))
 
         sub_layer = {'label': node.label_string}
