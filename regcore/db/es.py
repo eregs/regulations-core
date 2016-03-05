@@ -29,6 +29,7 @@ class ESRegulations(object):
     def _transform(self, reg, version):
         """Add some meta data fields which are ES specific"""
         node = dict(reg)    # copy
+        node.pop('parent')
         node['version'] = version
         node['label_string'] = '-'.join(node['label'])
         node['regulation'] = node['label'][0]
@@ -39,7 +40,7 @@ class ESRegulations(object):
     def bulk_put(self, regs, version, root_label):
         """Store all reg objects"""
         self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree',
-                           [self._transform(r, version) for r, _ in regs])
+                           [self._transform(r, version) for r in regs])
 
     def listing(self, label=None):
         """List regulation version-label pairs that match this label (or are

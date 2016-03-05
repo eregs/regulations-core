@@ -7,12 +7,15 @@ from django.core.exceptions import ObjectDoesNotExist
 from regcore.models import Diff, Layer, Notice, Regulation
 
 
-def get_tree(regs):
-    tree = collections.defaultdict(list)
+def get_adjacency_map(regs):
+    """Build mapping from node IDs to child records
+    :param regs: List of `Regulation` records
+    """
+    ret = collections.defaultdict(list)
     for reg in regs:
         if reg.parent_id is not None:
-            tree[reg.parent_id].append(reg)
-    return tree
+            ret[reg.parent_id].append(reg)
+    return ret
 
 
 class DMRegulations(object):
@@ -28,28 +31,32 @@ class DMRegulations(object):
         regs = list(regs.all())
         if not regs:
             return None
-        tree = get_tree(regs)
-        return self.serialize(regs[0], tree)
+        adjacency_map = get_adjacency_map(regs)
+        return self._serialize(regs[0], adjacency_map)
 
-    def serialize(self, reg, tree):
+    def _serialize(self, reg, adjacency_map):
         ret = {
             'label': reg.label_string.split('-'),
             'text': reg.text,
             'node_type': reg.node_type,
             'children': [
-                self.serialize(child, tree)
-                for child in tree.get(reg.id, [])
+                self._serialize(child, adjacency_map)
+                for child in adjacency_map.get(reg.id, [])
             ],
         }
         if reg.title:
             ret['title'] = reg.title
         return ret
 
-    def _transform(self, reg, version, parent=None):
+    def _transform(self, reg, version):
         """Create the Django object"""
         return Regulation(
             id=self._get_id(reg, version),
-            parent_id=self._get_id(parent, version) if parent else None,
+            parent_id=(
+                self._get_id(reg['parent'], version)
+                if reg.get('parent')
+                else None
+            ),
             version=version,
             label_string='-'.join(reg['label']),
             text=reg['text'],
@@ -67,20 +74,17 @@ class DMRegulations(object):
         Regulation.objects.filter(version=version,
                                   label_string__startswith=root_label).delete()
 
-        rows = [self._transform(reg, version, parent) for reg, parent in regs]
-
-        # Save root node to establish `tree_id`
-        rows[0].save()
-
-        # Bulk save children with placeholder tree values
-        for row in rows[1:]:
-            row.tree_id = rows[0].tree_id
-            row.level, row.lft, row.rght = 1, 1, 1
-        with Regulation.objects.disable_mptt_updates():
-            Regulation.objects.bulk_create(rows[1:], batch_size=50)
-
-        # Rebuild partial tree from root node
-        Regulation.objects.partial_rebuild(rows[0].tree_id)
+        rows = [self._transform(reg, version) for reg in regs]
+        by_id = {row.id: row for row in rows}
+        for row in rows:
+            Regulation.objects.insert_node(
+                row,
+                target=by_id.get(row.parent_id),
+                allow_existing_pk=True,
+                refresh_target=False,
+                save=False,
+            )
+        Regulation.objects.bulk_create(rows, batch_size=50)
 
     def listing(self, label=None):
         """List regulation version-label pairs that match this label (or are

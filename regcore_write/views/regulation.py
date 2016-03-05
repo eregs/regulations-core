@@ -56,7 +56,7 @@ def add(request, label_id, version):
         labels_seen.add(label_tuple)
 
         node = dict(node, parent=parent)   # copy
-        to_save.append((node, parent))
+        to_save.append(node)
         for child in node['children']:
             add_node(child, parent=node)
     add_node(node)

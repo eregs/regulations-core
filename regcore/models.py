@@ -7,7 +7,8 @@ from regcore.fields import CompressedJSONField
 
 class Regulation(MPTTModel):
     id = models.TextField(primary_key=True)
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children', db_index=True)
+    parent = TreeForeignKey('self', null=True, blank=True,
+                            related_name='children', db_index=True)
     version = models.SlugField(max_length=20)
     label_string = models.SlugField(max_length=200)
     text = models.TextField()
@@ -18,9 +19,6 @@ class Regulation(MPTTModel):
     class Meta:
         index_together = (('version', 'label_string'),)
         unique_together = (('version', 'label_string'),)
-
-    class MPTTMeta:
-        order_insertion_by = ['label_string']
 
 
 class Layer(models.Model):
