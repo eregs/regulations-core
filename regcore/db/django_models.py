@@ -4,6 +4,7 @@ import collections
 
 from django.core.exceptions import ObjectDoesNotExist
 
+from regcore.db import interface
 from regcore.models import Diff, Layer, Notice, Regulation
 
 
@@ -18,7 +19,7 @@ def get_adjacency_map(regs):
     return ret
 
 
-class DMRegulations(object):
+class DMRegulations(interface.Regulations):
     """Implementation of Django-models as regulations backend"""
     def get(self, label, version):
         """Find the regulation label + version"""
@@ -100,7 +101,7 @@ class DMRegulations(object):
         return versions
 
 
-class DMLayers(object):
+class DMLayers(interface.Layers):
     """Implementation of Django-models as layers backend"""
     def _transform(self, layer, version, layer_name):
         """Create a Django object"""
@@ -129,7 +130,7 @@ class DMLayers(object):
             return None
 
 
-class DMNotices(object):
+class DMNotices(interface.Notices):
     """Implementation of Django-models as notice backend"""
     def put(self, doc_number, notice):
         """Store a single notice"""
@@ -169,7 +170,7 @@ class DMNotices(object):
         return list(results)  # maintain compatibility with other backends
 
 
-class DMDiffs(object):
+class DMDiffs(interface.Diffs):
     """Implementation of Django-models as diff backend"""
     def put(self, label, old_version, new_version, diff):
         """Store a diff between two versions of a regulation node"""

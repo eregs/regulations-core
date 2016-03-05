@@ -5,26 +5,35 @@ from django.conf import settings
 from pyelasticsearch import ElasticSearch
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 
+from regcore.db import interface
 
-class ESRegulations(object):
-    """Implementation of Elastic Search as regulations backend"""
+
+class ESBase(object):
+    """Shared code for Elastic Search storage models"""
     def __init__(self):
         self.es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
 
+    def safe_fetch(self, doc_type, id):
+        """Attempt to retrieve a document from Elastic Search.
+        :return: Found document, if it exists, otherwise None"""
+        try:
+            result = self.es.get(settings.ELASTIC_SEARCH_INDEX, doc_type, id)
+            return result['_source']
+        except ElasticHttpNotFoundError:
+            return None
+
+
+class ESRegulations(ESBase, interface.Regulations):
+    """Implementation of Elastic Search as regulations backend"""
     def get(self, label, version):
         """Find the regulation label + version"""
-        try:
-            result = self.es.get(settings.ELASTIC_SEARCH_INDEX, 'reg_tree',
-                                 version + '/' + label)
-
-            reg_node = result['_source']
+        reg_node = self.safe_fetch('reg_tree', version + '/' + label)
+        if reg_node is not None:
             del reg_node['regulation']
             del reg_node['version']
             del reg_node['label_string']
             del reg_node['id']
             return reg_node
-        except ElasticHttpNotFoundError:
-            return None
 
     def _transform(self, reg, version):
         """Add some meta data fields which are ES specific"""
@@ -56,11 +65,8 @@ class ESRegulations(object):
                       for res in result['hits']['hits'])
 
 
-class ESLayers(object):
+class ESLayers(ESBase, interface.Layers):
     """Implementation of Elastic Search as layers backend"""
-    def __init__(self):
-        self.es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
-
     def _transform(self, layer, version, layer_name):
         """Add some meta data fields which are ES specific"""
         layer = dict(layer)     # copy
@@ -82,20 +88,13 @@ class ESLayers(object):
 
     def get(self, name, label, version):
         """Find the layer that matches these parameters"""
-        try:
-            result = self.es.get(settings.ELASTIC_SEARCH_INDEX, 'layer',
-                                 version + '/' + name + '/' + label)
-
-            return result['_source']['layer']
-        except ElasticHttpNotFoundError:
-            return None
+        layer = self.safe_fetch('layer', version + '/' + name + '/' + label)
+        if layer is not None:
+            return layer['layer']
 
 
-class ESNotices(object):
+class ESNotices(ESBase, interface.Notices):
     """Implementation of Elastic Search as notice backend"""
-    def __init__(self):
-        self.es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
-
     def put(self, doc_number, notice):
         """Store a single notice"""
         self.es.index(settings.ELASTIC_SEARCH_INDEX, 'notice', notice,
@@ -103,13 +102,7 @@ class ESNotices(object):
 
     def get(self, doc_number):
         """Find the associated notice"""
-        try:
-            result = self.es.get(settings.ELASTIC_SEARCH_INDEX, 'notice',
-                                 doc_number)
-
-            return result['_source']
-        except ElasticHttpNotFoundError:
-            return None
+        return self.safe_fetch('notice', doc_number)
 
     def listing(self, part=None):
         """All notices or filtered by cfr_part"""
@@ -128,11 +121,8 @@ class ESNotices(object):
         return notices
 
 
-class ESDiffs(object):
+class ESDiffs(ESBase, interface.Diffs):
     """Implementation of Elastic Search as diff backend"""
-    def __init__(self):
-        self.es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
-
     @staticmethod
     def to_id(label, old, new):
         return "%s/%s/%s" % (label, old, new)
@@ -150,9 +140,7 @@ class ESDiffs(object):
 
     def get(self, label, old_version, new_version):
         """Find the associated diff"""
-        try:
-            result = self.es.get(settings.ELASTIC_SEARCH_INDEX, 'diff',
-                                 self.to_id(label, old_version, new_version))
-            return result['_source']['diff']
-        except ElasticHttpNotFoundError:
-            return None
+        diff = self.safe_fetch('diff',
+                               self.to_id(label, old_version, new_version))
+        if diff is not None:
+            return diff['diff']

@@ -1,6 +1,7 @@
 import base64
 import bz2
 import json
+import logging
 
 from django.db import models
 import six
@@ -11,21 +12,21 @@ class CompressedJSONField(models.TextField):
     much smaller. We need this when inserting hundreds of regtext nodes and
     layer nodes into relational databases, lest we blow the packet size limit
     """
-    # Now returning to regularly scheduled class definition
     def to_python(self, value):
         """Convert the string (from the database) into a JSON dictionary"""
         if not isinstance(value, six.text_type):
             return value
 
         encoding, content = value.split('$', 1)
-        encoding = reversed(encoding)
-        for encoding_type in encoding:
-            if encoding_type == 'j':
-                content = json.loads(content)
-            elif encoding_type == '6':
-                content = base64.decodestring(content)
-            elif encoding_type == 'b':
-                content = bz2.decompress(content)
+        if encoding == 'j':
+            content = json.loads(content)
+        elif encoding == 'jb6':
+            content = base64.decodestring(content.encode('utf-8'))
+            content = bz2.decompress(content)
+            content = json.loads(content.decode('utf-8'))
+        else:
+            logging.warning("Unknown encoding: %s", encoding)
+            content = {}
         return content
 
     def from_db_value(self, value, expression, connection, context):
@@ -39,9 +40,10 @@ class CompressedJSONField(models.TextField):
 
         if len(value) > 1000:  # somewhat arbitrary length to start compression
             # check if compressing is smaller
-            compressed = base64.encodestring(bz2.compress(value))
+            compressed = base64.encodestring(bz2.compress(
+                value.encode('utf-8'))).decode('utf-8')
             if len(compressed) < len(value):
                 encoding += 'b6'
                 value = compressed
 
-        return encoding + '$' + value
+        return encoding + u'$' + value
