@@ -38,6 +38,7 @@ class ESRegulations(ESBase, interface.Regulations):
     def _transform(self, reg, version):
         """Add some meta data fields which are ES specific"""
         node = dict(reg)    # copy
+        node.pop('parent')
         node['version'] = version
         node['label_string'] = '-'.join(node['label'])
         node['regulation'] = node['label'][0]
