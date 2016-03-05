@@ -50,7 +50,7 @@ def child_layers(layer_name, root_label, version, root_layer):
     regulation. If a reg has 100 nodes, but the layer only has 3 entries, it
     will still store 100 layer models -- many may be empty"""
     regs = Regulation.objects.filter(
-        label_string=root_layer,
+        label_string=root_label,
         version=version,
     ).get_descendants(
         include_self=True,
@@ -64,14 +64,14 @@ def child_layers(layer_name, root_label, version, root_layer):
 
     def find_labels(node):
         child_labels = []
-        children = [reg for reg in regs if reg.parent == node]
+        children = [reg for reg in regs if reg.parent_id == node.id]
         for child in children:
             child_labels.extend(find_labels(child))
 
         sub_layer = {'label': node.label_string}
         for key in root_layer:
             # 'referenced' is a special case of the definitions layer
-            if key == node.label_string or key in child_labels or key == 'referenced':
+            if key in [node.label_string, 'referenced'] or key in child_labels:
                 sub_layer[key] = root_layer[key]
 
         to_save.append(sub_layer)
