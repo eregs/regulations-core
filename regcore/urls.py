@@ -8,11 +8,13 @@ from collections import defaultdict
 from django.conf import settings
 from django.conf.urls import patterns
 
-from regcore_read.views import diff as rdiff, layer as rlayer
-from regcore_read.views import notice as rnotice, regulation as rregulation
+from regcore_read.views import (
+    diff as rdiff, layer as rlayer, notice as rnotice,
+    regulation as rregulation)
 from regcore_read.views.haystack_search import search
-from regcore_write.views import diff as wdiff, layer as wlayer
-from regcore_write.views import notice as wnotice, regulation as wregulation
+from regcore_write.views import (
+    diff as wdiff, layer as wlayer, notice as wnotice, preamble as wpreamble,
+    regulation as wregulation)
 from regcore.urls_utils import by_verb_url
 
 
@@ -36,6 +38,7 @@ if 'regcore_write' in settings.INSTALLED_APPS:
         mapping['layer'][verb] = wlayer.add
         mapping['notice'][verb] = wnotice.add
         mapping['regulation'][verb] = wregulation.add
+        mapping['preamble'][verb] = wpreamble.add
 
 
 # Re-usable URL patterns.
@@ -59,5 +62,7 @@ urlpatterns = patterns(
     by_verb_url(r'^regulation$', 'all-reg-versions', mapping['reg-versions']),
     by_verb_url(r'^regulation/%s$' % seg('label_id'),
                 'reg-versions', mapping['reg-versions']),
+    by_verb_url(r'^preamble/%s$' % seg('docnum'), 'preamble',
+                mapping['preamble']),
     by_verb_url(r'^search$', 'search', mapping['search'])
 )
