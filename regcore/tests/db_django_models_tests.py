@@ -1,6 +1,7 @@
 from datetime import date
 
 from django.test import TestCase
+import six
 
 from regcore.db.django_models import (
     DMDiffs, DMLayers, DMNotices, DMRegulations)
@@ -69,15 +70,15 @@ class DMRegulationsTest(TestCase):
             'version': 'verver', 'label_string': '111-3', 'text': 'other',
             'title': '', 'node_type': 'tyty2', 'children': [], 'root': False}
         fields = expected_root.keys()
-        self.assertItemsEqual(Regulation.objects.all().values(*fields),
-                              [expected_root, expected_n2, expected_n3])
+        six.assertCountEqual(self, Regulation.objects.all().values(*fields),
+                             [expected_root, expected_n2, expected_n3])
 
         root['title'] = 'New Title'
         self.dmr.bulk_put(nodes, 'verver', '111')
 
         expected_root['title'] = 'New Title'
-        self.assertItemsEqual(Regulation.objects.all().values(*fields),
-                              [expected_root, expected_n2, expected_n3])
+        six.assertCountEqual(self, Regulation.objects.all().values(*fields),
+                             [expected_root, expected_n2, expected_n3])
 
 
 class DMLayersTest(TestCase):
@@ -108,15 +109,15 @@ class DMLayersTest(TestCase):
             {'version': 'verver', 'name': 'name', 'label': '111-23',
              'layer': {'111-23': []}}]
         fields = expected[0].keys()
-        self.assertItemsEqual(Layer.objects.all().values(*fields),
-                              expected)
+        six.assertCountEqual(self, Layer.objects.all().values(*fields),
+                             expected)
 
         layers[1] = {'111-23': [1], 'label': '111-23'}
         self.dml.bulk_put(layers, 'verver', 'name', '111')
 
         expected[1]['layer'] = {'111-23': [1]}
-        self.assertItemsEqual(Layer.objects.all().values(*fields),
-                              expected)
+        six.assertCountEqual(self, Layer.objects.all().values(*fields),
+                             expected)
 
 
 class DMNoticesTest(TestCase):
@@ -170,15 +171,15 @@ class DMNoticesTest(TestCase):
                     "noticecfrpart__cfr_part": '222',
                     "notice": doc}
         fields = expected.keys()
-        self.assertItemsEqual(Notice.objects.all().values(*fields),
-                              [expected])
+        six.assertCountEqual(self, Notice.objects.all().values(*fields),
+                             [expected])
 
         doc['fr_url'] = 'url2'
         self.dmn.put('docdoc', doc)
 
         expected['fr_url'] = 'url2'
-        self.assertItemsEqual(Notice.objects.all().values(*fields),
-                              [expected])
+        six.assertCountEqual(self, Notice.objects.all().values(*fields),
+                             [expected])
 
 
 class DMDiffTest(TestCase):
@@ -202,8 +203,10 @@ class DMDiffTest(TestCase):
         expected = {"label": "lablab", "old_version": "oldold",
                     "new_version": "newnew", "diff": {"some": "structure"}}
         fields = expected.keys()
-        self.assertItemsEqual(Diff.objects.all().values(*fields), [expected])
+        six.assertCountEqual(self, Diff.objects.all().values(*fields),
+                             [expected])
 
         self.dmd.put('lablab', 'oldold', 'newnew', {"other": "structure"})
         expected['diff'] = {'other': 'structure'}
-        self.assertItemsEqual(Diff.objects.all().values(*fields), [expected])
+        six.assertCountEqual(self, Diff.objects.all().values(*fields),
+                             [expected])
