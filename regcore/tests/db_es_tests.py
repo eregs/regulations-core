@@ -4,8 +4,7 @@ from unittest import TestCase
 from mock import patch
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 
-from regcore.db.es import (
-    ESDiffs, ESLayers, ESNotices, ESRegulations)
+from regcore.db.es import ESDiffs, ESLayers, ESNotices, ESRegulations
 
 
 class ESBase(object):
@@ -106,19 +105,19 @@ class ESRegulationsTest(TestCase, ESBase):
 
 class ESLayersTest(TestCase, ESBase):
     def test_get_404(self):
-        with self.expect_get('layers', 'verver/namnam/lablab'):
+        with self.expect_get('layer', 'verver/namnam/lablab'):
             self.assertIsNone(ESLayers().get('namnam', 'lablab', 'verver'))
 
     def test_get_success(self):
         return_value = {'layer': {'some': 'body'}}
-        with self.expect_get('layers', 'verver/namnam/lablab', return_value):
+        with self.expect_get('layer', 'verver/namnam/lablab', return_value):
             self.assertEqual(ESLayers().get('namnam', 'lablab', 'verver'),
                              {"some": "body"})
 
     def test_bulk_put(self):
         layers = [{'111-22': [], '111-22-a': [], 'label': '111-22'},
                   {'111-23': [], 'label': '111-23'}]
-        with self.expect_bulk_put('layers', 2):
+        with self.expect_bulk_put('layer', 2):
             ESLayers().bulk_put(layers, 'verver', 'name', '111')
 
         del layers[0]['label']
