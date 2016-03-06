@@ -1,123 +1,125 @@
+from contextlib import contextmanager
 from unittest import TestCase
 
 from mock import patch
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 
-from regcore.db.es import ESDiffs, ESLayers, ESNotices, ESRegulations
+from regcore.db.es import (
+    ESDiffs, ESLayers, ESNotices, ESRegulations)
 
 
-class ESRegulationsTest(TestCase):
+class ESBase(object):
+    """Mixin methods for boiler plate around mocking out Elastic Search. Each
+    method sets the passed arguments as self.call_args"""
+    @contextmanager
+    def expect_get(self, doc_type, id, doc=None):
+        """Expect an attempt to find a single document
+           :param doc: document to return or None to test no document"""
+        with patch('regcore.db.es.ElasticSearch') as es:
+            if doc is None:
+                es.return_value.get.side_effect = ElasticHttpNotFoundError
+            else:
+                es.return_value.get.return_value = {'_source': doc}
+            yield
+            self.call_args = es.return_value.get.call_args
+        self.assertEqual((doc_type, id), self.call_args[0][1:])
 
-    @patch('regcore.db.es.ElasticSearch')
-    def test_get_404(self, es):
-        es.return_value.get.side_effect = ElasticHttpNotFoundError
-        esr = ESRegulations()
+    @contextmanager
+    def expect_put(self, doc_type, id):
+        """Expect a document to be written. Set the arguments passed to
+        self.call_args"""
+        with patch('regcore.db.es.ElasticSearch') as es:
+            yield
+            self.call_args = es.return_value.index.call_args
+            self.assertEqual(doc_type, self.call_args[0][1])
+            self.assertEqual(id, self.call_args[1].get('id'))
 
-        self.assertIsNone(esr.get('lablab', 'verver'))
-        self.assertEqual('reg_tree', es.return_value.get.call_args[0][1])
-        self.assertEqual('verver/lablab', es.return_value.get.call_args[0][2])
+    @contextmanager
+    def expect_bulk_put(self, doc_type, num_docs):
+        """Expect multiple documents to be written.."""
+        with patch('regcore.db.es.ElasticSearch') as es:
+            yield
+            self.call_args = es.return_value.bulk_index.call_args
+            self.assertEqual(doc_type, self.call_args[0][1])
+            self.assertEqual(num_docs, len(self.call_args[0][2]))
 
-    @patch('regcore.db.es.ElasticSearch')
-    def test_get_success(self, es):
-        es.return_value.get.return_value = {'_source': {
-            'first': 0, 'version': 'remove', 'id': 'also',
-            'label_string': 'a', 'regulation': '100'
-        }}
-        esr = ESRegulations()
+    @contextmanager
+    def expect_search(self, doc_type, query, results):
+        """Expect a search to be performed and respond with these results"""
+        with patch('regcore.db.es.ElasticSearch') as es:
+            es.return_value.search.return_value = {'hits': {'hits': results}}
+            yield
+            self.call_args = es.return_value.search.call_args
+            self.assertEqual(self.call_args[1]['doc_type'], doc_type)
+            self.assertEqual(query, self.call_args[0][0]['query'])
 
-        self.assertEqual({"first": 0}, esr.get('lablab', 'verver'))
-        self.assertEqual('reg_tree', es.return_value.get.call_args[0][1])
-        self.assertEqual('verver/lablab', es.return_value.get.call_args[0][2])
 
-    @patch('regcore.db.es.ElasticSearch')
-    def test_bulk_put(self, es):
-        esr = ESRegulations()
+class ESRegulationsTest(TestCase, ESBase):
+    def test_get_404(self):
+        with self.expect_get('reg_tree', 'verver/lablab'):
+            self.assertIsNone(ESRegulations().get('lablab', 'verver'))
+
+    def test_get_success(self):
+        return_value = {'first': 0, 'version': 'remove', 'id': 'also',
+                        'label_string': 'a', 'regulation': '100'}
+        with self.expect_get('reg_tree', 'verver/lablab', return_value):
+            self.assertEqual(ESRegulations().get('lablab', 'verver'),
+                             {"first": 0})
+
+    def test_bulk_put(self):
         n2 = {'text': 'some text', 'label': ['111', '2'], 'children': []}
         n3 = {'text': 'other', 'label': ['111', '3'], 'children': []}
         # Use a copy of the children
         root = {'text': 'root', 'label': ['111'], 'children': [dict(n2),
                                                                dict(n3)]}
         nodes = [root, n2, n3]
-        esr.bulk_put(nodes, 'verver', '111')
-        self.assertTrue(es.return_value.bulk_index.called)
-        args = es.return_value.bulk_index.call_args[0]
-        self.assertEqual(3, len(args))
-        self.assertEqual('reg_tree', args[1])
 
-        root['version'] = 'verver'
-        root['regulation'] = '111'
-        root['label_string'] = '111'
-        root['id'] = 'verver/111'
-        root['root'] = True
-        n2['version'] = 'verver'
-        n2['regulation'] = '111'
-        n2['label_string'] = '111-2'
-        n2['id'] = 'verver/111-2'
-        n2['root'] = False
-        n3['version'] = 'verver'
-        n3['label_string'] = '111-3'
-        n3['regulation'] = '111'
-        n3['id'] = 'verver/111-3'
-        n3['root'] = False
+        with self.expect_bulk_put('reg_tree', 3):
+            ESRegulations().bulk_put(nodes, 'verver', '111')
 
-        self.assertEqual(nodes, args[2])
+        root.update({'version': 'verver', 'regulation': '111',
+                     'label_string': '111', 'id': 'verver/111', 'root': True})
+        n2.update({'version': 'verver', 'regulation': '111',
+                   'label_string': '111-2', 'id': 'verver/111-2',
+                   'root': False})
+        n3.update({'version': 'verver', 'regulation': '111',
+                   'label_string': '111-3', 'id': 'verver/111-3',
+                   'root': False})
+        self.assertEqual(nodes, self.call_args[0][2])
 
-    @patch('regcore.db.es.ElasticSearch')
-    def test_listing(self, es):
-        es.return_value.search.return_value = {'hits': {'hits': [
-            {'fields': {'version': 'ver1', 'label_string': 'lll'}},
-            {'fields': {'version': 'aaa', 'label_string': 'lll'}},
-            {'fields': {'version': '333', 'label_string': 'lll'}},
-            {'fields': {'version': 'four', 'label_string': 'lll'}},
-        ]}}
-        esr = ESRegulations()
-        results = esr.listing('lll')
-        self.assertNotIn('root', str(es.return_value.search.call_args[0][0]))
-        self.assertIn('ll', str(es.return_value.search.call_args[0][0]))
+    def test_listing(self):
+        query = {'match': {'label_string': 'lll'}}
+        results = [{'fields': {'version': 'ver1', 'label_string': 'lll'}},
+                   {'fields': {'version': 'aaa', 'label_string': 'lll'}},
+                   {'fields': {'version': '333', 'label_string': 'lll'}},
+                   {'fields': {'version': 'four', 'label_string': 'lll'}}]
+        with self.expect_search('reg_tree', query, results):
+            entries = ESRegulations().listing('lll')
+
         self.assertEqual([('333', 'lll'), ('aaa', 'lll'), ('four', 'lll'),
-                          ('ver1', 'lll')], results)
+                          ('ver1', 'lll')], entries)
 
-        results = esr.listing()
-        self.assertIn('root', str(es.return_value.search.call_args[0][0]))
-        self.assertNotIn('ll', str(es.return_value.search.call_args[0][0]))
+        query = {'match': {'root': True}}
+        with self.expect_search('reg_tree', query, results):
+            ESRegulations().listing()
 
 
-class ESLayersTest(TestCase):
+class ESLayersTest(TestCase, ESBase):
+    def test_get_404(self):
+        with self.expect_get('layers', 'verver/namnam/lablab'):
+            self.assertIsNone(ESLayers().get('namnam', 'lablab', 'verver'))
 
-    @patch('regcore.db.es.ElasticSearch')
-    def test_get_404(self, es):
-        es.return_value.get.side_effect = ElasticHttpNotFoundError
-        esl = ESLayers()
+    def test_get_success(self):
+        return_value = {'layer': {'some': 'body'}}
+        with self.expect_get('layers', 'verver/namnam/lablab', return_value):
+            self.assertEqual(ESLayers().get('namnam', 'lablab', 'verver'),
+                             {"some": "body"})
 
-        self.assertIsNone(esl.get('namnam', 'lablab', 'verver'))
-        self.assertEqual('layer', es.return_value.get.call_args[0][1])
-        self.assertEqual('verver/namnam/lablab',
-                         es.return_value.get.call_args[0][2])
-
-    @patch('regcore.db.es.ElasticSearch')
-    def test_get_success(self, es):
-        es.return_value.get.return_value = {'_source': {'layer': {
-            'some': 'body'
-        }}}
-        esl = ESLayers()
-
-        self.assertEqual({"some": 'body'},
-                         esl.get('namnam', 'lablab', 'verver'))
-        self.assertEqual('layer', es.return_value.get.call_args[0][1])
-        self.assertEqual('verver/namnam/lablab',
-                         es.return_value.get.call_args[0][2])
-
-    @patch('regcore.db.es.ElasticSearch')
-    def test_bulk_put(self, es):
-        esl = ESLayers()
-        layers = [
-            {'111-22': [], '111-22-a': [], 'label': '111-22'},
-            {'111-23': [], 'label': '111-23'}]
-        esl.bulk_put(layers, 'verver', 'name', '111')
-        self.assertTrue(es.return_value.bulk_index.called)
-        args = es.return_value.bulk_index.call_args[0]
-        self.assertEqual(3, len(args))
-        self.assertEqual('layer', args[1])
+    def test_bulk_put(self):
+        layers = [{'111-22': [], '111-22-a': [], 'label': '111-22'},
+                  {'111-23': [], 'label': '111-23'}]
+        with self.expect_bulk_put('layers', 2):
+            ESLayers().bulk_put(layers, 'verver', 'name', '111')
 
         del layers[0]['label']
         del layers[1]['label']
@@ -126,107 +128,60 @@ class ESLayersTest(TestCase):
              'name': 'name', 'label': '111-22', 'layer': layers[0]},
             {'id': 'verver/name/111-23', 'version': 'verver',
              'name': 'name', 'label': '111-23', 'layer': layers[1]}]
+        self.assertEqual(transformed, self.call_args[0][2])
 
-        self.assertEqual(transformed, args[2])
 
+class ESNoticesTest(TestCase, ESBase):
+    def test_get_404(self):
+        with self.expect_get('notice', 'docdoc'):
+            self.assertIsNone(ESNotices().get('docdoc'))
 
-class ESNoticesTest(TestCase):
+    def test_get_success(self):
+        with self.expect_get('notice', 'docdoc', {'some': 'body'}):
+            self.assertEqual(ESNotices().get('docdoc'),
+                             {"some": 'body'})
 
-    @patch('regcore.db.es.ElasticSearch')
-    def test_get_404(self, es):
-        es.return_value.get.side_effect = ElasticHttpNotFoundError
-        esn = ESNotices()
+    def test_put(self):
+        with self.expect_put('notice', 'docdoc'):
+            ESNotices().put('docdoc', {"some": "structure"})
+        self.assertEqual(self.call_args[0][2], {"some": "structure"})
 
-        self.assertIsNone(esn.get('docdoc'))
-        self.assertEqual('notice', es.return_value.get.call_args[0][1])
-        self.assertEqual('docdoc', es.return_value.get.call_args[0][2])
-
-    @patch('regcore.db.es.ElasticSearch')
-    def test_get_success(self, es):
-        es.return_value.get.return_value = {'_source': {
-            'some': 'body'
-        }}
-        esn = ESNotices()
-
-        self.assertEqual({"some": 'body'}, esn.get('docdoc'))
-        self.assertEqual('notice', es.return_value.get.call_args[0][1])
-        self.assertEqual('docdoc', es.return_value.get.call_args[0][2])
-
-    @patch('regcore.db.es.ElasticSearch')
-    def test_put(self, es):
-        esn = ESNotices()
-        esn.put('docdoc', {"some": "structure"})
-        self.assertTrue(es.return_value.index.called)
-        args, kwargs = es.return_value.index.call_args
-        self.assertEqual(3, len(args))
-        self.assertEqual('notice', args[1])
-        self.assertEqual({"some": "structure"}, args[2])
-        self.assertIn('id', kwargs)
-        self.assertEqual('docdoc', kwargs['id'])
-
-    @patch('regcore.db.es.ElasticSearch')
-    def test_listing(self, es):
-        es.return_value.search.return_value = {'hits': {'hits': [
-            {'_id': 22, '_somethingelse': 5, 'fields': {
-                'effective_on': '2005-05-05'}},
-            {'_id': 9, '_somethingelse': 'blue', 'fields': {}},
-        ]}}
-        esn = ESNotices()
+    def test_listing(self):
+        query = {'match_all': {}}
+        results = [{'_id': 22, '_somethingelse': 5, 'fields': {
+                        'effective_on': '2005-05-05'}},
+                   {'_id': 9, '_somethingelse': 'blue', 'fields': {}}]
+        with self.expect_search('notice', query, results):
+            entries = ESNotices().listing()
 
         self.assertEqual([{'document_number': 22,
                            'effective_on': '2005-05-05'},
-                          {'document_number': 9}], esn.listing())
-        self.assertEqual('notice',
-                         es.return_value.search.call_args[1]['doc_type'])
+                          {'document_number': 9}], entries)
 
-        self.assertEqual([{'document_number': 22,
-                           'effective_on': '2005-05-05'},
-                          {'document_number': 9}], esn.listing('876'))
-        self.assertEqual('notice',
-                         es.return_value.search.call_args[1]['doc_type'])
-        self.assertIn('876', str(es.return_value.search.call_args[0][0]))
+        query = {'match': {'cfr_parts': '876'}}
+        with self.expect_search('notice', query, results):
+            ESNotices().listing('876')
 
 
-class ESDiffTest(TestCase):
+class ESDiffTest(TestCase, ESBase):
+    def test_get_404(self):
+        with self.expect_get('diff', 'lablab/oldold/newnew'):
+            self.assertIsNone(ESDiffs().get('lablab', 'oldold', 'newnew'))
 
-    @patch('regcore.db.es.ElasticSearch')
-    def test_get_404(self, es):
-        es.return_value.get.side_effect = ElasticHttpNotFoundError
-        eds = ESDiffs()
+    def test_get_success(self):
+        return_value = {'label': 'lablab',
+                        'old_version': 'oldold',
+                        'new_version': 'newnew',
+                        'diff': {'some': 'body'}}
+        with self.expect_get('diff', 'lablab/oldold/newnew', return_value):
+            self.assertEqual(ESDiffs().get('lablab', 'oldold', 'newnew'),
+                             {"some": 'body'})
 
-        self.assertIsNone(eds.get('lablab', 'oldold', 'newnew'))
-        self.assertEqual('diff', es.return_value.get.call_args[0][1])
-        self.assertEqual('lablab/oldold/newnew',
-                         es.return_value.get.call_args[0][2])
-
-    @patch('regcore.db.es.ElasticSearch')
-    def test_get_success(self, es):
-        es.return_value.get.return_value = {'_source': {
-            'label': 'lablab',
-            'old_version': 'oldold',
-            'new_version': 'newnew',
-            'diff': {'some': 'body'}
-        }}
-        eds = ESDiffs()
-
-        self.assertEqual({"some": 'body'},
-                         eds.get('lablab', 'oldold', 'newnew'))
-        self.assertEqual('diff', es.return_value.get.call_args[0][1])
-        self.assertEqual('lablab/oldold/newnew',
-                         es.return_value.get.call_args[0][2])
-
-    @patch('regcore.db.es.ElasticSearch')
-    def test_put(self, es):
-        eds = ESDiffs()
-        eds.put('lablab', 'oldold', 'newnew', {"some": "structure"})
-        self.assertTrue(es.return_value.index.called)
-        args, kwargs = es.return_value.index.call_args
-        self.assertEqual(3, len(args))
-        self.assertEqual('diff', args[1])
-        self.assertEqual('lablab/oldold/newnew', kwargs['id'])
-        self.assertEqual({
-            'label': 'lablab',
-            'old_version': 'oldold',
-            'new_version': 'newnew',
-            'diff': {'some': 'structure'}
-        }, args[2])
+    def test_put(self):
+        with self.expect_put('diff', 'lablab/oldold/newnew'):
+            ESDiffs().put('lablab', 'oldold', 'newnew', {"some": "structure"})
+        self.assertEqual(self.call_args[0][2],
+                         {'label': 'lablab',
+                          'old_version': 'oldold',
+                          'new_version': 'newnew',
+                          'diff': {'some': 'structure'}})
