@@ -14,13 +14,12 @@ class ViewsDiffTest(TestCase):
                                 data='{Invalid}')
         self.assertEqual(400, response.status_code)
 
-    @patch('regcore_write.views.diff.db')
-    def test_add_label_success(self, db):
+    @patch('regcore_write.views.diff.storage')
+    def test_add_label_success(self, storage):
         url = '/diff/lablab/oldold/newnew'
 
         Client().put(url, content_type='application/json',
                      data=json.dumps({'some': 'struct'}))
-        self.assertTrue(db.Diffs.return_value.put.called)
-        args = db.Diffs.return_value.put.call_args[0]
+        args = storage.for_diffs.put.call_args[0]
         self.assertEqual(('lablab', 'oldold', 'newnew', {'some': 'struct'}),
                          args)

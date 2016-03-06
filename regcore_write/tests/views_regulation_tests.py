@@ -39,8 +39,8 @@ class ViewsRegulationTest(TestCase):
                                 data=json.dumps(message))
         self.assertEqual(400, response.status_code)
 
-    @patch('regcore_write.views.regulation.db')
-    def test_add_label_success(self, db):
+    @patch('regcore_write.views.regulation.storage')
+    def test_add_label_success(self, storage):
         url = '/regulation/p/verver'
 
         message = {
@@ -60,8 +60,8 @@ class ViewsRegulationTest(TestCase):
 
         Client().put(url, content_type='application/json',
                      data=json.dumps(message))
-        self.assertTrue(db.Regulations.return_value.bulk_put.called)
-        bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
+        self.assertTrue(storage.for_regulations.bulk_put.called)
+        bulk_put_args = storage.for_regulations.bulk_put.call_args[0]
         self.assertEqual(3, len(bulk_put_args[0]))
         found = [False, False, False]
         for arg in bulk_put_args[0]:
@@ -73,15 +73,15 @@ class ViewsRegulationTest(TestCase):
                 found[2] = True
         self.assertEqual(found, [True, True, True])
 
-        db.Regulations.return_value.bulk_put.reset_mock()
+        storage.for_regulations.bulk_put.reset_mock()
         Client().post(url, content_type='application/json',
                       data=json.dumps(message))
-        self.assertTrue(db.Regulations.return_value.bulk_put.called)
-        bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
+        self.assertTrue(storage.for_regulations.bulk_put.called)
+        bulk_put_args = storage.for_regulations.bulk_put.call_args[0]
         self.assertEqual(3, len(bulk_put_args[0]))
 
-    @patch('regcore_write.views.regulation.db')
-    def test_add_empty_children(self, db):
+    @patch('regcore_write.views.regulation.storage')
+    def test_add_empty_children(self, storage):
         url = '/regulation/p/verver'
 
         message = {
@@ -91,6 +91,6 @@ class ViewsRegulationTest(TestCase):
         }
         Client().put(url, content_type='application/json',
                      data=json.dumps(message))
-        self.assertTrue(db.Regulations.return_value.bulk_put.called)
-        bulk_put_args = db.Regulations.return_value.bulk_put.call_args[0]
+        self.assertTrue(storage.for_regulations.bulk_put.called)
+        bulk_put_args = storage.for_regulations.bulk_put.call_args[0]
         self.assertEqual(1, len(bulk_put_args[0]))

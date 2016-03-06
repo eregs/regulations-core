@@ -1,6 +1,6 @@
 import json
 
-from regcore import db
+from regcore.db import storage
 from regcore.responses import success, user_error
 from regcore_write.views.security import secure_write
 
@@ -14,5 +14,5 @@ def add(request, label_id, old_version, new_version):
         return user_error('invalid format')
 
     #   @todo: write a schema that verifies the diff's structure
-    db.Diffs().put(label_id, old_version, new_version, diff)
+    storage.for_diffs.put(label_id, old_version, new_version, diff)
     return success()

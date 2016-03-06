@@ -1,6 +1,6 @@
 import json
 
-from regcore import db
+from regcore.db import storage
 from regcore.responses import success, user_error
 from regcore_write.views.security import secure_write
 
@@ -20,5 +20,5 @@ def add(request, docnum):
         del notice['cfr_part']
     notice['cfr_parts'] = cfr_parts
 
-    db.Notices().put(docnum, notice)
+    storage.for_notices.put(docnum, notice)
     return success()

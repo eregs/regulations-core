@@ -36,11 +36,11 @@ class ViewsLayerTest(TestCase):
             children.append(node)
             children = node['children']
 
-        with patch('regcore_write.views.layer.db') as db:
-            db.Regulations.return_value.get.return_value = root[0]
+        with patch('regcore_write.views.layer.storage') as storage:
+            storage.for_regulations.get.return_value = root[0]
             self.put(message, **kwargs)
-            self.assertTrue(db.Layers.return_value.bulk_put.called)
-            layers_saved = db.Layers.return_value.bulk_put.call_args[0][0]
+            self.assertTrue(storage.for_layers.bulk_put.called)
+            layers_saved = storage.for_layers.bulk_put.call_args[0][0]
             return list(reversed(layers_saved))     # switch to outside in
 
     def test_add_success(self):
@@ -113,13 +113,13 @@ class ViewsLayerTest(TestCase):
         self.assertEqual(4, len(layers_saved))
         self.assertTrue(all('referenced' in saved for saved in layers_saved))
 
-    @patch('regcore_write.views.layer.db')
-    def test_child_layers_no_results(self, db):
+    @patch('regcore_write.views.layer.storage')
+    def test_child_layers_no_results(self, storage):
         """If the db returns no regulation data, nothing should get saved"""
-        db.Regulations.return_value.get.return_value = None
+        storage.for_regulations.get.return_value = None
         self.assertEqual([], layer.child_layers('layname', 'lll', 'vvv', {}))
-        self.assertTrue(db.Regulations.return_value.get.called)
-        lab, ver = db.Regulations.return_value.get.call_args[0]
+        self.assertTrue(storage.for_regulations.get.called)
+        lab, ver = storage.for_regulations.get.call_args[0]
         self.assertEqual('lll', lab)
         self.assertEqual('vvv', ver)
 

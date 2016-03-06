@@ -1,6 +1,6 @@
 import json
 
-from regcore import db
+from regcore.db import storage
 from regcore.responses import success, user_error
 from regcore_write.views.security import secure_write
 
@@ -37,8 +37,8 @@ def add(request, name, label_id, version):
         if not child_label_of(key, label_id) and key != 'referenced':
             return user_error('label mismatch: %s, %s' % (label_id, key))
 
-    db.Layers().bulk_put(child_layers(name, label_id, version, layer),
-                         version, name, label_id)
+    storage.for_layers.bulk_put(
+        child_layers(name, label_id, version, layer), version, name, label_id)
 
     return success()
 
@@ -48,7 +48,7 @@ def child_layers(layer_name, root_label, version, root_layer):
     We need to split that layer up and store it per node within the
     regulation. If a reg has 100 nodes, but the layer only has 3 entries, it
     will still store 100 layer models -- many may be empty"""
-    root = db.Regulations().get(root_label, version)
+    root = storage.for_regulations.get(root_label, version)
     if not root:
         return []
 

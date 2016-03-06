@@ -1,6 +1,6 @@
 from collections import defaultdict
 
-from regcore import db
+from regcore.db import storage
 from regcore.responses import four_oh_four, success
 
 
@@ -8,11 +8,11 @@ def listing(request, label_id=None):
     """List versions of the requested (label_id) regulation; or all regulations
     if label_id is None"""
     if label_id:
-        reg_versions = db.Regulations().listing(label_id)
-        notices = db.Notices().listing(label_id.split('-')[0])
+        reg_versions = storage.for_regulations.listing(label_id)
+        notices = storage.for_notices.listing(label_id.split('-')[0])
     else:
-        reg_versions = db.Regulations().listing()
-        notices = db.Notices().listing()
+        reg_versions = storage.for_regulations.listing()
+        notices = storage.for_notices.listing()
 
     by_date = defaultdict(list)
     for notice in (n for n in notices if 'effective_on' in n):
@@ -41,7 +41,7 @@ def listing(request, label_id=None):
 
 def get(request, label_id, version):
     """Find and return the regulation with this version and label"""
-    regulation = db.Regulations().get(label_id, version)
+    regulation = storage.for_regulations.get(label_id, version)
     if regulation is not None:
         return success(regulation)
     else:

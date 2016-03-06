@@ -3,7 +3,7 @@ import logging
 
 import jsonschema
 
-from regcore import db
+from regcore.db import storage
 from regcore.responses import success, user_error
 from regcore_write.views.security import secure_write
 
@@ -61,6 +61,6 @@ def add(request, label_id, version):
             add_node(child)
     add_node(node)
 
-    db.Regulations().bulk_put(to_save, version, label_id)
+    storage.for_regulations.bulk_put(to_save, version, label_id)
 
     return success()
