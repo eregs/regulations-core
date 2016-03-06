@@ -59,10 +59,10 @@ class ViewsHaystackSearchTest(TestCase):
         self.assertEqual(list(range(250, 300)),
                          transform_results.call_args[0][0])
 
-    @patch('regcore_read.views.haystack_search.db')
-    def test_transform_results(self, db):
+    @patch('regcore_read.views.haystack_search.DMLayers')
+    def test_transform_results(self, DMLayers):
         # combine keyterms and terms into a single layer
-        db.Layers.return_value.get.return_value = {
+        DMLayers.return_value.get.return_value = {
             '2': [{'key_term': 'k2'}], '3': [{'key_term': 'k3'}],
             '6': [{'key_term': 'k6'}], '7': [{'key_term': 'k7'}],
             'referenced': {

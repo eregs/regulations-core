@@ -4,7 +4,7 @@ results. If using haystack, see haystack_search.py"""
 from django.conf import settings
 from pyelasticsearch import ElasticSearch
 
-from regcore import db
+from regcore.db.es import ESLayers
 from regcore.responses import success, user_error
 
 
@@ -59,7 +59,7 @@ def transform_results(results):
 
     layers = {}
     for regulation, version in regulations:
-        terms = db.Layers().get('terms', regulation, version)
+        terms = ESLayers().get('terms', regulation, version)
         # We need the references, not the locations of defined terms
         if terms:
             defined = {}
@@ -67,7 +67,7 @@ def transform_results(results):
                 defined[term_struct['reference']] = term_struct['term']
             terms = defined
         layers[(regulation, version)] = {
-            'keyterms': db.Layers().get('keyterms', regulation, version),
+            'keyterms': ESLayers().get('keyterms', regulation, version),
             'terms': terms
         }
 

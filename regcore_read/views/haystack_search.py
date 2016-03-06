@@ -3,7 +3,7 @@ using Elastic Search, see es_search.py"""
 
 from haystack.query import SearchQuerySet
 
-from regcore import db
+from regcore.db.django_models import DMLayers
 from regcore.models import Regulation
 from regcore.responses import success, user_error
 
@@ -44,7 +44,7 @@ def transform_results(results):
 
     layers = {}
     for regulation, version in regulations:
-        terms = db.Layers().get('terms', regulation, version)
+        terms = DMLayers().get('terms', regulation, version)
         # We need the references, not the locations of defined terms
         if terms:
             defined = {}
@@ -52,7 +52,7 @@ def transform_results(results):
                 defined[term_struct['reference']] = term_struct['term']
             terms = defined
         layers[(regulation, version)] = {
-            'keyterms': db.Layers().get('keyterms', regulation, version),
+            'keyterms': DMLayers().get('keyterms', regulation, version),
             'terms': terms
         }
 
