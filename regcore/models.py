@@ -55,3 +55,9 @@ class Diff(models.Model):
     class Meta:
         index_together = (('label', 'old_version', 'new_version'),)
         unique_together = (('label', 'old_version', 'new_version'),)
+
+
+class Preamble(models.Model):
+    """Represents the explanatory text associated with a notice"""
+    document_number = models.SlugField(max_length=20, primary_key=True)
+    data = CompressedJSONField()
