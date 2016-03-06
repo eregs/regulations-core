@@ -4,7 +4,8 @@ from unittest import TestCase
 from mock import patch
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 
-from regcore.db.es import ESDiffs, ESLayers, ESNotices, ESRegulations
+from regcore.db.es import (
+    ESDiffs, ESLayers, ESNotices, ESPreambles, ESRegulations)
 
 
 class ESBase(object):
@@ -184,3 +185,18 @@ class ESDiffTest(TestCase, ESBase):
                           'old_version': 'oldold',
                           'new_version': 'newnew',
                           'diff': {'some': 'structure'}})
+
+
+class ESPreamblesTest(TestCase, ESBase):
+    def test_get_404(self):
+        with self.expect_get('preamble', 'docdoc'):
+            self.assertIsNone(ESPreambles().get('docdoc'))
+
+    def test_get_success(self):
+        with self.expect_get('preamble', 'docdoc', {'arbitrary': True}):
+            self.assertEqual(ESPreambles().get('docdoc'), {'arbitrary': True})
+
+    def test_put(self):
+        with self.expect_put('preamble', 'docdoc'):
+            ESPreambles().put('docdoc', {"some": "structure"})
+        self.assertEqual(self.call_args[0][2], {"some": "structure"})

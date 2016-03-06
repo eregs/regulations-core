@@ -143,3 +143,15 @@ class ESDiffs(ESBase, interface.Diffs):
                                self.to_id(label, old_version, new_version))
         if diff is not None:
             return diff['diff']
+
+
+class ESPreambles(ESBase, interface.Preambles):
+    """Implementation of Elastic Search as preamble backend"""
+    def put(self, doc_number, preamble):
+        """Store a single preamble"""
+        self.es.index(settings.ELASTIC_SEARCH_INDEX, 'preamble', preamble,
+                      id=doc_number)
+
+    def get(self, doc_number):
+        """Find the associated preamble"""
+        return self.safe_fetch('preamble', doc_number)
