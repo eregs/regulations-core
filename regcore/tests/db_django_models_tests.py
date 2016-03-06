@@ -47,60 +47,37 @@ class DMRegulationsTest(TestCase):
         self.assertEqual([('ver1', '1111'), ('ver2', '1111')], results)
 
     def test_bulk_put(self):
+        """Writing multiple documents should save correctly. They can be
+        modified"""
         n2 = {'text': 'some text', 'label': ['111', '2'], 'children': [],
               'node_type': 'tyty'}
         n3 = {'text': 'other', 'label': ['111', '3'], 'children': [],
               'node_type': 'tyty2'}
-        # Use a copy of the children
         root = {'text': 'root', 'label': ['111'], 'node_type': 'tyty3',
-                'children': [dict(n2), dict(n3)]}
+                'children': [n2, n3]}
         nodes = [root, n2, n3]
         self.dmr.bulk_put(nodes, 'verver', '111')
 
-        regs = Regulation.objects.all().order_by('text')
+        expected_root = {
+            'version': 'verver', 'label_string': '111', 'text': 'root',
+            'title': '', 'node_type': 'tyty3', 'children': [n2, n3],
+            'root': True}
+        expected_n2 = {
+            'version': 'verver', 'label_string': '111-2', 'text': 'some text',
+            'title': '', 'node_type': 'tyty', 'children': [], 'root': False}
+        expected_n3 = {
+            'version': 'verver', 'label_string': '111-3', 'text': 'other',
+            'title': '', 'node_type': 'tyty2', 'children': [], 'root': False}
+        fields = expected_root.keys()
+        self.assertItemsEqual(Regulation.objects.all().values(*fields),
+                              [expected_root, expected_n2, expected_n3])
 
-        self.assertEqual(3, len(regs))
+        root['title'] = 'New Title'
+        self.dmr.bulk_put(nodes, 'verver', '111')
 
-        self.assertEqual('verver', regs[0].version)
-        self.assertEqual('111-3', regs[0].label_string)
-        self.assertEqual('other', regs[0].text)
-        self.assertEqual('', regs[0].title)
-        self.assertEqual('tyty2', regs[0].node_type)
-        self.assertEqual([], regs[0].children)
-        self.assertFalse(regs[0].root)
-
-        self.assertEqual('verver', regs[1].version)
-        self.assertEqual('111', regs[1].label_string)
-        self.assertEqual('root', regs[1].text)
-        self.assertEqual('', regs[1].title)
-        self.assertEqual('tyty3', regs[1].node_type)
-        self.assertEqual(2, len(regs[1].children))
-        self.assertTrue(regs[1].root)
-
-        self.assertEqual('verver', regs[2].version)
-        self.assertEqual('111-2', regs[2].label_string)
-        self.assertEqual('some text', regs[2].text)
-        self.assertEqual('', regs[2].title)
-        self.assertEqual('tyty', regs[2].node_type)
-        self.assertEqual([], regs[2].children)
-        self.assertFalse(regs[2].root)
-
-    def test_bulk_put_overwrite(self):
-        nodes = [{'text': 'other', 'label': ['111', '3'], 'children': [],
-                  'node_type': 'tyty1'}]
-        self.dmr.bulk_put(nodes, 'verver', '111-3')
-
-        regs = Regulation.objects.all()
-        self.assertEqual(1, len(regs))
-        self.assertEqual('tyty1', regs[0].node_type)
-
-        nodes[0]['node_type'] = 'tyty2'
-
-        self.dmr.bulk_put(nodes, 'verver', '111-3')
-
-        regs = Regulation.objects.all()
-        self.assertEqual(1, len(regs))
-        self.assertEqual('tyty2', regs[0].node_type)
+        expected_root['title'] = 'New Title'
+        self.assertItemsEqual(Regulation.objects.all().values(*fields),
+                              [expected_root, expected_n2, expected_n3])
 
 
 class DMLayersTest(TestCase):
@@ -118,38 +95,28 @@ class DMLayersTest(TestCase):
                          self.dml.get('namnam', 'lablab', 'verver'))
 
     def test_bulk_put(self):
+        """Writing multiple documents should save correctly. They can be
+        modified"""
         layers = [
             {'111-22': [], '111-22-a': [], 'label': '111-22'},
             {'111-23': [], 'label': '111-23'}]
         self.dml.bulk_put(layers, 'verver', 'name', '111')
 
-        layers = Layer.objects.all().order_by('label')
-        self.assertEqual(2, len(layers))
+        expected = [
+            {'version': 'verver', 'name': 'name', 'label': '111-22',
+             'layer': {'111-22': [], '111-22-a': []}},
+            {'version': 'verver', 'name': 'name', 'label': '111-23',
+             'layer': {'111-23': []}}]
+        fields = expected[0].keys()
+        self.assertItemsEqual(Layer.objects.all().values(*fields),
+                              expected)
 
-        self.assertEqual('verver', layers[0].version)
-        self.assertEqual('name', layers[0].name)
-        self.assertEqual('111-22', layers[0].label)
-        self.assertEqual({'111-22': [], '111-22-a': []}, layers[0].layer)
+        layers[1] = {'111-23': [1], 'label': '111-23'}
+        self.dml.bulk_put(layers, 'verver', 'name', '111')
 
-        self.assertEqual('verver', layers[1].version)
-        self.assertEqual('name', layers[1].name)
-        self.assertEqual('111-23', layers[1].label)
-        self.assertEqual({'111-23': []}, layers[1].layer)
-
-    def test_bulk_put_overwrite(self):
-        layers = [{'111-23': [], 'label': '111-23'}]
-        self.dml.bulk_put(layers, 'verver', 'name', '111-23')
-
-        layers = Layer.objects.all()
-        self.assertEqual(1, len(layers))
-        self.assertEqual({'111-23': []}, layers[0].layer)
-
-        layers = [{'111-23': [1], 'label': '111-23'}]
-        self.dml.bulk_put(layers, 'verver', 'name', '111-23')
-
-        layers = Layer.objects.all()
-        self.assertEqual(1, len(layers))
-        self.assertEqual({'111-23': [1]}, layers[0].layer)
+        expected[1]['layer'] = {'111-23': [1]}
+        self.assertItemsEqual(Layer.objects.all().values(*fields),
+                              expected)
 
 
 class DMNoticesTest(TestCase):
@@ -188,44 +155,30 @@ class DMNoticesTest(TestCase):
         self.assertEqual([], self.dmn.listing('888'))
 
     def test_put(self):
-        dmn = DMNotices()
+        """We can insert and replace a notice"""
         doc = {"some": "structure",
                'effective_on': '2011-01-01',
                'fr_url': 'http://example.com',
                'publication_date': '2010-02-02',
                'cfr_parts': ['222']}
-        dmn.put('docdoc', doc)
+        self.dmn.put('docdoc', doc)
 
-        notices = Notice.objects.all()
-        self.assertEqual(1, len(notices))
-        self.assertEqual('docdoc', notices[0].document_number)
-        self.assertEqual(date(2011, 1, 1), notices[0].effective_on)
-        self.assertEqual('http://example.com', notices[0].fr_url)
-        self.assertEqual(date(2010, 2, 2), notices[0].publication_date)
-        ncp = notices[0].noticecfrpart_set.all()
-        self.assertEqual(1, len(ncp))
-        self.assertEqual('222', ncp[0].cfr_part)
-        self.assertEqual(doc, notices[0].notice)
-
-    def test_put_overwrite(self):
-        dmn = DMNotices()
-        doc = {"some": "structure",
-               'effective_on': '2011-01-01',
-               'fr_url': 'http://example.com',
-               'publication_date': '2010-02-02',
-               'cfr_part': '222'}
-        dmn.put('docdoc', doc)
-
-        notices = Notice.objects.all()
-        self.assertEqual(1, len(notices))
-        self.assertEqual('http://example.com', notices[0].fr_url)
+        expected = {"document_number": "docdoc",
+                    "effective_on": date(2011, 1, 1),
+                    "fr_url": "http://example.com",
+                    "publication_date": date(2010, 2, 2),
+                    "noticecfrpart__cfr_part": '222',
+                    "notice": doc}
+        fields = expected.keys()
+        self.assertItemsEqual(Notice.objects.all().values(*fields),
+                              [expected])
 
         doc['fr_url'] = 'url2'
-        dmn.put('docdoc', doc)
+        self.dmn.put('docdoc', doc)
 
-        notices = Notice.objects.all()
-        self.assertEqual(1, len(notices))
-        self.assertEqual('url2', notices[0].fr_url)
+        expected['fr_url'] = 'url2'
+        self.assertItemsEqual(Notice.objects.all().values(*fields),
+                              [expected])
 
 
 class DMDiffTest(TestCase):
@@ -243,26 +196,14 @@ class DMDiffTest(TestCase):
                          self.dmd.get('lablab', 'oldold', 'newnew'))
 
     def test_put(self):
-        dmd = DMDiffs()
-        dmd.put('lablab', 'oldold', 'newnew', {"some": "structure"})
+        """We can insert and replace a diff"""
+        self.dmd.put('lablab', 'oldold', 'newnew', {"some": "structure"})
 
-        diffs = Diff.objects.all()
-        self.assertEqual(1, len(diffs))
+        expected = {"label": "lablab", "old_version": "oldold",
+                    "new_version": "newnew", "diff": {"some": "structure"}}
+        fields = expected.keys()
+        self.assertItemsEqual(Diff.objects.all().values(*fields), [expected])
 
-        self.assertEqual('lablab', diffs[0].label)
-        self.assertEqual('oldold', diffs[0].old_version)
-        self.assertEqual('newnew', diffs[0].new_version)
-        self.assertEqual({'some': 'structure'}, diffs[0].diff)
-
-    def test_put_overwrite(self):
-        dmd = DMDiffs()
-        dmd.put('lablab', 'oldold', 'newnew', {"some": "structure"})
-
-        diffs = Diff.objects.all()
-        self.assertEqual(1, len(diffs))
-        self.assertEqual({'some': 'structure'}, diffs[0].diff)
-
-        dmd.put('lablab', 'oldold', 'newnew', {"other": "structure"})
-        diffs = Diff.objects.all()
-        self.assertEqual(1, len(diffs))
-        self.assertEqual({'other': 'structure'}, diffs[0].diff)
+        self.dmd.put('lablab', 'oldold', 'newnew', {"other": "structure"})
+        expected['diff'] = {'other': 'structure'}
+        self.assertItemsEqual(Diff.objects.all().values(*fields), [expected])
