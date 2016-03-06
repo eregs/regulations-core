@@ -9,7 +9,7 @@ from django.conf import settings
 from django.conf.urls import patterns
 
 from regcore_read.views import (
-    diff as rdiff, layer as rlayer, notice as rnotice,
+    diff as rdiff, layer as rlayer, notice as rnotice, preamble as rpreamble,
     regulation as rregulation)
 from regcore_read.views.haystack_search import search
 from regcore_write.views import (
@@ -26,6 +26,7 @@ if 'regcore_read' in settings.INSTALLED_APPS:
     mapping['layer']['GET'] = rlayer.get
     mapping['notice']['GET'] = rnotice.get
     mapping['notices']['GET'] = rnotice.listing
+    mapping['preamble']['GET'] = rpreamble.get
     mapping['regulation']['GET'] = rregulation.get
     mapping['reg-versions']['GET'] = rregulation.listing
     mapping['search']['GET'] = search
@@ -37,8 +38,8 @@ if 'regcore_write' in settings.INSTALLED_APPS:
         mapping['diff'][verb] = wdiff.add
         mapping['layer'][verb] = wlayer.add
         mapping['notice'][verb] = wnotice.add
-        mapping['regulation'][verb] = wregulation.add
         mapping['preamble'][verb] = wpreamble.add
+        mapping['regulation'][verb] = wregulation.add
 
 
 # Re-usable URL patterns.
