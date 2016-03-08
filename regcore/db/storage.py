@@ -1,6 +1,5 @@
-from importlib import import_module
-
 from django.conf import settings
+from django.utils.module_loading import import_string
 
 
 def select_for(data_type):
@@ -10,9 +9,7 @@ def select_for(data_type):
     class_str = settings.BACKENDS.get(
         data_type,
         'regcore.db.django_models.DM' + data_type.capitalize())
-    module, class_name = class_str.rsplit('.', 1)
-    module = import_module(module)
-    return getattr(module, class_name)()
+    return import_string(class_str)
 
 for_regulations = select_for('regulations')
 for_layers = select_for('layers')
