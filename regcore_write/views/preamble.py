@@ -1,16 +1,11 @@
-import json
-
 from regcore.db import storage
-from regcore.responses import success, user_error
-from regcore_write.views.security import secure_write
+from regcore.responses import success
+from regcore_write.views.security import json_body, secure_write
 
 
 @secure_write
+@json_body
 def add(request, docnum):
     """Add the preamble to the db"""
-    try:
-        preamble = json.loads(request.body.decode('utf-8'))
-    except (ValueError, UnicodeError):
-        return user_error('invalid format')
-    storage.for_preambles.put(docnum, preamble)
+    storage.for_preambles.put(docnum, request.json_body)
     return success()

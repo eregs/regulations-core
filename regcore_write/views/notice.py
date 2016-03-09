@@ -1,17 +1,13 @@
-import json
-
 from regcore.db import storage
-from regcore.responses import success, user_error
-from regcore_write.views.security import secure_write
+from regcore.responses import success
+from regcore_write.views.security import json_body, secure_write
 
 
 @secure_write
+@json_body
 def add(request, docnum):
     """Add the notice to the db"""
-    try:
-        notice = json.loads(request.body.decode('utf-8'))
-    except (ValueError, UnicodeError):
-        return user_error('invalid format')
+    notice = request.json_body
 
     #   @todo: write a schema that verifies the notice's structure
     cfr_parts = notice.get('cfr_parts', [])

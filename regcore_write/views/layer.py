@@ -1,8 +1,6 @@
-import json
-
 from regcore.db import storage
 from regcore.responses import success, user_error
-from regcore_write.views.security import secure_write
+from regcore_write.views.security import json_body, secure_write
 
 
 def child_label_of(lhs, rhs):
@@ -22,12 +20,10 @@ def child_label_of(lhs, rhs):
 
 
 @secure_write
+@json_body
 def add(request, name, label_id, version):
     """Add the layer node and all of its children to the db"""
-    try:
-        layer = json.loads(request.body.decode('utf-8'))
-    except (ValueError, UnicodeError):
-        return user_error('invalid format')
+    layer = request.json_body
 
     if not isinstance(layer, dict):
         return user_error('invalid format')
