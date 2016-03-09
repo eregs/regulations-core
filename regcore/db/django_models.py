@@ -21,7 +21,7 @@ def treeify(node, tree_id, pos=1, level=0):
     return pos
 
 
-def get_adjacency_map(regs):
+def build_adjacency_map(regs):
     """Build mapping from node IDs to child records
     :param regs: List of `Regulation` records
     """
@@ -32,8 +32,8 @@ def get_adjacency_map(regs):
     return ret
 
 
-def get_id(reg, version):
-    return '{}-{}'.format(version, '-'.join(reg['label']))
+def build_id(reg, version):
+    return '{}:{}'.format(version, '-'.join(reg['label']))
 
 
 class DMRegulations(interface.Regulations):
@@ -49,7 +49,7 @@ class DMRegulations(interface.Regulations):
         regs = list(regs.all())
         if not regs:
             return None
-        adjacency_map = get_adjacency_map(regs)
+        adjacency_map = build_adjacency_map(regs)
         return self._serialize(regs[0], adjacency_map)
 
     def _serialize(self, reg, adjacency_map):
@@ -69,9 +69,9 @@ class DMRegulations(interface.Regulations):
     def _transform(self, reg, version):
         """Create the Django object"""
         return Regulation(
-            id=get_id(reg, version),
+            id=build_id(reg, version),
             parent_id=(
-                get_id(reg['parent'], version)
+                build_id(reg['parent'], version)
                 if reg.get('parent')
                 else None
             ),
