@@ -49,16 +49,16 @@ def add(request, label_id, version):
     to_save = []
     labels_seen = set()
 
-    def add_node(node):
+    def add_node(node, parent=None):
         label_tuple = tuple(node['label'])
         if label_tuple in labels_seen:
             logging.warning("Repeat label: %s", label_tuple)
         labels_seen.add(label_tuple)
 
-        node = dict(node)   # copy
+        node['parent'] = parent
         to_save.append(node)
         for child in node['children']:
-            add_node(child)
+            add_node(child, parent=node)
     add_node(node)
 
     storage.for_regulations.bulk_put(to_save, version, label_id)

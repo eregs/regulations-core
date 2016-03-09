@@ -1,15 +1,18 @@
 from django.db import models
+from mptt.models import MPTTModel, TreeForeignKey
 
 from regcore.fields import CompressedJSONField
 
 
-class Regulation(models.Model):
+class Regulation(MPTTModel):
+    id = models.TextField(primary_key=True)
+    parent = TreeForeignKey('self', null=True, blank=True,
+                            related_name='children', db_index=True)
     version = models.SlugField(max_length=20)
     label_string = models.SlugField(max_length=200)
     text = models.TextField()
     title = models.TextField(blank=True)
     node_type = models.SlugField(max_length=10)
-    children = CompressedJSONField()
     root = models.BooleanField(default=False, db_index=True)
 
     class Meta:
