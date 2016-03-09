@@ -46,6 +46,12 @@ def add(request, label_id, version):
     if label_id != '-'.join(node['label']):
         return user_error('label mismatch')
 
+    write_node(node, version, label_id)
+    return success()
+
+
+def write_node(node, version, label_id):
+
     to_save = []
     labels_seen = set()
 
@@ -62,5 +68,3 @@ def add(request, label_id, version):
     add_node(node)
 
     storage.for_regulations.bulk_put(to_save, version, label_id)
-
-    return success()

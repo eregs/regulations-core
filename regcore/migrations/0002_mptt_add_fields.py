@@ -4,6 +4,8 @@ from __future__ import unicode_literals
 from django.db import migrations, models
 import mptt.fields
 
+from regcore.fields import CompressedJSONField
+
 
 class Migration(migrations.Migration):
 
@@ -12,10 +14,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RemoveField(
-            model_name='regulation',
-            name='children',
-        ),
         migrations.AddField(
             model_name='regulation',
             name='level',
@@ -31,7 +29,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='regulation',
             name='parent',
-            field=mptt.fields.TreeForeignKey(related_name='children', blank=True, to='regcore.Regulation', null=True),
+            field=mptt.fields.TreeForeignKey(blank=True, to='regcore.Regulation', null=True),
         ),
         migrations.AddField(
             model_name='regulation',
@@ -49,5 +47,10 @@ class Migration(migrations.Migration):
             model_name='regulation',
             name='id',
             field=models.TextField(serialize=False, primary_key=True),
+        ),
+        migrations.AlterField(
+            model_name='regulation',
+            name='children',
+            field=CompressedJSONField(null=True, blank=True),
         ),
     ]
