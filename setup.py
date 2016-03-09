@@ -7,7 +7,8 @@ setup(
     packages=find_packages(),
     install_requires=[
         'django>=1.8,<1.9',
+        'django-mptt',
         'jsonschema',
-        'six'
+        'six',
     ]
 )
