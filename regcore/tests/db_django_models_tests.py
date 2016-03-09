@@ -1,3 +1,4 @@
+import copy
 from datetime import date
 
 from django.test import TestCase
@@ -17,32 +18,32 @@ class DMRegulationsTest(TestCase):
 
     def test_get_success(self):
         Regulation(version='verver', label_string='a-b', text='ttt',
-                   node_type='tyty', children=[]).save()
+                   node_type='tyty').save()
         self.assertEqual({'text': 'ttt',
                           'label': ['a', 'b'],
                           'children': [],
                           'node_type': 'tyty'}, self.dmr.get('a-b', 'verver'))
 
     def test_listing(self):
-        Regulation(version='ver1', label_string='a-b', text='textex',
-                   node_type='ty', children=[]).save()
-        Regulation(version='aaa', label_string='a-b', text='textex',
-                   node_type='ty', children=[]).save()
-        Regulation(version='333', label_string='a-b', text='textex',
-                   node_type='ty', children=[]).save()
-        Regulation(version='four', label_string='a-b', text='textex',
-                   node_type='ty', children=[]).save()
+        Regulation(id='ver1-a-b', version='ver1', label_string='a-b',
+                   text='textex', node_type='ty').save()
+        Regulation(id='aaa-a-b', version='aaa', label_string='a-b',
+                   text='textex', node_type='ty').save()
+        Regulation(id='333-a-b', version='333', label_string='a-b',
+                   text='textex', node_type='ty').save()
+        Regulation(id='four-a-b', version='four', label_string='a-b',
+                   text='textex', node_type='ty').save()
 
         results = self.dmr.listing('a-b')
         self.assertEqual([('333', 'a-b'), ('aaa', 'a-b'), ('four', 'a-b'),
                           ('ver1', 'a-b')], results)
 
-        Regulation(version='ver1', label_string='1111', text='aaaa',
-                   node_type='ty', root=True, children=[]).save()
-        Regulation(version='ver2', label_string='1111', text='bbbb',
-                   node_type='ty', root=True, children=[]).save()
-        Regulation(version='ver3', label_string='1111', text='cccc',
-                   node_type='ty', root=False, children=[]).save()
+        Regulation(id='ver1-1111', version='ver1', label_string='1111',
+                   text='aaaa', node_type='ty', root=True).save()
+        Regulation(id='ver2-1111', version='ver2', label_string='1111',
+                   text='bbbb', node_type='ty', root=True).save()
+        Regulation(id='ver3-1111', version='ver3', label_string='1111',
+                   text='cccc', node_type='ty', root=False).save()
 
         results = self.dmr.listing()
         self.assertEqual([('ver1', '1111'), ('ver2', '1111')], results)
@@ -56,29 +57,17 @@ class DMRegulationsTest(TestCase):
               'node_type': 'tyty2'}
         root = {'text': 'root', 'label': ['111'], 'node_type': 'tyty3',
                 'children': [n2, n3]}
+        original = copy.deepcopy(root)
+        n2['parent'] = root
+        n3['parent'] = root
         nodes = [root, n2, n3]
         self.dmr.bulk_put(nodes, 'verver', '111')
+        self.assertEqual(DMRegulations().get('111', 'verver'), original)
 
-        expected_root = {
-            'version': 'verver', 'label_string': '111', 'text': 'root',
-            'title': '', 'node_type': 'tyty3', 'children': [n2, n3],
-            'root': True}
-        expected_n2 = {
-            'version': 'verver', 'label_string': '111-2', 'text': 'some text',
-            'title': '', 'node_type': 'tyty', 'children': [], 'root': False}
-        expected_n3 = {
-            'version': 'verver', 'label_string': '111-3', 'text': 'other',
-            'title': '', 'node_type': 'tyty2', 'children': [], 'root': False}
-        fields = expected_root.keys()
-        six.assertCountEqual(self, Regulation.objects.all().values(*fields),
-                             [expected_root, expected_n2, expected_n3])
-
-        root['title'] = 'New Title'
+        root['title'] = original['title'] = 'New Title'
         self.dmr.bulk_put(nodes, 'verver', '111')
 
-        expected_root['title'] = 'New Title'
-        six.assertCountEqual(self, Regulation.objects.all().values(*fields),
-                             [expected_root, expected_n2, expected_n3])
+        self.assertEqual(DMRegulations().get('111', 'verver'), original)
 
 
 class DMLayersTest(TestCase):

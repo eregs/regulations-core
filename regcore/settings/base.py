@@ -6,6 +6,7 @@ from django.utils.crypto import get_random_string
 
 
 INSTALLED_APPS = [
+    'mptt',
     'haystack',
     'regcore',
     'regcore_read',

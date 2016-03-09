@@ -1,45 +1,98 @@
 """Each of the data structures relevant to the API (regulations, notices,
 etc.), implemented using Django models"""
+import collections
+
 from django.core.exceptions import ObjectDoesNotExist
 
 from regcore.db import interface
 from regcore.models import Diff, Layer, Notice, Preamble, Regulation
 
 
+def treeify(node, tree_id, pos=1, level=0):
+    """Set tree properties in memory.
+    """
+    node['tree_id'] = tree_id
+    node['level'] = level
+    node['left'] = pos
+    for child in node.get('children', []):
+        pos = treeify(child, tree_id, pos=pos + 1, level=level + 1)
+    pos = pos + 1
+    node['right'] = pos
+    return pos
+
+
+def build_adjacency_map(regs):
+    """Build mapping from node IDs to child records
+    :param regs: List of `Regulation` records
+    """
+    ret = collections.defaultdict(list)
+    for reg in regs:
+        if reg.parent_id is not None:
+            ret[reg.parent_id].append(reg)
+    return ret
+
+
+def build_id(reg, version):
+    return '{}:{}'.format(version, '-'.join(reg['label']))
+
+
 class DMRegulations(interface.Regulations):
     """Implementation of Django-models as regulations backend"""
     def get(self, label, version):
         """Find the regulation label + version"""
-        try:
-            reg = Regulation.objects.get(version=version,
-                                         label_string=label)
-            as_dict = {
-                'label': reg.label_string.split('-'),
-                'text': reg.text,
-                'node_type': reg.node_type,
-                'children': reg.children
-            }
-            if reg.title:
-                as_dict['title'] = reg.title
-            return as_dict
-        except ObjectDoesNotExist:
+        regs = Regulation.objects.filter(
+            version=version,
+            label_string=label,
+        ).get_descendants(
+            include_self=True,
+        )
+        regs = list(regs.all())
+        if not regs:
             return None
+        adjacency_map = build_adjacency_map(regs)
+        return self._serialize(regs[0], adjacency_map)
+
+    def _serialize(self, reg, adjacency_map):
+        ret = {
+            'label': reg.label_string.split('-'),
+            'text': reg.text,
+            'node_type': reg.node_type,
+            'children': [
+                self._serialize(child, adjacency_map)
+                for child in adjacency_map.get(reg.id, [])
+            ],
+        }
+        if reg.title:
+            ret['title'] = reg.title
+        return ret
 
     def _transform(self, reg, version):
         """Create the Django object"""
-        return Regulation(version=version,
-                          label_string='-'.join(reg['label']),
-                          text=reg['text'],
-                          title=reg.get('title', ''),
-                          node_type=reg['node_type'],
-                          root=(len(reg['label']) == 1),
-                          children=reg['children'])
+        return Regulation(
+            id=build_id(reg, version),
+            parent_id=(
+                build_id(reg['parent'], version)
+                if reg.get('parent')
+                else None
+            ),
+            tree_id=reg['tree_id'],
+            level=reg['level'],
+            lft=reg['left'],
+            rght=reg['right'],
+            version=version,
+            label_string='-'.join(reg['label']),
+            text=reg['text'],
+            title=reg.get('title', ''),
+            node_type=reg['node_type'],
+            root=(len(reg['label']) == 1),
+        )
 
     def bulk_put(self, regs, version, root_label):
         """Store all reg objects"""
         # This does not handle subparts. Ignoring that for now
         Regulation.objects.filter(version=version,
                                   label_string__startswith=root_label).delete()
+        treeify(regs[0], Regulation.objects._get_next_tree_id())
         Regulation.objects.bulk_create(
             [self._transform(r, version) for r in regs], batch_size=100)
 
