@@ -70,6 +70,10 @@ LOGGING = {
     }
 }
 
+# Batch size used in `bulk_create`; defaults to a conservative value to avoid
+# hitting SQLite limits
+BATCH_SIZE = 50
+
 _envvars = ('HTTP_AUTH_USER', 'HTTP_AUTH_PASSWORD')
 for var in _envvars:
     globals()[var] = os.environ.get(var)

@@ -2,6 +2,7 @@
 etc.), implemented using Django models"""
 import collections
 
+from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from regcore.db import interface
@@ -94,7 +95,8 @@ class DMRegulations(interface.Regulations):
                                   label_string__startswith=root_label).delete()
         treeify(regs[0], Regulation.objects._get_next_tree_id())
         Regulation.objects.bulk_create(
-            [self._transform(r, version) for r in regs], batch_size=100)
+            [self._transform(r, version) for r in regs],
+            batch_size=settings.BATCH_SIZE)
 
     def listing(self, label=None):
         """List regulation version-label pairs that match this label (or are
@@ -127,7 +129,7 @@ class DMLayers(interface.Layers):
                              label__startswith=root_label).delete()
         Layer.objects.bulk_create(
             [self._transform(l, version, layer_name) for l in layers],
-            batch_size=100)
+            batch_size=settings.BATCH_SIZE)
 
     def get(self, name, label, version):
         """Find the layer that matches these parameters"""
