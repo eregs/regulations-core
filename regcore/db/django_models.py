@@ -5,7 +5,7 @@ import collections
 from django.core.exceptions import ObjectDoesNotExist
 
 from regcore.db import interface
-from regcore.models import Diff, Layer, Notice, Regulation
+from regcore.models import Diff, Layer, Notice, Preamble, Regulation
 
 
 def treeify(node, tree_id, pos=1, level=0):
@@ -194,5 +194,21 @@ class DMDiffs(interface.Diffs):
             diff = Diff.objects.get(label=label, old_version=old_version,
                                     new_version=new_version)
             return diff.diff
+        except ObjectDoesNotExist:
+            return None
+
+
+class DMPreambles(interface.Preambles):
+    """Implementation of Django-models as preamble backend"""
+    def put(self, doc_number, preamble):
+        """Store a single preamble"""
+        Preamble.objects.filter(document_number=doc_number).delete()
+        Preamble.objects.create(document_number=doc_number, data=preamble)
+
+    def get(self, doc_number):
+        """Fetch a single preamble"""
+        try:
+            preamble = Preamble.objects.get(document_number=doc_number)
+            return preamble.data
         except ObjectDoesNotExist:
             return None

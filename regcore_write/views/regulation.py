@@ -1,11 +1,10 @@
-import json
 import logging
 
 import jsonschema
 
 from regcore.db import storage
 from regcore.responses import success, user_error
-from regcore_write.views.security import secure_write
+from regcore_write.views.security import json_body, secure_write
 
 
 #   This JSON schema is used to validate the regulation data provided
@@ -33,13 +32,12 @@ REGULATION_SCHEMA = {
 
 
 @secure_write
+@json_body
 def add(request, label_id, version):
     """Add this regulation node and all of its children to the db"""
     try:
-        node = json.loads(request.body.decode('utf-8'))
+        node = request.json_body
         jsonschema.validate(node, REGULATION_SCHEMA)
-    except (ValueError, UnicodeError):
-        return user_error('invalid format')
     except jsonschema.ValidationError:
         return user_error("JSON is invalid")
 

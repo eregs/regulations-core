@@ -5,8 +5,8 @@ from django.test import TestCase
 import six
 
 from regcore.db.django_models import (
-    DMDiffs, DMLayers, DMNotices, DMRegulations)
-from regcore.models import Diff, Layer, Notice, Regulation
+    DMDiffs, DMLayers, DMNotices, DMPreambles, DMRegulations)
+from regcore.models import Diff, Layer, Notice, Preamble, Regulation
 
 
 class DMRegulationsTest(TestCase):
@@ -198,4 +198,28 @@ class DMDiffTest(TestCase):
         self.dmd.put('lablab', 'oldold', 'newnew', {"other": "structure"})
         expected['diff'] = {'other': 'structure'}
         six.assertCountEqual(self, Diff.objects.all().values(*fields),
+                             [expected])
+
+
+class DMPreambleTest(TestCase):
+    def test_get(self):
+        """Can fetch preamble docs"""
+        self.assertIsNone(DMPreambles().get('docdoc'))
+
+        Preamble(document_number='docdocdoc', data={'some': 'data'}).save()
+        self.assertEqual({"some": 'data'}, DMPreambles().get('docdocdoc'))
+
+    def test_put(self):
+        """We can insert and replace a pramble"""
+        DMPreambles().put('docdoc', {'some': 'struct', 'here': True})
+
+        expected = {'document_number': 'docdoc',
+                    'data': {'some': 'struct', 'here': True}}
+        fields = expected.keys()
+        six.assertCountEqual(self, Preamble.objects.all().values(*fields),
+                             [expected])
+
+        DMPreambles().put('docdoc', {'other': 1})
+        expected['data'] = {'other': 1}
+        six.assertCountEqual(self, Preamble.objects.all().values(*fields),
                              [expected])

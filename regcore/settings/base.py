@@ -30,12 +30,9 @@ ROOT_URLCONF = 'regcore.urls'
 
 DEBUG = True
 
-BACKENDS = {
-    'regulations': 'regcore.db.django_models.DMRegulations',
-    'layers': 'regcore.db.django_models.DMLayers',
-    'notices': 'regcore.db.django_models.DMNotices',
-    'diffs': 'regcore.db.django_models.DMDiffs'
-}
+# Configurable storage backends, keyed by data_type (e.g. regulations, diffs)
+# If a key is not set, defaults to regcore.db.django_models versions
+BACKENDS = {}
 
 NOSE_ARGS = [
     '--with-coverage',

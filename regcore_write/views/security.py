@@ -1,10 +1,13 @@
 import base64
 from functools import wraps
+import json
 
 from django.conf import settings
 from django.http import HttpResponse
 from django.utils.crypto import constant_time_compare
 from django.views.decorators.csrf import csrf_exempt
+
+from regcore.responses import user_error
 
 
 def _not_authorized():
@@ -53,3 +56,17 @@ def secure_write(func):
         func = basic_auth(func)
 
     return func
+
+
+def json_body(func):
+    """Return a user error if the request's body doesn't contain valid JSON.
+    Not embedding in `secure_write` as we may want to add schema checking to
+    this in the future"""
+    @wraps(func)
+    def wrapped(request, *args, **kwargs):
+        try:
+            request.json_body = json.loads(request.body.decode('utf-8'))
+            return func(request, *args, **kwargs)
+        except (ValueError, UnicodeError):
+            return user_error('invalid format')
+    return wrapped

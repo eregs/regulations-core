@@ -64,3 +64,15 @@ class Diffs(object):
     def get(self, label, old_version, new_version):
         """Return matching diff or None"""
         raise NotImplementedError
+
+
+@six.add_metaclass(abc.ABCMeta)
+class Preambles(object):
+    def put(self, doc_number, preamble):
+        """:param str doc_number: unique identifier
+           :param dict preamble: preamble data"""
+        raise NotImplementedError
+
+    def get(self, doc_number):
+        """Return matching preamble or None"""
+        raise NotImplementedError
