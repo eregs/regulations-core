@@ -132,9 +132,8 @@ class DMLayers(interface.Layers):
             [self._transform(l, version, layer_name) for l in layers],
             batch_size=settings.BATCH_SIZE)
 
-    def get(self, name, label, version):
+    def get(self, name, reference):
         """Find the layer that matches these parameters"""
-        reference = "{}:{}".format(version, label)
         try:
             layer = Layer.objects.get(name=name, reference=reference)
             return layer.layer

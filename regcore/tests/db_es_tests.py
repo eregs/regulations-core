@@ -106,13 +106,13 @@ class ESRegulationsTest(TestCase, ESBase):
 
 class ESLayersTest(TestCase, ESBase):
     def test_get_404(self):
-        with self.expect_get('layer', 'verver/namnam/lablab'):
-            self.assertIsNone(ESLayers().get('namnam', 'lablab', 'verver'))
+        with self.expect_get('layer', 'namnam:verver:lablab'):
+            self.assertIsNone(ESLayers().get('namnam', 'verver:lablab'))
 
     def test_get_success(self):
         return_value = {'layer': {'some': 'body'}}
-        with self.expect_get('layer', 'verver/namnam/lablab', return_value):
-            self.assertEqual(ESLayers().get('namnam', 'lablab', 'verver'),
+        with self.expect_get('layer', 'namnam:verver:lablab', return_value):
+            self.assertEqual(ESLayers().get('namnam', 'verver:lablab'),
                              {"some": "body"})
 
     def test_bulk_put(self):

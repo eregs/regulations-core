@@ -75,14 +75,14 @@ class DMLayersTest(TestCase):
         self.dml = DMLayers()
 
     def test_get_404(self):
-        self.assertIsNone(self.dml.get('namnam', 'lablab', 'verver'))
+        self.assertIsNone(self.dml.get('namnam', 'verver:lablab'))
 
     def test_get_success(self):
         Layer(name='namnam', reference='verver:lablab',
               layer={"some": "body"}).save()
 
         self.assertEqual({"some": 'body'},
-                         self.dml.get('namnam', 'lablab', 'verver'))
+                         self.dml.get('namnam', 'verver:lablab'))
 
     def test_bulk_put(self):
         """Writing multiple documents should save correctly. They can be
@@ -93,16 +93,16 @@ class DMLayersTest(TestCase):
         self.dml.bulk_put(layers, 'verver', 'name', '111')
 
         self.assertEqual(Layer.objects.count(), 2)
-        self.assertEqual(self.dml.get('name', '111-22', 'verver'),
+        self.assertEqual(self.dml.get('name', 'verver:111-22'),
                          {'111-22': [], '111-22-a': []})
-        self.assertEqual(self.dml.get('name', '111-23', 'verver'),
+        self.assertEqual(self.dml.get('name', 'verver:111-23'),
                          {'111-23': []})
 
         layers[1] = {'111-23': [1], 'label': '111-23'}
         self.dml.bulk_put(layers, 'verver', 'name', '111')
 
         self.assertEqual(Layer.objects.count(), 2)
-        self.assertEqual(self.dml.get('name', '111-23', 'verver'),
+        self.assertEqual(self.dml.get('name', 'verver:111-23'),
                          {'111-23': [1]})
 
 

@@ -31,7 +31,7 @@ class Layers(object):
         and all entries having layer_name and version"""
         raise NotImplementedError
 
-    def get(self, name, label, version):
+    def get(self, name, reference):
         """Return a single layer (no meta data) or None"""
         raise NotImplementedError
 

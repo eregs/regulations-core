@@ -85,9 +85,9 @@ class ESLayers(ESBase, interface.Layers):
             settings.ELASTIC_SEARCH_INDEX, 'layer',
             [self._transform(l, version, layer_name) for l in layers])
 
-    def get(self, name, label, version):
+    def get(self, name, reference):
         """Find the layer that matches these parameters"""
-        layer = self.safe_fetch('layer', version + '/' + name + '/' + label)
+        layer = self.safe_fetch('layer', name + ':' + reference)
         if layer is not None:
             return layer['layer']
 
