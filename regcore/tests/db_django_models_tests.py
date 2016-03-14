@@ -78,7 +78,7 @@ class DMLayersTest(TestCase):
         self.assertIsNone(self.dml.get('namnam', 'lablab', 'verver'))
 
     def test_get_success(self):
-        Layer(version='verver', name='namnam', label='lablab',
+        Layer(name='namnam', reference='verver:lablab',
               layer={"some": "body"}).save()
 
         self.assertEqual({"some": 'body'},
@@ -92,21 +92,18 @@ class DMLayersTest(TestCase):
             {'111-23': [], 'label': '111-23'}]
         self.dml.bulk_put(layers, 'verver', 'name', '111')
 
-        expected = [
-            {'version': 'verver', 'name': 'name', 'label': '111-22',
-             'layer': {'111-22': [], '111-22-a': []}},
-            {'version': 'verver', 'name': 'name', 'label': '111-23',
-             'layer': {'111-23': []}}]
-        fields = expected[0].keys()
-        six.assertCountEqual(self, Layer.objects.all().values(*fields),
-                             expected)
+        self.assertEqual(Layer.objects.count(), 2)
+        self.assertEqual(self.dml.get('name', '111-22', 'verver'),
+                         {'111-22': [], '111-22-a': []})
+        self.assertEqual(self.dml.get('name', '111-23', 'verver'),
+                         {'111-23': []})
 
         layers[1] = {'111-23': [1], 'label': '111-23'}
         self.dml.bulk_put(layers, 'verver', 'name', '111')
 
-        expected[1]['layer'] = {'111-23': [1]}
-        six.assertCountEqual(self, Layer.objects.all().values(*fields),
-                             expected)
+        self.assertEqual(Layer.objects.count(), 2)
+        self.assertEqual(self.dml.get('name', '111-23', 'verver'),
+                         {'111-23': [1]})
 
 
 class DMNoticesTest(TestCase):

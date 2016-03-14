@@ -119,23 +119,24 @@ class DMLayers(interface.Layers):
         layer = dict(layer)  # copy
         label_id = layer['label']
         del layer['label']
-        return Layer(version=version, name=layer_name, label=label_id,
-                     layer=layer)
+        return Layer(name=layer_name, layer=layer,
+                     reference="{}:{}".format(version, label_id))
 
     def bulk_put(self, layers, version, layer_name, root_label):
         """Store all layer objects"""
         # This does not handle subparts. Ignoring that for now
-        Layer.objects.filter(version=version, name=layer_name,
-                             label__startswith=root_label).delete()
+        root_label = '{}:{}'.format(version, root_label)
+        Layer.objects.filter(
+            name=layer_name, reference__startswith=root_label).delete()
         Layer.objects.bulk_create(
             [self._transform(l, version, layer_name) for l in layers],
             batch_size=settings.BATCH_SIZE)
 
     def get(self, name, label, version):
         """Find the layer that matches these parameters"""
+        reference = "{}:{}".format(version, label)
         try:
-            layer = Layer.objects.get(version=version, name=name,
-                                      label=label)
+            layer = Layer.objects.get(name=name, reference=reference)
             return layer.layer
         except ObjectDoesNotExist:
             return None

@@ -21,14 +21,13 @@ class Regulation(MPTTModel):
 
 
 class Layer(models.Model):
-    version = models.SlugField(max_length=20)
     name = models.SlugField(max_length=20)
-    label = models.SlugField(max_length=200)
     layer = CompressedJSONField()
+    reference = models.SlugField(max_length=250)
 
     class Meta:
-        index_together = (('version', 'name', 'label'),)
-        unique_together = (('version', 'name', 'label'),)
+        index_together = (('name', 'reference'),)
+        unique_together = index_together
 
 
 class Notice(models.Model):
