@@ -25,10 +25,10 @@ class Migration(migrations.Migration):
         ),
         migrations.AlterUniqueTogether(
             name='layer',
-            unique_together=set([('name', 'reference'), ('version', 'name', 'label')]),
+            unique_together=set()
         ),
         migrations.AlterIndexTogether(
             name='layer',
-            index_together=set([('name', 'reference'), ('version', 'name', 'label')]),
+            index_together=set()
         ),
     ]

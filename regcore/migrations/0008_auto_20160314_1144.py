@@ -19,10 +19,18 @@ class Migration(migrations.Migration):
             name='layer',
             index_together=set([('name', 'reference')]),
         ),
+        migrations.AlterField(
+            model_name='layer',
+            name='label',
+            field=models.SlugField(max_length=200, default='')),
         migrations.RemoveField(
             model_name='layer',
             name='label',
         ),
+        migrations.AlterField(
+            model_name='layer',
+            name='version',
+            field=models.SlugField(max_length=20, default='')),
         migrations.RemoveField(
             model_name='layer',
             name='version',
