@@ -114,6 +114,38 @@ class ViewsLayerTest(TestCase):
         self.assertTrue(all('referenced' in saved for saved in layers_saved))
 
     @patch('regcore_write.views.layer.storage')
+    def test_add_preamble_layer(self, storage):
+        """If adding layer data to a preamble, we should see layers saved for
+        each level of the preamble tree. This requires we construct a fake
+        preamble."""
+        storage.for_regulations.get.return_value = None
+        storage.for_preambles.get.return_value = dict(
+            label=['111_22'], children=[
+                dict(label=['111_22', '1'], children=[]),
+                dict(label=['111_22', '2'], children=[
+                    dict(label=['111_22', '2', 'a'], children=[])]),
+                dict(label=['111_22', '3'], children=[
+                    dict(label=['111_22', '3', 'a'], children=[
+                        dict(label=['111_22', '3', 'a', 'i'], children=[])]),
+                    dict(label=['111_22', '3', 'b'], children=[
+                        dict(label=['111_22', '3', 'b', 'i'], children=[])])
+                ])])
+        message = {'111_22': 'layer1', '111_22-3': 'layer2',
+                   '111_22-3-b': 'layer3'}
+        self.client.put('/layer/aname/111_22', data=json.dumps(message))
+        stored = storage.for_layers.bulk_put.call_args[0][0]
+        self.assertEqual(len(stored), 9)
+        for label in ('111_22-1', '111_22-2', '111_22-2-a', '111_22-3-a',
+                      '111_22-3-a-i', '111_22-3-b-i'):
+            self.assertIn({'reference': label}, stored)     # i.e. empty
+        self.assertIn({'reference': '111_22', '111_22': 'layer1',
+                       '111_22-3': 'layer2', '111_22-3-b': 'layer3'}, stored)
+        self.assertIn({'reference': '111_22-3', '111_22-3': 'layer2',
+                       '111_22-3-b': 'layer3'}, stored)
+        self.assertIn({'reference': '111_22-3-b', '111_22-3-b': 'layer3'},
+                      stored)
+
+    @patch('regcore_write.views.layer.storage')
     def test_child_layers_no_results(self, storage):
         """If the db returns no regulation data, nothing should get saved"""
         storage.for_regulations.get.return_value = None
