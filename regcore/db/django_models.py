@@ -114,22 +114,20 @@ class DMRegulations(interface.Regulations):
 
 class DMLayers(interface.Layers):
     """Implementation of Django-models as layers backend"""
-    def _transform(self, layer, version, layer_name):
+    def _transform(self, layer, layer_name):
         """Create a Django object"""
         layer = dict(layer)  # copy
-        label_id = layer['label']
-        del layer['label']
-        return Layer(name=layer_name, layer=layer,
-                     reference="{}:{}".format(version, label_id))
+        reference = layer['reference']
+        del layer['reference']
+        return Layer(name=layer_name, layer=layer, reference=reference)
 
-    def bulk_put(self, layers, version, layer_name, root_label):
+    def bulk_put(self, layers, layer_name, prefix):
         """Store all layer objects"""
         # This does not handle subparts. Ignoring that for now
-        root_label = '{}:{}'.format(version, root_label)
-        Layer.objects.filter(
-            name=layer_name, reference__startswith=root_label).delete()
+        Layer.objects.filter(name=layer_name,
+                             reference__startswith=prefix).delete()
         Layer.objects.bulk_create(
-            [self._transform(l, version, layer_name) for l in layers],
+            [self._transform(l, layer_name) for l in layers],
             batch_size=settings.BATCH_SIZE)
 
     def get(self, name, reference):

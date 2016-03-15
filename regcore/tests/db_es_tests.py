@@ -116,18 +116,15 @@ class ESLayersTest(TestCase, ESBase):
                              {"some": "body"})
 
     def test_bulk_put(self):
-        layers = [{'111-22': [], '111-22-a': [], 'label': '111-22'},
-                  {'111-23': [], 'label': '111-23'}]
+        layers = [{'111-22': [], '111-22-a': [], 'reference': 'verver:111-22'},
+                  {'111-23': [], 'reference': 'verver:111-23'}]
         with self.expect_bulk_put('layer', 2) as bulk_put:
-            ESLayers().bulk_put(layers, 'verver', 'name', '111')
+            ESLayers().bulk_put(layers, 'name', 'verver:111')
 
-        del layers[0]['label']
-        del layers[1]['label']
-        transformed = [
-            {'id': 'verver/name/111-22', 'version': 'verver',
-             'name': 'name', 'label': '111-22', 'layer': layers[0]},
-            {'id': 'verver/name/111-23', 'version': 'verver',
-             'name': 'name', 'label': '111-23', 'layer': layers[1]}]
+        del layers[0]['reference']
+        del layers[1]['reference']
+        transformed = [{'id': 'name:verver:111-22', 'layer': layers[0]},
+                       {'id': 'name:verver:111-23', 'layer': layers[1]}]
         self.assertEqual(transformed, bulk_put.call_args[0][2])
 
 

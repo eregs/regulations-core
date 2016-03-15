@@ -87,10 +87,9 @@ class DMLayersTest(TestCase):
     def test_bulk_put(self):
         """Writing multiple documents should save correctly. They can be
         modified"""
-        layers = [
-            {'111-22': [], '111-22-a': [], 'label': '111-22'},
-            {'111-23': [], 'label': '111-23'}]
-        self.dml.bulk_put(layers, 'verver', 'name', '111')
+        layers = [{'111-22': [], '111-22-a': [], 'reference': 'verver:111-22'},
+                  {'111-23': [], 'reference': 'verver:111-23'}]
+        self.dml.bulk_put(layers, 'name', 'verver:111')
 
         self.assertEqual(Layer.objects.count(), 2)
         self.assertEqual(self.dml.get('name', 'verver:111-22'),
@@ -98,8 +97,8 @@ class DMLayersTest(TestCase):
         self.assertEqual(self.dml.get('name', 'verver:111-23'),
                          {'111-23': []})
 
-        layers[1] = {'111-23': [1], 'label': '111-23'}
-        self.dml.bulk_put(layers, 'verver', 'name', '111')
+        layers[1] = {'111-23': [1], 'reference': 'verver:111-23'}
+        self.dml.bulk_put(layers, 'name', 'verver:111')
 
         self.assertEqual(Layer.objects.count(), 2)
         self.assertEqual(self.dml.get('name', 'verver:111-23'),

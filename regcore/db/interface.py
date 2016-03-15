@@ -26,9 +26,15 @@ class Regulations(object):
 
 @six.add_metaclass(abc.ABCMeta)
 class Layers(object):
-    def bulk_put(self, layers, version, layer_name, root_label):
-        """Add many entries, with the root of the entries having root_label
-        and all entries having layer_name and version"""
+    def bulk_put(self, layers, layer_name, prefix):
+        """Add multiple entries with the same layer_name.
+        :param list[dict] layers: Each dictionary represents a layer; each
+        should have a distinct "reference", which will be used during
+        insertion.
+        :param str layer_name: Identifier for this layer, e.g. "toc",
+        "internal-citations", etc.
+        :param str prefix: All layer entries with this prefix should be
+        deleted before inserting"""
         raise NotImplementedError
 
     def get(self, name, reference):

@@ -66,24 +66,19 @@ class ESRegulations(ESBase, interface.Regulations):
 
 class ESLayers(ESBase, interface.Layers):
     """Implementation of Elastic Search as layers backend"""
-    def _transform(self, layer, version, layer_name):
+    def _transform(self, layer, layer_name):
         """Add some meta data fields which are ES specific"""
         layer = dict(layer)     # copy
-        label = layer['label']
-        del layer['label']
-        return {
-            'id': '%s/%s/%s' % (version, layer_name, label),
-            'version': version,
-            'name': layer_name,
-            'label': label,
-            'layer': layer
-        }
+        reference = layer['reference']
+        del layer['reference']
+        return {'id': '{}:{}'.format(layer_name, reference), 'layer': layer}
 
-    def bulk_put(self, layers, version, layer_name, root_label):
-        """Store all layer objects"""
+    def bulk_put(self, layers, layer_name, prefix):
+        """Store all layer objects. Note this does not delete existing docs;
+        it only replaces/inserts docs, which has loop holes"""
         self.es.bulk_index(
             settings.ELASTIC_SEARCH_INDEX, 'layer',
-            [self._transform(l, version, layer_name) for l in layers])
+            [self._transform(l, layer_name) for l in layers])
 
     def get(self, name, reference):
         """Find the layer that matches these parameters"""
