@@ -21,7 +21,7 @@ def child_label_of(lhs, rhs):
 
 @secure_write
 @json_body
-def add(request, name, label_id, version):
+def add(request, name, label_id, version=None):
     """Add the layer node and all of its children to the db"""
     layer = request.json_body
 
@@ -33,8 +33,11 @@ def add(request, name, label_id, version):
         if not child_label_of(key, label_id) and key != 'referenced':
             return user_error('label mismatch: %s, %s' % (label_id, key))
 
+    prefix = label_id
+    if version is not None:
+        prefix = version + ':' + prefix
     storage.for_layers.bulk_put(
-        child_layers(name, label_id, version, layer), version, name, label_id)
+        child_layers(name, label_id, version, layer), name, prefix)
 
     return success()
 
@@ -45,6 +48,8 @@ def child_layers(layer_name, root_label, version, root_layer):
     regulation. If a reg has 100 nodes, but the layer only has 3 entries, it
     will still store 100 layer models -- many may be empty"""
     root = storage.for_regulations.get(root_label, version)
+    if not root:
+        root = storage.for_preambles.get(root_label)
     if not root:
         return []
 
@@ -57,7 +62,10 @@ def child_layers(layer_name, root_label, version, root_layer):
 
         label_id = '-'.join(node['label'])
 
-        sub_layer = {'label': label_id}
+        if version:
+            sub_layer = {'reference': '{}:{}'.format(version, label_id)}
+        else:
+            sub_layer = {'reference': label_id}
         for key in root_layer:
             #   'referenced' is a special case of the definitions layer
             if key == label_id or key in child_labels or key == 'referenced':

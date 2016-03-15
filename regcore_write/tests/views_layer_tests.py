@@ -53,15 +53,15 @@ class ViewsLayerTest(TestCase):
         l1, l2, l3 = self.put_with_mock_data(
             message, 'lablab', 'lablab-b', 'lablab-b-4')
 
-        message['label'] = 'lablab'
+        message['reference'] = 'verver:lablab'
         self.assertEqual(message, l1)
 
         #   Sub layers have fewer elements
         del message['lablab']
-        message['label'] = 'lablab-b'
+        message['reference'] = 'verver:lablab-b'
         self.assertEqual(message, l2)
         del message['lablab-b']
-        message['label'] = 'lablab-b-4'
+        message['reference'] = 'verver:lablab-b-4'
         self.assertEqual(message, l3)
 
     def test_add_skip_level(self):
@@ -73,13 +73,13 @@ class ViewsLayerTest(TestCase):
         l1, l2, l3 = self.put_with_mock_data(
             message, 'lablab', 'lablab-b', 'lablab-b-4')
 
-        message['label'] = 'lablab'
+        message['reference'] = 'verver:lablab'
         self.assertEqual(message, l1)
         #   Sub layers have fewer elements
         del message['lablab']
-        message['label'] = 'lablab-b'
+        message['reference'] = 'verver:lablab-b'
         self.assertEqual(message, l2)
-        message['label'] = 'lablab-b-4'
+        message['reference'] = 'verver:lablab-b-4'
         self.assertEqual(message, l3)
 
     def test_add_interp_children(self):
@@ -117,6 +117,7 @@ class ViewsLayerTest(TestCase):
     def test_child_layers_no_results(self, storage):
         """If the db returns no regulation data, nothing should get saved"""
         storage.for_regulations.get.return_value = None
+        storage.for_preambles.get.return_value = None
         self.assertEqual([], layer.child_layers('layname', 'lll', 'vvv', {}))
         self.assertTrue(storage.for_regulations.get.called)
         lab, ver = storage.for_regulations.get.call_args[0]
