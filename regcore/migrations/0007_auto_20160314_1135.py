@@ -8,7 +8,7 @@ def gen_layer_reference(apps, schema_editor):
     """We'll combine two previously distinct fields to generalize the layers
     interface"""
     schema_editor.execute(
-        'UPDATE regcore_layer SET reference=version||":"||label')
+        "UPDATE regcore_layer SET reference=version||':'||label")
 
 
 def split_layer_reference(apps, schema_editor):
