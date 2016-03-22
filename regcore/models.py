@@ -23,10 +23,11 @@ class Regulation(MPTTModel):
 class Layer(models.Model):
     name = models.SlugField(max_length=20)
     layer = CompressedJSONField()
-    reference = models.SlugField(max_length=250)
+    doc_type = models.SlugField(max_length=20)
+    doc_id = models.SlugField(max_length=250)
 
     class Meta:
-        index_together = (('name', 'reference'),)
+        index_together = (('name', 'doc_type', 'doc_id'),)
         unique_together = index_together
 
 
