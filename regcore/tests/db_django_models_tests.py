@@ -75,33 +75,33 @@ class DMLayersTest(TestCase):
         self.dml = DMLayers()
 
     def test_get_404(self):
-        self.assertIsNone(self.dml.get('namnam', 'verver:lablab'))
+        self.assertIsNone(self.dml.get('namnam', 'cfr', 'verver/lablab'))
 
     def test_get_success(self):
-        Layer(name='namnam', reference='verver:lablab',
+        Layer(name='namnam', doc_type='cfr', doc_id='verver/lablab',
               layer={"some": "body"}).save()
 
         self.assertEqual({"some": 'body'},
-                         self.dml.get('namnam', 'verver:lablab'))
+                         self.dml.get('namnam', 'cfr', 'verver/lablab'))
 
     def test_bulk_put(self):
         """Writing multiple documents should save correctly. They can be
         modified"""
-        layers = [{'111-22': [], '111-22-a': [], 'reference': 'verver:111-22'},
-                  {'111-23': [], 'reference': 'verver:111-23'}]
-        self.dml.bulk_put(layers, 'name', 'verver:111')
+        layers = [{'111-22': [], '111-22-a': [], 'doc_id': 'verver/111-22'},
+                  {'111-23': [], 'doc_id': 'verver/111-23'}]
+        self.dml.bulk_put(layers, 'name', 'cfr', 'verver/111')
 
         self.assertEqual(Layer.objects.count(), 2)
-        self.assertEqual(self.dml.get('name', 'verver:111-22'),
+        self.assertEqual(self.dml.get('name', 'cfr', 'verver/111-22'),
                          {'111-22': [], '111-22-a': []})
-        self.assertEqual(self.dml.get('name', 'verver:111-23'),
+        self.assertEqual(self.dml.get('name', 'cfr', 'verver/111-23'),
                          {'111-23': []})
 
-        layers[1] = {'111-23': [1], 'reference': 'verver:111-23'}
-        self.dml.bulk_put(layers, 'name', 'verver:111')
+        layers[1] = {'111-23': [1], 'doc_id': 'verver/111-23'}
+        self.dml.bulk_put(layers, 'name', 'cfr', 'verver/111')
 
         self.assertEqual(Layer.objects.count(), 2)
-        self.assertEqual(self.dml.get('name', 'verver:111-23'),
+        self.assertEqual(self.dml.get('name', 'cfr', 'verver/111-23'),
                          {'111-23': [1]})
 
 

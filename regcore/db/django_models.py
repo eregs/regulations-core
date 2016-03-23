@@ -114,26 +114,28 @@ class DMRegulations(interface.Regulations):
 
 class DMLayers(interface.Layers):
     """Implementation of Django-models as layers backend"""
-    def _transform(self, layer, layer_name):
+    def _transform(self, layer, layer_name, doc_type):
         """Create a Django object"""
         layer = dict(layer)  # copy
-        reference = layer['reference']
-        del layer['reference']
-        return Layer(name=layer_name, layer=layer, reference=reference)
+        doc_id = layer.pop('doc_id')
+        return Layer(name=layer_name, layer=layer, doc_type=doc_type,
+                     doc_id=doc_id)
 
-    def bulk_put(self, layers, layer_name, prefix):
+    def bulk_put(self, layers, layer_name, doc_type, root_doc_id):
         """Store all layer objects"""
-        # This does not handle subparts. Ignoring that for now
-        Layer.objects.filter(name=layer_name,
-                             reference__startswith=prefix).delete()
+        # This does not handle subparts; Ignoring that for now
+        # @todo - use regex to avoid deleting 222-11 when replacing 22
+        Layer.objects.filter(name=layer_name, doc_type=doc_type,
+                             doc_id__startswith=root_doc_id).delete()
         Layer.objects.bulk_create(
-            [self._transform(l, layer_name) for l in layers],
+            [self._transform(l, layer_name, doc_type) for l in layers],
             batch_size=settings.BATCH_SIZE)
 
-    def get(self, name, reference):
+    def get(self, name, doc_type, doc_id):
         """Find the layer that matches these parameters"""
         try:
-            layer = Layer.objects.get(name=name, reference=reference)
+            layer = Layer.objects.get(name=name, doc_type=doc_type,
+                                      doc_id=doc_id)
             return layer.layer
         except ObjectDoesNotExist:
             return None

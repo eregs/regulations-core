@@ -106,25 +106,26 @@ class ESRegulationsTest(TestCase, ESBase):
 
 class ESLayersTest(TestCase, ESBase):
     def test_get_404(self):
-        with self.expect_get('layer', 'namnam:verver:lablab'):
-            self.assertIsNone(ESLayers().get('namnam', 'verver:lablab'))
+        with self.expect_get('layer', 'namnam:cfr:verver:lablab'):
+            self.assertIsNone(
+                ESLayers().get('namnam', 'cfr', 'verver:lablab'))
 
     def test_get_success(self):
-        return_value = {'layer': {'some': 'body'}}
-        with self.expect_get('layer', 'namnam:verver:lablab', return_value):
-            self.assertEqual(ESLayers().get('namnam', 'verver:lablab'),
+        with self.expect_get('layer', 'namnam:cfr:verver:lablab',
+                             {'layer': {'some': 'body'}}):
+            self.assertEqual(ESLayers().get('namnam', 'cfr', 'verver:lablab'),
                              {"some": "body"})
 
     def test_bulk_put(self):
-        layers = [{'111-22': [], '111-22-a': [], 'reference': 'verver:111-22'},
-                  {'111-23': [], 'reference': 'verver:111-23'}]
+        layers = [{'111-22': [], '111-22-a': [], 'doc_id': 'verver:111-22'},
+                  {'111-23': [], 'doc_id': 'verver:111-23'}]
         with self.expect_bulk_put('layer', 2) as bulk_put:
-            ESLayers().bulk_put(layers, 'name', 'verver:111')
+            ESLayers().bulk_put(layers, 'name', 'cfr', 'verver:111')
 
-        del layers[0]['reference']
-        del layers[1]['reference']
-        transformed = [{'id': 'name:verver:111-22', 'layer': layers[0]},
-                       {'id': 'name:verver:111-23', 'layer': layers[1]}]
+        del layers[0]['doc_id']
+        del layers[1]['doc_id']
+        transformed = [{'id': 'name:cfr:verver:111-22', 'layer': layers[0]},
+                       {'id': 'name:cfr:verver:111-23', 'layer': layers[1]}]
         self.assertEqual(transformed, bulk_put.call_args[0][2])
 
 

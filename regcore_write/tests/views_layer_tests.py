@@ -3,13 +3,15 @@ import json
 from django.test import TestCase
 from mock import patch
 
+from regcore.layer import standardize_params
 from regcore_write.views import layer
 
 
 class ViewsLayerTest(TestCase):
-    def put(self, data, name='layname', label='lablab', version='verver'):
+    def put(self, data, name='layname', doc_type='cfr',
+            doc_id='verver/lablab'):
         """Shorthand function for PUTing data to a view layer"""
-        url = '/layer/{}/{}/{}'.format(name, label, version)
+        url = '/layer/{}/{}/{}'.format(name, doc_type, doc_id)
         if isinstance(data, dict):
             data = json.dumps(data)
         return self.client.put(url, content_type='application/json',
@@ -22,7 +24,7 @@ class ViewsLayerTest(TestCase):
 
     def test_add_label_mismatch(self):
         """Root label must match that found in the url"""
-        response = self.put({'nonlab': []}, label='lablab')
+        response = self.put({'nonlab': []}, doc_id='verver/lablab')
         self.assertEqual(400, response.status_code)
 
     def put_with_mock_data(self, message, *labels, **kwargs):
@@ -51,17 +53,18 @@ class ViewsLayerTest(TestCase):
             'lablab-b-4': [3, 4],
         }
         l1, l2, l3 = self.put_with_mock_data(
-            message, 'lablab', 'lablab-b', 'lablab-b-4')
+            message, 'lablab', 'lablab-b', 'lablab-b-4', doc_type='cfr',
+            doc_id='verver/lablab')
 
-        message['reference'] = 'verver:lablab'
+        message['doc_id'] = 'verver/lablab'
         self.assertEqual(message, l1)
 
         #   Sub layers have fewer elements
         del message['lablab']
-        message['reference'] = 'verver:lablab-b'
+        message['doc_id'] = 'verver/lablab-b'
         self.assertEqual(message, l2)
         del message['lablab-b']
-        message['reference'] = 'verver:lablab-b-4'
+        message['doc_id'] = 'verver/lablab-b-4'
         self.assertEqual(message, l3)
 
     def test_add_skip_level(self):
@@ -73,13 +76,13 @@ class ViewsLayerTest(TestCase):
         l1, l2, l3 = self.put_with_mock_data(
             message, 'lablab', 'lablab-b', 'lablab-b-4')
 
-        message['reference'] = 'verver:lablab'
+        message['doc_id'] = 'verver/lablab'
         self.assertEqual(message, l1)
         #   Sub layers have fewer elements
         del message['lablab']
-        message['reference'] = 'verver:lablab-b'
+        message['doc_id'] = 'verver/lablab-b'
         self.assertEqual(message, l2)
-        message['reference'] = 'verver:lablab-b-4'
+        message['doc_id'] = 'verver/lablab-b-4'
         self.assertEqual(message, l3)
 
     def test_add_interp_children(self):
@@ -87,7 +90,7 @@ class ViewsLayerTest(TestCase):
         message = {'99-5-Interp': [1, 2], '99-5-a-Interp': [3, 4]}
         l1, l2, l3, l4 = self.put_with_mock_data(
             message, '99', '99-Interp', '99-5-Interp', '99-5-a-Interp',
-            label='99')
+            doc_id='verver/99')
         for saved in (l1, l2, l3):
             self.assertIn('99-5-Interp', saved)
             self.assertIn('99-5-a-Interp', saved)
@@ -98,7 +101,8 @@ class ViewsLayerTest(TestCase):
         """Can correctly add layer data to subparts"""
         message = {'99-1': [1, 2], '99-1-a': [3, 4]}
         l1, l2, l3, l4 = self.put_with_mock_data(
-            message, '99', '99-Subpart-A', '99-1', '99-1-a', label='99')
+            message, '99', '99-Subpart-A', '99-1', '99-1-a',
+            doc_id='verver/99')
         for saved in (l1, l2, l3):
             self.assertIn('99-1', saved)
             self.assertIn('99-1-a', saved)
@@ -109,7 +113,8 @@ class ViewsLayerTest(TestCase):
         """The 'referenced' key is special; it should get added"""
         message = {'99-1': [1, 2], '99-1-a': [3, 4], 'referenced': [5, 6]}
         layers_saved = self.put_with_mock_data(
-            message, '99', '99-Subpart-A', '99-1', '99-1-a', label='99')
+            message, '99', '99-Subpart-A', '99-1', '99-1-a',
+            doc_id='verver/99')
         self.assertEqual(4, len(layers_saved))
         self.assertTrue(all('referenced' in saved for saved in layers_saved))
 
@@ -132,29 +137,36 @@ class ViewsLayerTest(TestCase):
                 ])])
         message = {'111_22': 'layer1', '111_22-3': 'layer2',
                    '111_22-3-b': 'layer3'}
-        self.client.put('/layer/aname/111_22', data=json.dumps(message))
+        self.client.put('/layer/aname/preamble/111_22',
+                        data=json.dumps(message))
         stored = storage.for_layers.bulk_put.call_args[0][0]
         self.assertEqual(len(stored), 9)
         for label in ('111_22-1', '111_22-2', '111_22-2-a', '111_22-3-a',
                       '111_22-3-a-i', '111_22-3-b-i'):
-            self.assertIn({'reference': label}, stored)     # i.e. empty
-        self.assertIn({'reference': '111_22', '111_22': 'layer1',
+            self.assertIn({'doc_id': label}, stored)     # i.e. empty
+        self.assertIn({'doc_id': '111_22', '111_22': 'layer1',
                        '111_22-3': 'layer2', '111_22-3-b': 'layer3'}, stored)
-        self.assertIn({'reference': '111_22-3', '111_22-3': 'layer2',
+        self.assertIn({'doc_id': '111_22-3', '111_22-3': 'layer2',
                        '111_22-3-b': 'layer3'}, stored)
-        self.assertIn({'reference': '111_22-3-b', '111_22-3-b': 'layer3'},
+        self.assertIn({'doc_id': '111_22-3-b', '111_22-3-b': 'layer3'},
                       stored)
 
     @patch('regcore_write.views.layer.storage')
     def test_child_layers_no_results(self, storage):
         """If the db returns no regulation data, nothing should get saved"""
         storage.for_regulations.get.return_value = None
-        storage.for_preambles.get.return_value = None
-        self.assertEqual([], layer.child_layers('layname', 'lll', 'vvv', {}))
+        layer_params = standardize_params('cfr', 'vvv/lll')
+        self.assertEqual([], layer.child_layers(layer_params, {}))
         self.assertTrue(storage.for_regulations.get.called)
         lab, ver = storage.for_regulations.get.call_args[0]
         self.assertEqual('lll', lab)
         self.assertEqual('vvv', ver)
+
+        storage.for_preambles.get.return_value = None
+        layer_params = standardize_params('preamble', 'docdoc')
+        self.assertEqual([], layer.child_layers(layer_params, {}))
+        self.assertTrue(storage.for_preambles.get.called)
+        self.assertEqual(('docdoc',), storage.for_preambles.get.call_args[0])
 
     def test_child_label_of(self):
         """Correctly determine relationships between labels"""

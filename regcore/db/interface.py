@@ -26,18 +26,18 @@ class Regulations(object):
 
 @six.add_metaclass(abc.ABCMeta)
 class Layers(object):
-    def bulk_put(self, layers, layer_name, prefix):
+    def bulk_put(self, layers, layer_name, doc_type, root_doc_id):
         """Add multiple entries with the same layer_name.
         :param list[dict] layers: Each dictionary represents a layer; each
-        should have a distinct "reference", which will be used during
-        insertion.
+        should have a distinct "doc_id", which will be used during insertion.
         :param str layer_name: Identifier for this layer, e.g. "toc",
         "internal-citations", etc.
-        :param str prefix: All layer entries with this prefix should be
-        deleted before inserting"""
+        :param str doc_type: layers are keyed by doc_type
+        :param str root_doc_id: the doc id of the "root" layer. This is used
+        to delete existing data before inserting"""
         raise NotImplementedError
 
-    def get(self, name, reference):
+    def get(self, name, doc_type, doc_id):
         """Return a single layer (no meta data) or None"""
         raise NotImplementedError
 

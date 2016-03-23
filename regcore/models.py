@@ -23,10 +23,15 @@ class Regulation(MPTTModel):
 class Layer(models.Model):
     name = models.SlugField(max_length=20)
     layer = CompressedJSONField()
-    reference = models.SlugField(max_length=250)
+    doc_type = models.SlugField(max_length=20)
+    # We allow doc_ids to contain slashes, which are particularly important
+    # for CFR docs, which use the [version_id]/[reg_label_id] format. It might
+    # make sense to split off a version identifier into a separate field in
+    # the future, if we can't treat that doc_id as an opaque string
+    doc_id = models.SlugField(max_length=250)
 
     class Meta:
-        index_together = (('name', 'reference'),)
+        index_together = (('name', 'doc_type', 'doc_id'),)
         unique_together = index_together
 
 

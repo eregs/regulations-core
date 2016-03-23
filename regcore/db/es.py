@@ -8,6 +8,11 @@ from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 from regcore.db import interface
 
 
+def sanitize_doc_id(doc_id):
+    """Not strictly required, but remove slashes from Elastic Search ids"""
+    return ':'.join(doc_id.split('/'))
+
+
 class ESBase(object):
     """Shared code for Elastic Search storage models"""
     def __init__(self):
@@ -66,23 +71,23 @@ class ESRegulations(ESBase, interface.Regulations):
 
 class ESLayers(ESBase, interface.Layers):
     """Implementation of Elastic Search as layers backend"""
-    def _transform(self, layer, layer_name):
+    def _transform(self, layer, layer_name, doc_type):
         """Add some meta data fields which are ES specific"""
         layer = dict(layer)     # copy
-        reference = layer['reference']
-        del layer['reference']
-        return {'id': '{}:{}'.format(layer_name, reference), 'layer': layer}
+        doc_id = sanitize_doc_id(layer.pop('doc_id'))
+        return {'id': ':'.join([layer_name, doc_type, doc_id]), 'layer': layer}
 
-    def bulk_put(self, layers, layer_name, prefix):
+    def bulk_put(self, layers, layer_name, doc_type, root_doc_id):
         """Store all layer objects. Note this does not delete existing docs;
         it only replaces/inserts docs, which has loop holes"""
         self.es.bulk_index(
             settings.ELASTIC_SEARCH_INDEX, 'layer',
-            [self._transform(l, layer_name) for l in layers])
+            [self._transform(l, layer_name, doc_type) for l in layers])
 
-    def get(self, name, reference):
+    def get(self, name, doc_type, doc_id):
         """Find the layer that matches these parameters"""
-        layer = self.safe_fetch('layer', name + ':' + reference)
+        reference = ':'.join([name, doc_type, sanitize_doc_id(doc_id)])
+        layer = self.safe_fetch('layer', reference)
         if layer is not None:
             return layer['layer']
 
