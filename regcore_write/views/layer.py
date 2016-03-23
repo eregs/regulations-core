@@ -1,7 +1,5 @@
-import logging
-
 from regcore.db import storage
-from regcore.layer import LayerParams
+from regcore.layer import standardize_params
 from regcore.responses import success, user_error
 from regcore_write.views.security import json_body, secure_write
 
@@ -30,7 +28,10 @@ def add(request, name, doc_type, doc_id):
     if not isinstance(layer, dict):
         return user_error('invalid format')
 
-    params = LayerParams(doc_type, doc_id)
+    params = standardize_params(doc_type, doc_id)
+    if params.doc_type not in ('preamble', 'cfr'):
+        return user_error('invalid doc type')
+
     for key in layer.keys():
         # terms layer has a special attribute
         if not child_label_of(key, params.tree_id) and key != 'referenced':
@@ -50,12 +51,10 @@ def child_layers(layer_params, layer_data):
     doc_id_components = layer_params.doc_id.split('/')
     if layer_params.doc_type == 'preamble':
         doc_tree = storage.for_preambles.get(layer_params.doc_id)
-    elif layer_params.doc_type == 'cfr':
+    else:
+        assert layer_params.doc_type == 'cfr'
         version, label = doc_id_components
         doc_tree = storage.for_regulations.get(label, version)
-    else:
-        logging.warning("Unknown doc_type: %s", layer_params.doc_type)
-        doc_tree = None
     if not doc_tree:
         return []
 
