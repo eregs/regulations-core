@@ -44,7 +44,7 @@ if 'regcore_write' in settings.INSTALLED_APPS:
 
 # Re-usable URL patterns.
 def seg(label):
-    return r'(?P<%s>[-\d\w]+)' % label
+    return r'(?P<%s>[-\w]+)' % label
 
 
 urlpatterns = patterns(
@@ -52,9 +52,9 @@ urlpatterns = patterns(
     by_verb_url(r'^diff/%s/%s/%s$' % (seg('label_id'), seg('old_version'),
                                       seg('new_version')),
                 'diff', mapping['diff']),
-    by_verb_url(r'^layer/%s/%s(/%s)?$' % (seg('name'), seg('label_id'),
-                                          seg('version')),
-                'layer', mapping['layer']),
+    by_verb_url(r'^layer/{}/{}/{}$'.format(
+        seg('name'), seg('doc_type'), r'(?P<doc_id>[-\w]+(/[-\w]+)*)'),
+        'layer', mapping['layer']),
     by_verb_url(r'^notice/%s$' % seg('docnum'),
                 'notice', mapping['notice']),
     by_verb_url(r'^regulation/%s/%s$' % (seg('label_id'), seg('version')),

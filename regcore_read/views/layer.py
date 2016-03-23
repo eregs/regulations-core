@@ -1,14 +1,12 @@
 from regcore.db import storage
+from regcore.layer import LayerParams
 from regcore.responses import four_oh_four, success
 
 
-def get(request, name, label_id, version=None):
-    """Find and return the layer with this name + version + label"""
-    if version is None:
-        reference = label_id
-    else:
-        reference = '{}:{}'.format(version, label_id)
-    layer = storage.for_layers.get(name, reference)
+def get(request, name, doc_type, doc_id):
+    """Find and return the layer with this name, referring to this doc_id"""
+    params = LayerParams(doc_type, doc_id)
+    layer = storage.for_layers.get(name, params.doc_type, params.doc_id)
     if layer is not None:
         return success(layer)
     else:

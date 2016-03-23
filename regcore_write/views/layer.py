@@ -1,4 +1,7 @@
+import logging
+
 from regcore.db import storage
+from regcore.layer import LayerParams
 from regcore.responses import success, user_error
 from regcore_write.views.security import json_body, secure_write
 
@@ -21,36 +24,39 @@ def child_label_of(lhs, rhs):
 
 @secure_write
 @json_body
-def add(request, name, label_id, version=None):
+def add(request, name, doc_type, doc_id):
     """Add the layer node and all of its children to the db"""
     layer = request.json_body
-
     if not isinstance(layer, dict):
         return user_error('invalid format')
 
+    params = LayerParams(doc_type, doc_id)
     for key in layer.keys():
         # terms layer has a special attribute
-        if not child_label_of(key, label_id) and key != 'referenced':
-            return user_error('label mismatch: %s, %s' % (label_id, key))
+        if not child_label_of(key, params.tree_id) and key != 'referenced':
+            return user_error('label mismatch: {}, {}'.format(
+                params.tree_id, key))
 
-    prefix = label_id
-    if version is not None:
-        prefix = version + ':' + prefix
-    storage.for_layers.bulk_put(
-        child_layers(name, label_id, version, layer), name, prefix)
-
+    storage.for_layers.bulk_put(child_layers(params, layer), name,
+                                params.doc_type, params.doc_id)
     return success()
 
 
-def child_layers(layer_name, root_label, version, root_layer):
+def child_layers(layer_params, layer_data):
     """We are generally given a layer corresponding to an entire regulation.
     We need to split that layer up and store it per node within the
     regulation. If a reg has 100 nodes, but the layer only has 3 entries, it
     will still store 100 layer models -- many may be empty"""
-    root = storage.for_regulations.get(root_label, version)
-    if not root:
-        root = storage.for_preambles.get(root_label)
-    if not root:
+    doc_id_components = layer_params.doc_id.split('/')
+    if layer_params.doc_type == 'preamble':
+        doc_tree = storage.for_preambles.get(layer_params.doc_id)
+    elif layer_params.doc_type == 'cfr':
+        version, label = doc_id_components
+        doc_tree = storage.for_regulations.get(label, version)
+    else:
+        logging.warning("Unknown doc_type: %s", layer_params.doc_type)
+        doc_tree = None
+    if not doc_tree:
         return []
 
     to_save = []
@@ -62,18 +68,17 @@ def child_layers(layer_name, root_label, version, root_layer):
 
         label_id = '-'.join(node['label'])
 
-        if version:
-            sub_layer = {'reference': '{}:{}'.format(version, label_id)}
-        else:
-            sub_layer = {'reference': label_id}
-        for key in root_layer:
+        # Account for "{version}/{cfr_part}" the same as "{preamble id}"
+        doc_id = '/'.join(doc_id_components[:-1] + [label_id])
+        sub_layer = {'doc_id': doc_id}
+        for key in layer_data:
             #   'referenced' is a special case of the definitions layer
             if key == label_id or key in child_labels or key == 'referenced':
-                sub_layer[key] = root_layer[key]
+                sub_layer[key] = layer_data[key]
 
         to_save.append(sub_layer)
 
         return child_labels + [label_id]
 
-    find_labels(root)
+    find_labels(doc_tree)
     return to_save
