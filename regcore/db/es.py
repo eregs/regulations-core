@@ -71,7 +71,7 @@ class ESLayers(ESBase, interface.Layers):
         layer = dict(layer)     # copy
         doc_id = self.sanitize_doc_id(layer['doc_id'])
         del layer['doc_id']
-        return {'id': ':'.join(layer_name, doc_type, doc_id), 'layer': layer}
+        return {'id': ':'.join([layer_name, doc_type, doc_id]), 'layer': layer}
 
     def bulk_put(self, layers, layer_name, doc_type, root_doc_id):
         """Store all layer objects. Note this does not delete existing docs;
@@ -85,7 +85,7 @@ class ESLayers(ESBase, interface.Layers):
 
     def get(self, name, doc_type, doc_id):
         """Find the layer that matches these parameters"""
-        reference = ':'.join(name, doc_type, self.sanitize_doc_id(doc_id))
+        reference = ':'.join([name, doc_type, self.sanitize_doc_id(doc_id)])
         layer = self.safe_fetch('layer', reference)
         if layer is not None:
             return layer['layer']
