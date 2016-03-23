@@ -117,8 +117,7 @@ class DMLayers(interface.Layers):
     def _transform(self, layer, layer_name, doc_type):
         """Create a Django object"""
         layer = dict(layer)  # copy
-        doc_id = layer['doc_id']
-        del layer['doc_id']
+        doc_id = layer.pop('doc_id')
         return Layer(name=layer_name, layer=layer, doc_type=doc_type,
                      doc_id=doc_id)
 

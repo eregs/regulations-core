@@ -8,6 +8,11 @@ from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 from regcore.db import interface
 
 
+def sanitize_doc_id(doc_id):
+    """Not strictly required, but remove slashes from Elastic Search ids"""
+    return ':'.join(doc_id.split('/'))
+
+
 class ESBase(object):
     """Shared code for Elastic Search storage models"""
     def __init__(self):
@@ -69,8 +74,7 @@ class ESLayers(ESBase, interface.Layers):
     def _transform(self, layer, layer_name, doc_type):
         """Add some meta data fields which are ES specific"""
         layer = dict(layer)     # copy
-        doc_id = self.sanitize_doc_id(layer['doc_id'])
-        del layer['doc_id']
+        doc_id = sanitize_doc_id(layer.pop('doc_id'))
         return {'id': ':'.join([layer_name, doc_type, doc_id]), 'layer': layer}
 
     def bulk_put(self, layers, layer_name, doc_type, root_doc_id):
@@ -80,12 +84,9 @@ class ESLayers(ESBase, interface.Layers):
             settings.ELASTIC_SEARCH_INDEX, 'layer',
             [self._transform(l, layer_name, doc_type) for l in layers])
 
-    def sanitize_doc_id(self, doc_id):
-        return ':'.join(doc_id.split('/'))
-
     def get(self, name, doc_type, doc_id):
         """Find the layer that matches these parameters"""
-        reference = ':'.join([name, doc_type, self.sanitize_doc_id(doc_id)])
+        reference = ':'.join([name, doc_type, sanitize_doc_id(doc_id)])
         layer = self.safe_fetch('layer', reference)
         if layer is not None:
             return layer['layer']

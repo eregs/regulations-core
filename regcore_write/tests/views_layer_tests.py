@@ -3,7 +3,7 @@ import json
 from django.test import TestCase
 from mock import patch
 
-from regcore.layer import LayerParams
+from regcore.layer import standardize_params
 from regcore_write.views import layer
 
 
@@ -155,7 +155,7 @@ class ViewsLayerTest(TestCase):
     def test_child_layers_no_results(self, storage):
         """If the db returns no regulation data, nothing should get saved"""
         storage.for_regulations.get.return_value = None
-        layer_params = LayerParams('cfr', 'vvv/lll')
+        layer_params = standardize_params('cfr', 'vvv/lll')
         self.assertEqual([], layer.child_layers(layer_params, {}))
         self.assertTrue(storage.for_regulations.get.called)
         lab, ver = storage.for_regulations.get.call_args[0]
@@ -163,7 +163,7 @@ class ViewsLayerTest(TestCase):
         self.assertEqual('vvv', ver)
 
         storage.for_preambles.get.return_value = None
-        layer_params = LayerParams('preamble', 'docdoc')
+        layer_params = standardize_params('preamble', 'docdoc')
         self.assertEqual([], layer.child_layers(layer_params, {}))
         self.assertTrue(storage.for_preambles.get.called)
         self.assertEqual(('docdoc',), storage.for_preambles.get.call_args[0])
