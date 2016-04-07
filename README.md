@@ -1,7 +1,7 @@
 regulations-core
 ================
 
-[![Build Status](https://travis-ci.org/18F/regulations-core.png)](https://travis-ci.org/18F/regulations-core)
+[![Build Status](https://travis-ci.org/eregs/regulations-core.png)](https://travis-ci.org/eregs/regulations-core)
 [![Coverage Status](https://coveralls.io/repos/18F/regulations-core/badge.svg?branch=master&service=github)](https://coveralls.io/github/18F/regulations-core?branch=master)
 [![Code Issues](https://www.quantifiedcode.com/api/v1/project/0cdc7eb543724f60b428aa9cae42bd5f/badge.svg)](https://www.quantifiedcode.com/app/project/0cdc7eb543724f60b428aa9cae42bd5f)
 
@@ -9,7 +9,7 @@ An API that provides an interface for storing and retrieving regulations,
 layers, etc.
 
 This repository is part of a larger project. To read about it, please see 
-[http://eregs.github.io/eRegulations/](http://eregs.github.io/eRegulations/).
+[http://eregs.github.io/](http://eregs.github.io/).
 
 ## Features
 
@@ -46,7 +46,7 @@ The following libraries are optionally supported
 
 ## API Docs
 
-[Read The Docs](http://regulations-core.readthedocs.org/en/latest/)
+[regulations-core on Read The Docs](http://regulations-core.readthedocs.org/en/latest/)
 
 ## Setup & Running
 
