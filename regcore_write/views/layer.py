@@ -50,11 +50,11 @@ def child_layers(layer_params, layer_data):
     will still store 100 layer models -- many may be empty"""
     doc_id_components = layer_params.doc_id.split('/')
     if layer_params.doc_type == 'preamble':
-        doc_tree = storage.for_regulations.get('preamble', layer_params.doc_id)
+        doc_tree = storage.for_documents.get('preamble', layer_params.doc_id)
     else:
         assert layer_params.doc_type == 'cfr'
         version, label = doc_id_components
-        doc_tree = storage.for_regulations.get('cfr', label, version)
+        doc_tree = storage.for_documents.get('cfr', label, version)
     if not doc_tree:
         return []
 

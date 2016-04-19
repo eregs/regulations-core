@@ -4,8 +4,7 @@ from unittest import TestCase
 from mock import patch
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 
-from regcore.db.es import (
-    ESDiffs, ESLayers, ESNotices, ESPreambles, ESRegulations)
+from regcore.db.es import ESDiffs, ESLayers, ESNotices, ESDocuments
 
 
 class ESBase(object):
@@ -54,16 +53,16 @@ class ESBase(object):
                              query)
 
 
-class ESRegulationsTest(TestCase, ESBase):
+class ESDocumentsTest(TestCase, ESBase):
     def test_get_404(self):
         with self.expect_get('reg_tree', 'verver/lablab'):
-            self.assertIsNone(ESRegulations().get('lablab', 'verver'))
+            self.assertIsNone(ESDocuments().get('cfr', 'lablab', 'verver'))
 
     def test_get_success(self):
         return_value = {'first': 0, 'version': 'remove', 'id': 'also',
                         'label_string': 'a', 'regulation': '100'}
         with self.expect_get('reg_tree', 'verver/lablab', return_value):
-            self.assertEqual(ESRegulations().get('lablab', 'verver'),
+            self.assertEqual(ESDocuments().get('cfr', 'lablab', 'verver'),
                              {"first": 0})
 
     def test_bulk_put(self):
@@ -75,7 +74,7 @@ class ESRegulationsTest(TestCase, ESBase):
         nodes = [root, n2, n3]
 
         with self.expect_bulk_put('reg_tree', 3) as bulk_put:
-            ESRegulations().bulk_put(nodes, 'verver', '111')
+            ESDocuments().bulk_put(nodes, 'cfr', '111', 'verver')
 
         root.update({'version': 'verver', 'regulation': '111',
                      'label_string': '111', 'id': 'verver/111', 'root': True})
@@ -85,23 +84,26 @@ class ESRegulationsTest(TestCase, ESBase):
         n3.update({'version': 'verver', 'regulation': '111',
                    'label_string': '111-3', 'id': 'verver/111-3',
                    'root': False})
-        self.assertEqual(nodes, bulk_put.call_args[0][2])
+        bulk_data = [dict(root), dict(n2), dict(n3)]
+        for node in bulk_data:
+            node['doc_type'] = 'cfr'
+        self.assertEqual(bulk_data, bulk_put.call_args[0][2])
 
     def test_listing(self):
-        query = {'match': {'label_string': 'lll'}}
+        query = {'match': {'label_string': 'lll', 'doc_type': 'cfr'}}
         results = [{'fields': {'version': 'ver1', 'label_string': 'lll'}},
                    {'fields': {'version': 'aaa', 'label_string': 'lll'}},
                    {'fields': {'version': '333', 'label_string': 'lll'}},
                    {'fields': {'version': 'four', 'label_string': 'lll'}}]
         with self.expect_search('reg_tree', query, results):
-            entries = ESRegulations().listing('lll')
+            entries = ESDocuments().listing('cfr', 'lll')
 
         self.assertEqual([('333', 'lll'), ('aaa', 'lll'), ('four', 'lll'),
                           ('ver1', 'lll')], entries)
 
-        query = {'match': {'root': True}}
+        query = {'match': {'root': True, 'doc_type': 'cfr'}}
         with self.expect_search('reg_tree', query, results):
-            ESRegulations().listing()
+            ESDocuments().listing('cfr')
 
 
 class ESLayersTest(TestCase, ESBase):
@@ -183,18 +185,3 @@ class ESDiffTest(TestCase, ESBase):
                           'old_version': 'oldold',
                           'new_version': 'newnew',
                           'diff': {'some': 'structure'}})
-
-
-class ESPreamblesTest(TestCase, ESBase):
-    def test_get_404(self):
-        with self.expect_get('preamble', 'docdoc'):
-            self.assertIsNone(ESPreambles().get('docdoc'))
-
-    def test_get_success(self):
-        with self.expect_get('preamble', 'docdoc', {'arbitrary': True}):
-            self.assertEqual(ESPreambles().get('docdoc'), {'arbitrary': True})
-
-    def test_put(self):
-        with self.expect_put('preamble', 'docdoc') as put:
-            ESPreambles().put('docdoc', {"some": "structure"})
-        self.assertEqual(put.call_args[0][2], {"some": "structure"})

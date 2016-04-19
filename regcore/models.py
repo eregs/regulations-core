@@ -4,7 +4,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from regcore.fields import CompressedJSONField
 
 
-class Regulation(MPTTModel):
+class Document(MPTTModel):
     id = models.TextField(primary_key=True)
     doc_type = models.SlugField(max_length=20)
     parent = TreeForeignKey('self', null=True, blank=True,
@@ -17,8 +17,8 @@ class Regulation(MPTTModel):
     root = models.BooleanField(default=False, db_index=True)
 
     class Meta:
-        index_together = (('version', 'label_string'),)
-        unique_together = (('version', 'label_string'),)
+        index_together = (('doc_type', 'version', 'label_string'),)
+        unique_together = (('doc_type', 'version', 'label_string'),)
 
 
 class Layer(models.Model):

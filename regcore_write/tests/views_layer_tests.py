@@ -39,7 +39,7 @@ class ViewsLayerTest(TestCase):
             children = node['children']
 
         with patch('regcore_write.views.layer.storage') as storage:
-            storage.for_regulations.get.return_value = root[0]
+            storage.for_documents.get.return_value = root[0]
             self.put(message, **kwargs)
             self.assertTrue(storage.for_layers.bulk_put.called)
             layers_saved = storage.for_layers.bulk_put.call_args[0][0]
@@ -123,8 +123,8 @@ class ViewsLayerTest(TestCase):
         """If adding layer data to a preamble, we should see layers saved for
         each level of the preamble tree. This requires we construct a fake
         preamble."""
-        storage.for_regulations.get.return_value = None
-        storage.for_preambles.get.return_value = dict(
+        storage.for_documents.get.return_value = None
+        storage.for_documents.get.return_value = dict(
             label=['111_22'], children=[
                 dict(label=['111_22', '1'], children=[]),
                 dict(label=['111_22', '2'], children=[
@@ -154,19 +154,16 @@ class ViewsLayerTest(TestCase):
     @patch('regcore_write.views.layer.storage')
     def test_child_layers_no_results(self, storage):
         """If the db returns no regulation data, nothing should get saved"""
-        storage.for_regulations.get.return_value = None
+        storage.for_documents.get.return_value = None
         layer_params = standardize_params('cfr', 'vvv/lll')
         self.assertEqual([], layer.child_layers(layer_params, {}))
-        self.assertTrue(storage.for_regulations.get.called)
-        lab, ver = storage.for_regulations.get.call_args[0]
-        self.assertEqual('lll', lab)
-        self.assertEqual('vvv', ver)
+        self.assertTrue(storage.for_documents.get.called)
+        storage.for_documents.get.assert_called_with('cfr', 'lll', 'vvv')
 
-        storage.for_preambles.get.return_value = None
+        storage.for_documents.get.return_value = None
         layer_params = standardize_params('preamble', 'docdoc')
         self.assertEqual([], layer.child_layers(layer_params, {}))
-        self.assertTrue(storage.for_preambles.get.called)
-        self.assertEqual(('docdoc',), storage.for_preambles.get.call_args[0])
+        storage.for_documents.get.assert_called_with('preamble', 'docdoc')
 
     def test_child_label_of(self):
         """Correctly determine relationships between labels"""

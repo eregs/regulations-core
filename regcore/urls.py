@@ -10,11 +10,11 @@ from django.conf.urls import patterns
 
 from regcore_read.views import (
     diff as rdiff, layer as rlayer, notice as rnotice,
-    regulation as rregulation)
+    document as rdocument)
 from regcore_read.views.haystack_search import search
 from regcore_write.views import (
     diff as wdiff, layer as wlayer, notice as wnotice,
-    regulation as wregulation)
+    document as wdocument)
 from regcore.urls_utils import by_verb_url
 
 
@@ -26,9 +26,9 @@ if 'regcore_read' in settings.INSTALLED_APPS:
     mapping['layer']['GET'] = rlayer.get
     mapping['notice']['GET'] = rnotice.get
     mapping['notices']['GET'] = rnotice.listing
-    mapping['preamble']['GET'] = rregulation.get
-    mapping['regulation']['GET'] = rregulation.get
-    mapping['reg-versions']['GET'] = rregulation.listing
+    mapping['preamble']['GET'] = rdocument.get
+    mapping['regulation']['GET'] = rdocument.get
+    mapping['reg-versions']['GET'] = rdocument.listing
     mapping['search']['GET'] = search
 
 
@@ -38,8 +38,8 @@ if 'regcore_write' in settings.INSTALLED_APPS:
         mapping['diff'][verb] = wdiff.add
         mapping['layer'][verb] = wlayer.add
         mapping['notice'][verb] = wnotice.add
-        mapping['preamble'][verb] = wregulation.add
-        mapping['regulation'][verb] = wregulation.add
+        mapping['preamble'][verb] = wdocument.add
+        mapping['regulation'][verb] = wdocument.add
 
 
 # Re-usable URL patterns.
@@ -58,13 +58,16 @@ urlpatterns = patterns(
     by_verb_url(r'^notice/%s$' % seg('docnum'),
                 'notice', mapping['notice']),
     by_verb_url(r'^regulation/%s/%s$' % (seg('label_id'), seg('version')),
-                'regulation', mapping['regulation']),
+                'regulation', mapping['regulation'],
+                kwargs={'doc_type': 'cfr'}),
     by_verb_url(r'^notice$', 'notices', mapping['notices']),
-    by_verb_url(r'^regulation$', 'all-reg-versions', mapping['reg-versions']),
+    by_verb_url(r'^regulation$', 'all-reg-versions', mapping['reg-versions'],
+                kwargs={'doc_type': 'cfr'}),
     by_verb_url(r'^regulation/%s$' % seg('label_id'),
                 'reg-versions', mapping['reg-versions'],
                 kwargs={'doc_type': 'cfr'}),
     by_verb_url(r'^preamble/%s$' % seg('label_id'), 'preamble',
                 mapping['preamble'], kwargs={'doc_type': 'preamble'}),
-    by_verb_url(r'^search$', 'search', mapping['search'])
+    by_verb_url(r'^search$', 'search', mapping['search'],
+                kwargs={'doc_type': 'cfr'}),
 )

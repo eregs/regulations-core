@@ -7,7 +7,7 @@ from regcore.responses import success, user_error
 from regcore_write.views.security import json_body, secure_write
 
 
-#   This JSON schema is used to validate the regulation data provided
+# This JSON schema is used to validate the regulation data provided
 REGULATION_SCHEMA = {
     'type': 'object',
     'id': 'reg_tree_node',
@@ -65,4 +65,4 @@ def write_node(node, doc_type, label_id, version):
             add_node(child, parent=node)
     add_node(node)
 
-    storage.for_regulations.bulk_put(to_save, doc_type, label_id, version)
+    storage.for_documents.bulk_put(to_save, doc_type, label_id, version)

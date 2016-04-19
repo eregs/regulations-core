@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from regcore.db import interface
-from regcore.models import Diff, Layer, Notice, Regulation
+from regcore.models import Diff, Layer, Notice, Document
 
 
 def treeify(node, tree_id, pos=1, level=0):
@@ -24,7 +24,7 @@ def treeify(node, tree_id, pos=1, level=0):
 
 def build_adjacency_map(regs):
     """Build mapping from node IDs to child records
-    :param regs: List of `Regulation` records
+    :param regs: List of `Document` records
     """
     ret = collections.defaultdict(list)
     for reg in regs:
@@ -39,11 +39,11 @@ def build_id(reg, version=None):
     return '-'.join(reg['label'])
 
 
-class DMRegulations(interface.Regulations):
+class DMDocuments(interface.Documents):
     """Implementation of Django-models as regulations backend"""
     def get(self, doc_type, label, version=None):
         """Find the regulation label + version"""
-        regs = Regulation.objects.filter(
+        regs = Document.objects.filter(
             doc_type=doc_type,
             label_string=label,
             version=version,
@@ -72,7 +72,7 @@ class DMRegulations(interface.Regulations):
 
     def _transform(self, reg, doc_type, version=None):
         """Create the Django object"""
-        return Regulation(
+        return Document(
             id=build_id(reg, version),
             doc_type=doc_type,
             version=version,
@@ -95,23 +95,24 @@ class DMRegulations(interface.Regulations):
     def bulk_put(self, regs, doc_type, root_label, version):
         """Store all reg objects"""
         # This does not handle subparts. Ignoring that for now
-        Regulation.objects.filter(
+        Document.objects.filter(
             version=version,
             doc_type=doc_type,
             label_string__startswith=root_label,
         ).delete()
-        treeify(regs[0], Regulation.objects._get_next_tree_id())
-        Regulation.objects.bulk_create(
+        treeify(regs[0], Document.objects._get_next_tree_id())
+        Document.objects.bulk_create(
             [self._transform(r, doc_type, version) for r in regs],
             batch_size=settings.BATCH_SIZE)
 
-    def listing(self, label=None):
+    def listing(self, doc_type, label=None):
         """List regulation version-label pairs that match this label (or are
         root, if label is None)"""
         if label is None:
-            query = Regulation.objects.filter(root=True)
+            query = Document.objects.filter(doc_type=doc_type, root=True)
         else:
-            query = Regulation.objects.filter(label_string=label)
+            query = Document.objects.filter(
+                doc_type=doc_type, label_string=label)
 
         query = query.only('version', 'label_string').order_by('version')
         # Flattens
