@@ -3,7 +3,7 @@ from django.http import Http404, HttpResponseNotAllowed
 from django.views.decorators.csrf import csrf_exempt
 
 
-def by_verb_url(regex, name, by_verb):
+def by_verb_url(regex, name, by_verb, **kwargs):
     """Relatively clean way to segment url end points by HTTP Verb.
         @regex is the url regex as would be found in urls.py
         @name is also as would be found in urls.py
@@ -19,4 +19,4 @@ def by_verb_url(regex, name, by_verb):
     if any(getattr(fn, 'csrf_exempt', False) for fn in by_verb.values()):
         wrapper = csrf_exempt(wrapper)
 
-    return url(regex, wrapper, name=name)
+    return url(regex, wrapper, name=name, **kwargs)

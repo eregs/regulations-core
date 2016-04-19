@@ -6,9 +6,10 @@ from regcore.fields import CompressedJSONField
 
 class Regulation(MPTTModel):
     id = models.TextField(primary_key=True)
+    doc_type = models.SlugField(max_length=20)
     parent = TreeForeignKey('self', null=True, blank=True,
                             related_name='children', db_index=True)
-    version = models.SlugField(max_length=20)
+    version = models.SlugField(max_length=20, null=True, blank=True)
     label_string = models.SlugField(max_length=200)
     text = models.TextField()
     title = models.TextField(blank=True)
@@ -62,9 +63,3 @@ class Diff(models.Model):
     class Meta:
         index_together = (('label', 'old_version', 'new_version'),)
         unique_together = (('label', 'old_version', 'new_version'),)
-
-
-class Preamble(models.Model):
-    """Represents the explanatory text associated with a notice"""
-    document_number = models.SlugField(max_length=20, primary_key=True)
-    data = CompressedJSONField()

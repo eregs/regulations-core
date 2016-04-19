@@ -33,7 +33,7 @@ REGULATION_SCHEMA = {
 
 @secure_write
 @json_body
-def add(request, label_id, version):
+def add(request, doc_type, label_id, version=None):
     """Add this regulation node and all of its children to the db"""
     try:
         node = request.json_body
@@ -44,11 +44,11 @@ def add(request, label_id, version):
     if label_id != '-'.join(node['label']):
         return user_error('label mismatch')
 
-    write_node(node, version, label_id)
+    write_node(node, doc_type, label_id, version)
     return success()
 
 
-def write_node(node, version, label_id):
+def write_node(node, doc_type, label_id, version):
 
     to_save = []
     labels_seen = set()
@@ -65,4 +65,4 @@ def write_node(node, version, label_id):
             add_node(child, parent=node)
     add_node(node)
 
-    storage.for_regulations.bulk_put(to_save, version, label_id)
+    storage.for_regulations.bulk_put(to_save, doc_type, label_id, version)

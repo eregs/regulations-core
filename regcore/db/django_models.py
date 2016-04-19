@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from regcore.db import interface
-from regcore.models import Diff, Layer, Notice, Preamble, Regulation
+from regcore.models import Diff, Layer, Notice, Regulation
 
 
 def treeify(node, tree_id, pos=1, level=0):
@@ -33,17 +33,20 @@ def build_adjacency_map(regs):
     return ret
 
 
-def build_id(reg, version):
-    return '{}:{}'.format(version, '-'.join(reg['label']))
+def build_id(reg, version=None):
+    if version is not None:
+        return '{}:{}'.format(version, '-'.join(reg['label']))
+    return '-'.join(reg['label'])
 
 
 class DMRegulations(interface.Regulations):
     """Implementation of Django-models as regulations backend"""
-    def get(self, label, version):
+    def get(self, doc_type, label, version=None):
         """Find the regulation label + version"""
         regs = Regulation.objects.filter(
-            version=version,
+            doc_type=doc_type,
             label_string=label,
+            version=version,
         ).get_descendants(
             include_self=True,
         )
@@ -67,10 +70,12 @@ class DMRegulations(interface.Regulations):
             ret['title'] = reg.title
         return ret
 
-    def _transform(self, reg, version):
+    def _transform(self, reg, doc_type, version=None):
         """Create the Django object"""
         return Regulation(
             id=build_id(reg, version),
+            doc_type=doc_type,
+            version=version,
             parent_id=(
                 build_id(reg['parent'], version)
                 if reg.get('parent')
@@ -80,7 +85,6 @@ class DMRegulations(interface.Regulations):
             level=reg['level'],
             lft=reg['left'],
             rght=reg['right'],
-            version=version,
             label_string='-'.join(reg['label']),
             text=reg['text'],
             title=reg.get('title', ''),
@@ -88,14 +92,17 @@ class DMRegulations(interface.Regulations):
             root=(len(reg['label']) == 1),
         )
 
-    def bulk_put(self, regs, version, root_label):
+    def bulk_put(self, regs, doc_type, root_label, version):
         """Store all reg objects"""
         # This does not handle subparts. Ignoring that for now
-        Regulation.objects.filter(version=version,
-                                  label_string__startswith=root_label).delete()
+        Regulation.objects.filter(
+            version=version,
+            doc_type=doc_type,
+            label_string__startswith=root_label,
+        ).delete()
         treeify(regs[0], Regulation.objects._get_next_tree_id())
         Regulation.objects.bulk_create(
-            [self._transform(r, version) for r in regs],
+            [self._transform(r, doc_type, version) for r in regs],
             batch_size=settings.BATCH_SIZE)
 
     def listing(self, label=None):
@@ -196,21 +203,5 @@ class DMDiffs(interface.Diffs):
             diff = Diff.objects.get(label=label, old_version=old_version,
                                     new_version=new_version)
             return diff.diff
-        except ObjectDoesNotExist:
-            return None
-
-
-class DMPreambles(interface.Preambles):
-    """Implementation of Django-models as preamble backend"""
-    def put(self, doc_number, preamble):
-        """Store a single preamble"""
-        Preamble.objects.filter(document_number=doc_number).delete()
-        Preamble.objects.create(document_number=doc_number, data=preamble)
-
-    def get(self, doc_number):
-        """Fetch a single preamble"""
-        try:
-            preamble = Preamble.objects.get(document_number=doc_number)
-            return preamble.data
         except ObjectDoesNotExist:
             return None

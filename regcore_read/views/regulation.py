@@ -39,9 +39,9 @@ def listing(request, label_id=None):
         return four_oh_four()
 
 
-def get(request, label_id, version):
+def get(request, doc_type, label_id, version=None):
     """Find and return the regulation with this version and label"""
-    regulation = storage.for_regulations.get(label_id, version)
+    regulation = storage.for_regulations.get(doc_type, label_id, version)
     if regulation is not None:
         return success(regulation)
     else:
