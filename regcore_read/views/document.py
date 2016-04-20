@@ -4,14 +4,14 @@ from regcore.db import storage
 from regcore.responses import four_oh_four, success
 
 
-def listing(request, label_id=None):
+def listing(request, doc_type, label_id=None):
     """List versions of the requested (label_id) regulation; or all regulations
     if label_id is None"""
     if label_id:
-        reg_versions = storage.for_regulations.listing(label_id)
+        reg_versions = storage.for_documents.listing(doc_type, label_id)
         notices = storage.for_notices.listing(label_id.split('-')[0])
     else:
-        reg_versions = storage.for_regulations.listing()
+        reg_versions = storage.for_documents.listing(doc_type)
         notices = storage.for_notices.listing()
 
     by_date = defaultdict(list)
@@ -39,9 +39,9 @@ def listing(request, label_id=None):
         return four_oh_four()
 
 
-def get(request, label_id, version):
+def get(request, doc_type, label_id, version=None):
     """Find and return the regulation with this version and label"""
-    regulation = storage.for_regulations.get(label_id, version)
+    regulation = storage.for_documents.get(doc_type, label_id, version)
     if regulation is not None:
         return success(regulation)
     else:

@@ -4,48 +4,68 @@ from datetime import date
 from django.test import TestCase
 import six
 
-from regcore.db.django_models import (
-    DMDiffs, DMLayers, DMNotices, DMPreambles, DMRegulations)
-from regcore.models import Diff, Layer, Notice, Preamble, Regulation
+from regcore.db.django_models import DMDiffs, DMLayers, DMNotices, DMDocuments
+from regcore.models import Diff, Layer, Notice, Document
 
 
-class DMRegulationsTest(TestCase):
+class DMDocumentsTest(TestCase):
     def setUp(self):
-        self.dmr = DMRegulations()
+        self.dmr = DMDocuments()
 
     def test_get_404(self):
         self.assertIsNone(self.dmr.get('lablab', 'verver'))
 
-    def test_get_success(self):
-        Regulation(version='verver', label_string='a-b', text='ttt',
-                   node_type='tyty').save()
-        self.assertEqual({'text': 'ttt',
-                          'label': ['a', 'b'],
-                          'children': [],
-                          'node_type': 'tyty'}, self.dmr.get('a-b', 'verver'))
+    def test_get_cfr(self):
+        Document(doc_type='cfr', version='verver', label_string='a-b',
+                 text='ttt', node_type='tyty').save()
+        self.assertEqual(
+            {
+                'text': 'ttt',
+                'label': ['a', 'b'],
+                'children': [],
+                'node_type': 'tyty'
+            },
+            self.dmr.get('cfr', 'a-b', 'verver'),
+        )
+
+    def test_get_preamble(self):
+        Document(doc_type='preamble', version='verver', label_string='a-b',
+                 text='ttt', node_type='tyty').save()
+        self.assertEqual(
+            {
+                'text': 'ttt',
+                'label': ['a', 'b'],
+                'children': [],
+                'node_type': 'tyty'
+            },
+            self.dmr.get('preamble', 'a-b', 'verver'),
+        )
 
     def test_listing(self):
-        Regulation(id='ver1-a-b', version='ver1', label_string='a-b',
-                   text='textex', node_type='ty').save()
-        Regulation(id='aaa-a-b', version='aaa', label_string='a-b',
-                   text='textex', node_type='ty').save()
-        Regulation(id='333-a-b', version='333', label_string='a-b',
-                   text='textex', node_type='ty').save()
-        Regulation(id='four-a-b', version='four', label_string='a-b',
-                   text='textex', node_type='ty').save()
+        Document(id='ver1-a-b', doc_type='cfr', version='ver1',
+                 label_string='a-b', text='textex', node_type='ty').save()
+        Document(id='aaa-a-b', doc_type='cfr', version='aaa',
+                 label_string='a-b', text='textex', node_type='ty').save()
+        Document(id='333-a-b', doc_type='cfr', version='333',
+                 label_string='a-b', text='textex', node_type='ty').save()
+        Document(id='four-a-b', doc_type='cfr', version='four',
+                 label_string='a-b', text='textex', node_type='ty').save()
 
-        results = self.dmr.listing('a-b')
+        results = self.dmr.listing('cfr', 'a-b')
         self.assertEqual([('333', 'a-b'), ('aaa', 'a-b'), ('four', 'a-b'),
                           ('ver1', 'a-b')], results)
 
-        Regulation(id='ver1-1111', version='ver1', label_string='1111',
-                   text='aaaa', node_type='ty', root=True).save()
-        Regulation(id='ver2-1111', version='ver2', label_string='1111',
-                   text='bbbb', node_type='ty', root=True).save()
-        Regulation(id='ver3-1111', version='ver3', label_string='1111',
-                   text='cccc', node_type='ty', root=False).save()
+        Document(id='ver1-1111', doc_type='cfr', version='ver1',
+                 label_string='1111', text='aaaa', node_type='ty',
+                 root=True).save()
+        Document(id='ver2-1111', doc_type='cfr', version='ver2',
+                 label_string='1111', text='bbbb', node_type='ty',
+                 root=True).save()
+        Document(id='ver3-1111', doc_type='cfr', version='ver3',
+                 label_string='1111', text='cccc', node_type='ty',
+                 root=False).save()
 
-        results = self.dmr.listing()
+        results = self.dmr.listing('cfr')
         self.assertEqual([('ver1', '1111'), ('ver2', '1111')], results)
 
     def test_bulk_put(self):
@@ -61,13 +81,13 @@ class DMRegulationsTest(TestCase):
         n2['parent'] = root
         n3['parent'] = root
         nodes = [root, n2, n3]
-        self.dmr.bulk_put(nodes, 'verver', '111')
-        self.assertEqual(DMRegulations().get('111', 'verver'), original)
+        self.dmr.bulk_put(nodes, 'cfr', '111', 'verver')
+        self.assertEqual(DMDocuments().get('cfr', '111', 'verver'), original)
 
         root['title'] = original['title'] = 'New Title'
-        self.dmr.bulk_put(nodes, 'verver', '111')
+        self.dmr.bulk_put(nodes, 'cfr', '111', 'verver')
 
-        self.assertEqual(DMRegulations().get('111', 'verver'), original)
+        self.assertEqual(DMDocuments().get('cfr', '111', 'verver'), original)
 
 
 class DMLayersTest(TestCase):
@@ -194,28 +214,4 @@ class DMDiffTest(TestCase):
         self.dmd.put('lablab', 'oldold', 'newnew', {"other": "structure"})
         expected['diff'] = {'other': 'structure'}
         six.assertCountEqual(self, Diff.objects.all().values(*fields),
-                             [expected])
-
-
-class DMPreambleTest(TestCase):
-    def test_get(self):
-        """Can fetch preamble docs"""
-        self.assertIsNone(DMPreambles().get('docdoc'))
-
-        Preamble(document_number='docdocdoc', data={'some': 'data'}).save()
-        self.assertEqual({"some": 'data'}, DMPreambles().get('docdocdoc'))
-
-    def test_put(self):
-        """We can insert and replace a pramble"""
-        DMPreambles().put('docdoc', {'some': 'struct', 'here': True})
-
-        expected = {'document_number': 'docdoc',
-                    'data': {'some': 'struct', 'here': True}}
-        fields = expected.keys()
-        six.assertCountEqual(self, Preamble.objects.all().values(*fields),
-                             [expected])
-
-        DMPreambles().put('docdoc', {'other': 1})
-        expected['data'] = {'other': 1}
-        six.assertCountEqual(self, Preamble.objects.all().values(*fields),
                              [expected])

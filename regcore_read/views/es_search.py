@@ -11,7 +11,7 @@ from regcore.responses import success, user_error
 PAGE_SIZE = 50
 
 
-def search(request):
+def search(request, doc_type):
     """Search elastic search for any matches in the node's text"""
     term = request.GET.get('q', '')
     version = request.GET.get('version', '')
@@ -30,7 +30,7 @@ def search(request):
         'from': page * PAGE_SIZE,
         'size': PAGE_SIZE,
     }
-    text_match = {'match': {'text': term}}
+    text_match = {'match': {'text': term, 'doc_type': doc_type}}
     if version or regulation:
         term = {}
         if version:

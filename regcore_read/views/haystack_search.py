@@ -3,15 +3,15 @@ using Elastic Search, see es_search.py"""
 
 from haystack.query import SearchQuerySet
 
+from regcore.models import Document
 from regcore.db.django_models import DMLayers
-from regcore.models import Regulation
 from regcore.responses import success, user_error
 
 
 PAGE_SIZE = 50
 
 
-def search(request):
+def search(request, doc_type):
     """Use haystack to find search results"""
     term = request.GET.get('q', '')
     version = request.GET.get('version', '')
@@ -24,7 +24,8 @@ def search(request):
     if not term:
         return user_error('No query term')
 
-    query = SearchQuerySet().models(Regulation).filter(content=term)
+    query = SearchQuerySet().models(Document).filter(
+        content=term, doc_type=doc_type)
     if version:
         query = query.filter(version=version)
     if regulation:

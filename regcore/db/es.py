@@ -28,9 +28,9 @@ class ESBase(object):
             return None
 
 
-class ESRegulations(ESBase, interface.Regulations):
+class ESDocuments(ESBase, interface.Documents):
     """Implementation of Elastic Search as regulations backend"""
-    def get(self, label, version):
+    def get(self, doc_type, label, version):
         """Find the regulation label + version"""
         reg_node = self.safe_fetch('reg_tree', version + '/' + label)
         if reg_node is not None:
@@ -40,9 +40,10 @@ class ESRegulations(ESBase, interface.Regulations):
             del reg_node['id']
             return reg_node
 
-    def _transform(self, reg, version):
+    def _transform(self, reg, doc_type, version):
         """Add some meta data fields which are ES specific"""
-        node = dict(reg)    # copy
+        node = dict(reg)  # copy
+        node['doc_type'] = doc_type
         node['version'] = version
         node['label_string'] = '-'.join(node['label'])
         node['regulation'] = node['label'][0]
@@ -50,18 +51,20 @@ class ESRegulations(ESBase, interface.Regulations):
         node['root'] = len(node['label']) == 1
         return node
 
-    def bulk_put(self, regs, version, root_label):
+    def bulk_put(self, regs, doc_type, root_label, version):
         """Store all reg objects"""
-        self.es.bulk_index(settings.ELASTIC_SEARCH_INDEX, 'reg_tree',
-                           [self._transform(r, version) for r in regs])
+        self.es.bulk_index(
+            settings.ELASTIC_SEARCH_INDEX, 'reg_tree',
+            [self._transform(r, doc_type, version) for r in regs],
+        )
 
-    def listing(self, label=None):
+    def listing(self, doc_type, label=None):
         """List regulation version-label pairs that match this label (or are
         root, if label is None)"""
         if label is None:
-            query = {'match': {'root': True}}
+            query = {'match': {'root': True, 'doc_type': doc_type}}
         else:
-            query = {'match': {'label_string': label}}
+            query = {'match': {'label_string': label, 'doc_type': doc_type}}
         query = {'fields': ['label_string', 'version'], 'query': query}
         result = self.es.search(query, index=settings.ELASTIC_SEARCH_INDEX,
                                 doc_type='reg_tree', size=100)
@@ -143,15 +146,3 @@ class ESDiffs(ESBase, interface.Diffs):
                                self.to_id(label, old_version, new_version))
         if diff is not None:
             return diff['diff']
-
-
-class ESPreambles(ESBase, interface.Preambles):
-    """Implementation of Elastic Search as preamble backend"""
-    def put(self, doc_number, preamble):
-        """Store a single preamble"""
-        self.es.index(settings.ELASTIC_SEARCH_INDEX, 'preamble', preamble,
-                      id=doc_number)
-
-    def get(self, doc_number):
-        """Find the associated preamble"""
-        return self.safe_fetch('preamble', doc_number)

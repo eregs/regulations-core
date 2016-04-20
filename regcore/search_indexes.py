@@ -1,8 +1,8 @@
 from haystack.indexes import CharField, Indexable, MultiValueField, SearchIndex
-from regcore.models import Regulation
+from regcore.models import Document
 
 
-class RegulationIndex(Indexable, SearchIndex):
+class DocumentIndex(Indexable, SearchIndex):
     """Search index used by Haystack"""
     version = CharField(model_attr='version')
     label_string = CharField(model_attr='label_string')
@@ -23,4 +23,4 @@ class RegulationIndex(Indexable, SearchIndex):
             return []
 
     def get_model(self):
-        return Regulation
+        return Document
