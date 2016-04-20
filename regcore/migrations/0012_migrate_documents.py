@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
+import collections
+
 from django.db import migrations
 
 import mptt
@@ -21,6 +23,20 @@ def copy_regulations(apps, schema_editor):
         doc.save()
 
 
+def uncopy_regulations(apps, schema_editor):
+    Regulation = apps.get_model('regcore', 'Regulation')
+    Document = apps.get_model('regcore', 'Document')
+    for doc in Document.objects.filter(doc_type='cfr'):
+        data = {
+            field.name: getattr(doc, field.name)
+            for field in Regulation._meta.fields
+            if field.name not in {'parent'}
+        }
+        reg = Regulation(**data)
+        reg.parent_id = doc.parent_id
+        reg.save()
+
+
 def copy_preambles(apps, schema_editor):
     Preamble = apps.get_model('regcore', 'Preamble')
     Document = apps.get_model('regcore', 'Document')
@@ -35,7 +51,47 @@ def copy_preambles(apps, schema_editor):
         write_node(Document, pre.data, 'preamble', pre.data['label'])
 
 
+def uncopy_preambles(apps, schema_editor):
+    Preamble = apps.get_model('regcore', 'Preamble')
+    Document = apps.get_model('regcore', 'Document')
+
+    # Bind manager
+    manager = mptt.managers.TreeManager()
+    manager.model = Document
+    mptt.register(Document)
+    manager.contribute_to_class(Document, 'objects')
+
+    for doc in Document.objects.filter(doc_type='preamble', root=True):
+        nodes = doc.get_descendants(include_self=True)
+        data = serialize(nodes[0], build_adjacency_map(nodes))
+        pre = Preamble(document_number=doc.label_string, data=data)
+        pre.save()
+
+
 # Copy lightly modified import helpers
+
+def serialize(pre, adjacency_map):
+    return {
+        'label': pre.label_string.split('-'),
+        'text': pre.text,
+        'node_type': pre.node_type,
+        'children': [
+            serialize(child, adjacency_map)
+            for child in adjacency_map.get(pre.id, [])
+        ],
+    }
+
+
+def build_adjacency_map(regs):
+    """Build mapping from node IDs to child records
+    :param regs: List of `Regulation` records
+    """
+    ret = collections.defaultdict(list)
+    for reg in regs:
+        if reg.parent_id is not None:
+            ret[reg.parent_id].append(reg)
+    return ret
+
 
 def write_node(Document, node, doc_type, label_id, version=None):
 
@@ -120,6 +176,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(copy_regulations),
-        migrations.RunPython(copy_preambles),
+        migrations.RunPython(copy_regulations, uncopy_regulations),
+        migrations.RunPython(copy_preambles, uncopy_preambles),
     ]
