@@ -7,18 +7,18 @@ import six
 @six.add_metaclass(abc.ABCMeta)
 class Documents(object):
     @abc.abstractmethod
-    def get(self, label, version):
+    def get(self, doc_type, label, version):
         """Returns a regulation node or None"""
         raise NotImplementedError
 
     @abc.abstractmethod
-    def bulk_put(self, regs, version, root_label):
+    def bulk_put(self, regs, doc_type, root_label, version):
         """Add many entries, with a root of root_label. Each should have the
         provided version"""
         raise NotImplementedError
 
     @abc.abstractmethod
-    def listing(self, label=None):
+    def listing(self, doc_type, label=None):
         """Return a list of (version, label) pairs for regulation objects that
         match the provided label (or all root regs), sorted by version"""
         raise NotImplementedError
