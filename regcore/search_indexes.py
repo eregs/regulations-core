@@ -4,7 +4,8 @@ from regcore.models import Document
 
 class DocumentIndex(Indexable, SearchIndex):
     """Search index used by Haystack"""
-    version = CharField(model_attr='version')
+    doc_type = CharField(model_attr='doc_type')
+    version = CharField(model_attr='version', null=True)
     label_string = CharField(model_attr='label_string')
     text = CharField(model_attr='text')
     title = MultiValueField()
