@@ -33,6 +33,24 @@ class ViewsHaystackSearchTest(TestCase):
         self.assertEqual('12345678', version_filter.call_args[1]['version'])
 
     @patch('regcore_read.views.haystack_search.SearchQuerySet')
+    def test_search_root(self, sqs):
+        results = sqs.return_value.models.return_value.filter
+        version_filter = results.return_value.filter
+        version_filter.return_value = []
+        response = Client().get('/haystack_search?q=test&is_root=false')
+        self.assertEqual(200, response.status_code)
+        version_filter.assert_called_with(is_root='false')
+
+    @patch('regcore_read.views.haystack_search.SearchQuerySet')
+    def test_search_subpart(self, sqs):
+        results = sqs.return_value.models.return_value.filter
+        version_filter = results.return_value.filter
+        version_filter.return_value = []
+        response = Client().get('/haystack_search?q=test&is_subpart=true')
+        self.assertEqual(200, response.status_code)
+        version_filter.assert_called_with(is_subpart='true')
+
+    @patch('regcore_read.views.haystack_search.SearchQuerySet')
     def test_search_version_regulation(self, sqs):
         results = sqs.return_value.models.return_value.filter
         version_filter = results.return_value.filter

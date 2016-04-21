@@ -77,13 +77,14 @@ class ESDocumentsTest(TestCase, ESBase):
             ESDocuments().bulk_put(nodes, 'cfr', '111', 'verver')
 
         root.update({'version': 'verver', 'regulation': '111',
-                     'label_string': '111', 'id': 'verver/111', 'root': True})
+                     'label_string': '111', 'id': 'verver/111', 'root': True,
+                     'is_subpart': False})
         n2.update({'version': 'verver', 'regulation': '111',
                    'label_string': '111-2', 'id': 'verver/111-2',
-                   'root': False})
+                   'root': False, 'is_subpart': False})
         n3.update({'version': 'verver', 'regulation': '111',
                    'label_string': '111-3', 'id': 'verver/111-3',
-                   'root': False})
+                   'root': False, 'is_subpart': False})
         bulk_data = [dict(root), dict(n2), dict(n3)]
         for node in bulk_data:
             node['doc_type'] = 'cfr'

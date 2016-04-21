@@ -49,6 +49,10 @@ class ESDocuments(ESBase, interface.Documents):
         node['regulation'] = node['label'][0]
         node['id'] = version + '/' + node['label_string']
         node['root'] = len(node['label']) == 1
+        node['is_subpart'] = (
+            'Subpart' in node['label'] or
+            'Subjgrp' in node['label']
+        )
         return node
 
     def bulk_put(self, regs, doc_type, root_label, version):

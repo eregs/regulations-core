@@ -16,6 +16,8 @@ def search(request, doc_type):
     term = request.GET.get('q', '')
     version = request.GET.get('version', '')
     regulation = request.GET.get('regulation', '')
+    is_root = request.GET.get('is_root')
+    is_subpart = request.GET.get('is_subpart')
     try:
         page = int(request.GET.get('page', '0'))
     except ValueError:
@@ -37,6 +39,10 @@ def search(request, doc_type):
             term['version'] = version
         if regulation:
             term['regulation'] = regulation
+        if is_root:
+            term['is_root'] = is_root
+        if is_subpart:
+            term['is_subpart'] = is_subpart
         query['query'] = {'filtered': {
             'query': text_match,
             'filter': {'term': term}
