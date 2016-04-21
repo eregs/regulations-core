@@ -20,7 +20,7 @@ class ViewsHaystackSearchTest(TestCase):
         results.return_value = []
         response = Client().get('/haystack_search?q=test')
         self.assertEqual(200, response.status_code)
-        self.assertTrue(results.called)
+        results.assert_called_with(content='test', doc_type='cfr')
 
     @patch('regcore_read.views.haystack_search.SearchQuerySet')
     def test_search_version(self, sqs):

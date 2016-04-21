@@ -68,6 +68,8 @@ urlpatterns = patterns(
                 kwargs={'doc_type': 'cfr'}),
     by_verb_url(r'^preamble/%s$' % seg('label_id'), 'preamble',
                 mapping['preamble'], kwargs={'doc_type': 'preamble'}),
-    by_verb_url(r'^search$', 'search', mapping['search'],
+    by_verb_url(r'^search(?:/cfr)?$', 'search', mapping['search'],
                 kwargs={'doc_type': 'cfr'}),
+    by_verb_url(r'^search/preamble$', 'search', mapping['search'],
+                kwargs={'doc_type': 'preamble'}),
 )
