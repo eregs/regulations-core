@@ -6,6 +6,7 @@ from pyelasticsearch import ElasticSearch
 
 from regcore.db.es import ESLayers
 from regcore.responses import success, user_error
+from regcore_read.views.haystack_search import validate_boolean
 
 
 PAGE_SIZE = 50
@@ -16,6 +17,8 @@ def search(request, doc_type):
     term = request.GET.get('q', '')
     version = request.GET.get('version', '')
     regulation = request.GET.get('regulation', '')
+    is_root = request.GET.get('is_root')
+    is_subpart = request.GET.get('is_subpart')
     try:
         page = int(request.GET.get('page', '0'))
     except ValueError:
@@ -23,6 +26,10 @@ def search(request, doc_type):
 
     if not term:
         return user_error('No query term')
+    if not validate_boolean(is_root):
+        return user_error('Parameter "is_root" must be "true" or "false"')
+    if not validate_boolean(is_subpart):
+        return user_error('Parameter "is_subpart" must be "true" or "false"')
 
     query = {
         'fields': ['text', 'label', 'version', 'regulation', 'title',
@@ -37,6 +44,10 @@ def search(request, doc_type):
             term['version'] = version
         if regulation:
             term['regulation'] = regulation
+        if is_root:
+            term['is_root'] = is_root
+        if is_subpart:
+            term['is_subpart'] = is_subpart
         query['query'] = {'filtered': {
             'query': text_match,
             'filter': {'term': term}

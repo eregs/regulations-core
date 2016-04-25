@@ -11,11 +11,17 @@ from regcore.responses import success, user_error
 PAGE_SIZE = 50
 
 
+def validate_boolean(value):
+    return value is None or value in ['true', 'false']
+
+
 def search(request, doc_type):
     """Use haystack to find search results"""
     term = request.GET.get('q', '')
     version = request.GET.get('version', '')
     regulation = request.GET.get('regulation', '')
+    is_root = request.GET.get('is_root')
+    is_subpart = request.GET.get('is_subpart')
     try:
         page = int(request.GET.get('page', '0'))
     except ValueError:
@@ -23,6 +29,10 @@ def search(request, doc_type):
 
     if not term:
         return user_error('No query term')
+    if not validate_boolean(is_root):
+        return user_error('Parameter "is_root" must be "true" or "false"')
+    if not validate_boolean(is_subpart):
+        return user_error('Parameter "is_subpart" must be "true" or "false"')
 
     query = SearchQuerySet().models(Document).filter(
         content=term, doc_type=doc_type)
@@ -30,12 +40,16 @@ def search(request, doc_type):
         query = query.filter(version=version)
     if regulation:
         query = query.filter(regulation=regulation)
+    if is_root:
+        query = query.filter(is_root=is_root)
+    if is_subpart:
+        query = query.filter(is_subpart=is_subpart)
 
     start, end = page * PAGE_SIZE, (page + 1) * PAGE_SIZE
 
     return success({
         'total_hits': len(query),
-        'results': transform_results(query[start:end])
+        'results': transform_results(query[start:end]),
     })
 
 
