@@ -50,6 +50,30 @@ The following libraries are optionally supported
 
 ## Setup & Running
 
+### Docker
+
+For quick installation, consider installing from our
+[Docker Image](https://hub.docker.com/r/eregs/core/). This image includes all
+of the relevant dependencies, wrapped up in a "container" for ease of
+installation. To run it, you'll need to have Docker installed, though the
+installation instructions for [Linux](https://docs.docker.com/linux/step_one/),
+[Mac](https://docs.docker.com/mac/step_one/), and
+[Windows](https://docs.docker.com/windows/step_one/) are relatively painless.
+
+The image is tailored for development purposes; it runs in DEBUG mode using
+SQLite for data storage. To start it up, you'll want to run it in daemon mode,
+forwarding port 8080:
+
+```bash
+docker run -p 8080:8080 -d eregs/core
+```
+
+Your server should now be running at http://localhost:8080/. Use docker
+commands such as `docker ps`, `docker kill`, and `docker rm` to stop the
+service. Note, however, that the database will disappear with the service.
+
+### From Source
+
 This project uses `requirements*.txt` files for defining dependencies, so you
 can get up and running with `pip`:
 
