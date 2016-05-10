@@ -66,6 +66,8 @@ class DMDocuments(interface.Documents):
                 for child in adjacency_map.get(reg.id, [])
             ],
         }
+        if reg.lft:
+            ret['lft'] = reg.lft
         if reg.title:
             ret['title'] = reg.title
         return ret
