@@ -13,7 +13,7 @@ class Document(MPTTModel):
     label_string = models.SlugField(max_length=200)
     text = models.TextField()
     title = models.TextField(blank=True)
-    node_type = models.SlugField(max_length=10)
+    node_type = models.SlugField(max_length=30)
     root = models.BooleanField(default=False, db_index=True)
 
     class Meta:
