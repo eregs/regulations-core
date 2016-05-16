@@ -22,6 +22,7 @@ class DMDocumentsTest(TestCase):
             {
                 'text': 'ttt',
                 'label': ['a', 'b'],
+                'lft': 1,
                 'children': [],
                 'node_type': 'tyty'
             },
@@ -35,6 +36,7 @@ class DMDocumentsTest(TestCase):
             {
                 'text': 'ttt',
                 'label': ['a', 'b'],
+                'lft': 1,
                 'children': [],
                 'node_type': 'tyty'
             },
@@ -70,13 +72,20 @@ class DMDocumentsTest(TestCase):
 
     def test_bulk_put(self):
         """Writing multiple documents should save correctly. They can be
-        modified"""
-        n2 = {'text': 'some text', 'label': ['111', '2'], 'children': [],
-              'node_type': 'tyty'}
-        n3 = {'text': 'other', 'label': ['111', '3'], 'children': [],
+        modified. The lft and rght ids assigned by the Modified Preorder Tree
+        Traversal algorithm are shown below:
+
+                                (1)root(6)
+                                /    \
+                               /       \
+                         (2)n2(3)    (4)n3(5)
+        """
+        n2 = {'text': 'some text', 'label': ['111', '2'], 'lft': 2,
+              'children': [], 'node_type': 'tyty'}
+        n3 = {'text': 'other', 'label': ['111', '3'], 'children': [], 'lft': 4,
               'node_type': 'tyty2'}
-        root = {'text': 'root', 'label': ['111'], 'node_type': 'tyty3',
-                'children': [n2, n3]}
+        root = {'text': 'root', 'label': ['111'], 'lft': 1,
+                'node_type': 'tyty3', 'children': [n2, n3]}
         original = copy.deepcopy(root)
         n2['parent'] = root
         n3['parent'] = root

@@ -26,8 +26,7 @@ REGULATION_SCHEMA = {
             'items': {'type': 'string'}
         },
         'title': {'type': 'string'},
-        'node_type': {'type': 'string'},
-        'preorder_idx': {'type': 'integer', 'minimum': 0}
+        'node_type': {'type': 'string'}
     }
 }
 
