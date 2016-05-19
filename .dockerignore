@@ -1,0 +1,8 @@
+*.swp
+*.pyc
+.coverage
+local_settings.py
+
+docs/_build
+
+*.egg-info/
