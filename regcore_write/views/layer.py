@@ -1,7 +1,12 @@
+import logging
+
 from regcore.db import storage
 from regcore.layer import standardize_params
 from regcore.responses import success, user_error
 from regcore_write.views.security import json_body, secure_write
+
+
+logger = logging.getLogger(__name__)
 
 
 def child_label_of(lhs, rhs):
@@ -51,10 +56,12 @@ def child_layers(layer_params, layer_data):
     doc_id_components = layer_params.doc_id.split('/')
     if layer_params.doc_type == 'preamble':
         doc_tree = storage.for_documents.get('preamble', layer_params.doc_id)
-    else:
-        assert layer_params.doc_type == 'cfr'
+    elif layer_params.doc_type == 'cfr':
         version, label = doc_id_components
         doc_tree = storage.for_documents.get('cfr', label, version)
+    else:
+        doc_tree = None
+        logger.error("Invalid doc type: %s", layer_params.doc_type)
     if not doc_tree:
         return []
 

@@ -14,5 +14,6 @@ install:
 script:
   - python manage.py test
   - flake8 .
+  - bandit -r .
 after_success:
     coveralls
