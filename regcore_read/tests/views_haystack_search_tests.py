@@ -1,15 +1,14 @@
 from collections import namedtuple
 
-from django.test import TestCase
+from django.test import override_settings, TestCase
 from django.test.client import Client
 from mock import patch
 
 from regcore_read.views.haystack_search import transform_results
 
 
+@override_settings(ROOT_URLCONF='regcore_read.tests.urls')
 class ViewsHaystackSearchTest(TestCase):
-    urls = 'regcore_read.tests.urls'
-
     def test_search_missing_q(self):
         response = Client().get('/haystack_search?non_q=test')
         self.assertEqual(400, response.status_code)

@@ -1,12 +1,11 @@
-from django.test import TestCase
+from django.test import override_settings, TestCase
 from django.test.client import Client
 from mock import patch
 from regcore_read.views.es_search import transform_results
 
 
+@override_settings(ROOT_URLCONF='regcore_read.tests.urls')
 class ViewsESSearchTest(TestCase):
-    urls = 'regcore_read.tests.urls'
-
     def test_search_missing_q(self):
         response = Client().get('/es_search?non_q=test')
         self.assertEqual(400, response.status_code)
