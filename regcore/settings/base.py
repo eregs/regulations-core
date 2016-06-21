@@ -24,6 +24,11 @@ DATABASES = {
     }
 }
 
+TEMPLATES = [{
+    'BACKEND': 'django.template.backends.django.DjangoTemplates',
+    'APP_DIRS': True,
+}]
+
 TEST_RUNNER = 'django_nose.runner.NoseTestSuiteRunner'
 
 ROOT_URLCONF = 'regcore.urls'

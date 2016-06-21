@@ -6,7 +6,6 @@ and regcore_write apps"""
 from collections import defaultdict
 
 from django.conf import settings
-from django.conf.urls import patterns
 
 from regcore_read.views import (
     diff as rdiff, layer as rlayer, notice as rnotice,
@@ -47,8 +46,7 @@ def seg(label):
     return r'(?P<%s>[-\w]+)' % label
 
 
-urlpatterns = patterns(
-    '',
+urlpatterns = [
     by_verb_url(r'^diff/%s/%s/%s$' % (seg('label_id'), seg('old_version'),
                                       seg('new_version')),
                 'diff', mapping['diff']),
@@ -72,4 +70,4 @@ urlpatterns = patterns(
                 kwargs={'doc_type': 'cfr'}),
     by_verb_url(r'^search/preamble$', 'search', mapping['search'],
                 kwargs={'doc_type': 'preamble'}),
-)
+]

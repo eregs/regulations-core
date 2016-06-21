@@ -2,11 +2,11 @@ language: python
 sudo: false
 python:
     - "2.7"
-    - "3.3"
     - "3.4"
     - "3.5"
     - "pypy"
     # - "3.2" pyelasticsearch is not compatible
+    # - "3.3" Django stopped supporting this in 1.9
     # - "pypy3" requires sudo in travis
 install:
     - pip install -r requirements.txt
