@@ -16,5 +16,6 @@ def add(request, docnum):
         del notice['cfr_part']
     notice['cfr_parts'] = cfr_parts
 
+    storage.for_notices.delete(docnum)
     storage.for_notices.put(docnum, notice)
     return success()

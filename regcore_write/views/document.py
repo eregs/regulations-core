@@ -65,4 +65,5 @@ def write_node(node, doc_type, label_id, version):
             add_node(child, parent=node)
     add_node(node)
 
-    storage.for_documents.bulk_put(to_save, doc_type, label_id, version)
+    storage.for_documents.bulk_delete(doc_type, label_id, version)
+    storage.for_documents.bulk_put(to_save, doc_type, version)

@@ -90,11 +90,12 @@ class DMDocumentsTest(TestCase):
         n2['parent'] = root
         n3['parent'] = root
         nodes = [root, n2, n3]
-        self.dmr.bulk_put(nodes, 'cfr', '111', 'verver')
+        self.dmr.bulk_put(nodes, 'cfr', 'verver')
         self.assertEqual(DMDocuments().get('cfr', '111', 'verver'), original)
 
         root['title'] = original['title'] = 'New Title'
-        self.dmr.bulk_put(nodes, 'cfr', '111', 'verver')
+        self.dmr.bulk_delete('cfr', '111', 'verver')
+        self.dmr.bulk_put(nodes, 'cfr', 'verver')
 
         self.assertEqual(DMDocuments().get('cfr', '111', 'verver'), original)
 
@@ -118,7 +119,7 @@ class DMLayersTest(TestCase):
         modified"""
         layers = [{'111-22': [], '111-22-a': [], 'doc_id': 'verver/111-22'},
                   {'111-23': [], 'doc_id': 'verver/111-23'}]
-        self.dml.bulk_put(layers, 'name', 'cfr', 'verver/111')
+        self.dml.bulk_put(layers, 'name', 'cfr')
 
         self.assertEqual(Layer.objects.count(), 2)
         self.assertEqual(self.dml.get('name', 'cfr', 'verver/111-22'),
@@ -127,7 +128,8 @@ class DMLayersTest(TestCase):
                          {'111-23': []})
 
         layers[1] = {'111-23': [1], 'doc_id': 'verver/111-23'}
-        self.dml.bulk_put(layers, 'name', 'cfr', 'verver/111')
+        self.dml.bulk_delete('name', 'cfr', 'verver/111')
+        self.dml.bulk_put(layers, 'name', 'cfr')
 
         self.assertEqual(Layer.objects.count(), 2)
         self.assertEqual(self.dml.get('name', 'cfr', 'verver/111-23'),
@@ -189,6 +191,7 @@ class DMNoticesTest(TestCase):
                              [expected])
 
         doc['fr_url'] = 'url2'
+        self.dmn.delete('docdoc')
         self.dmn.put('docdoc', doc)
 
         expected['fr_url'] = 'url2'
@@ -210,7 +213,7 @@ class DMDiffTest(TestCase):
         self.assertEqual({"some": 'body'},
                          self.dmd.get('lablab', 'oldold', 'newnew'))
 
-    def test_put(self):
+    def test_put_delete(self):
         """We can insert and replace a diff"""
         self.dmd.put('lablab', 'oldold', 'newnew', {"some": "structure"})
 
@@ -220,6 +223,7 @@ class DMDiffTest(TestCase):
         six.assertCountEqual(self, Diff.objects.all().values(*fields),
                              [expected])
 
+        self.dmd.delete('lablab', 'oldold', 'newnew')
         self.dmd.put('lablab', 'oldold', 'newnew', {"other": "structure"})
         expected['diff'] = {'other': 'structure'}
         six.assertCountEqual(self, Diff.objects.all().values(*fields),

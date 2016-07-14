@@ -74,7 +74,7 @@ class ESDocumentsTest(TestCase, ESBase):
         nodes = [root, n2, n3]
 
         with self.expect_bulk_put('reg_tree', 3) as bulk_put:
-            ESDocuments().bulk_put(nodes, 'cfr', '111', 'verver')
+            ESDocuments().bulk_put(nodes, 'cfr', 'verver')
 
         root.update({'version': 'verver', 'regulation': '111',
                      'label_string': '111', 'id': 'verver/111', 'root': True,
@@ -123,7 +123,7 @@ class ESLayersTest(TestCase, ESBase):
         layers = [{'111-22': [], '111-22-a': [], 'doc_id': 'verver:111-22'},
                   {'111-23': [], 'doc_id': 'verver:111-23'}]
         with self.expect_bulk_put('layer', 2) as bulk_put:
-            ESLayers().bulk_put(layers, 'name', 'cfr', 'verver:111')
+            ESLayers().bulk_put(layers, 'name', 'cfr')
 
         del layers[0]['doc_id']
         del layers[1]['doc_id']

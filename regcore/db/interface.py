@@ -12,9 +12,13 @@ class Documents(object):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def bulk_put(self, regs, doc_type, root_label, version):
-        """Add many entries, with a root of root_label. Each should have the
-        provided version"""
+    def bulk_delete(self, doc_type, root_label, version):
+        """Delete all documents that match these parameters"""
+        raise NotImplementedError
+
+    @abc.abstractmethod
+    def bulk_put(self, regs, doc_type, version):
+        """Add many entries, each with the provided version"""
         raise NotImplementedError
 
     @abc.abstractmethod
@@ -26,15 +30,21 @@ class Documents(object):
 
 @six.add_metaclass(abc.ABCMeta)
 class Layers(object):
-    def bulk_put(self, layers, layer_name, doc_type, root_doc_id):
+    def bulk_delete(self, layer_name, doc_type, root_doc_id):
+        """Deletes multiple entries with the same layer_name.
+        :param str layer_name: Identifier for this layer, e.g. "toc",
+        "internal-citations", etc.
+        :param str doc_type: layers are keyed by doc_type
+        :param str root_doc_id: the doc id of the "root" layer."""
+        raise NotImplementedError
+
+    def bulk_put(self, layers, layer_name, doc_type):
         """Add multiple entries with the same layer_name.
         :param list[dict] layers: Each dictionary represents a layer; each
         should have a distinct "doc_id", which will be used during insertion.
         :param str layer_name: Identifier for this layer, e.g. "toc",
         "internal-citations", etc.
-        :param str doc_type: layers are keyed by doc_type
-        :param str root_doc_id: the doc id of the "root" layer. This is used
-        to delete existing data before inserting"""
+        :param str doc_type: layers are keyed by doc_type"""
         raise NotImplementedError
 
     def get(self, name, doc_type, doc_id):
@@ -44,6 +54,10 @@ class Layers(object):
 
 @six.add_metaclass(abc.ABCMeta)
 class Notices(object):
+    def delete(self, doc_number):
+        """:param str doc_number:"""
+        raise NotImplementedError
+
     def put(self, doc_number, notice):
         """:param str doc_number:
            :param dict notice:"""
@@ -60,6 +74,12 @@ class Notices(object):
 
 @six.add_metaclass(abc.ABCMeta)
 class Diffs(object):
+    def delete(self, label, old_version, new_version):
+        """:param str label:
+           :param str old_version:
+           :param str new_version:"""
+        raise NotImplementedError
+
     def put(self, label, old_version, new_version, diff):
         """:param str label:
            :param str old_version:

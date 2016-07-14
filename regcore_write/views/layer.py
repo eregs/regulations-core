@@ -43,8 +43,9 @@ def add(request, name, doc_type, doc_id):
             return user_error('label mismatch: {}, {}'.format(
                 params.tree_id, key))
 
+    storage.for_layers.bulk_delete(name, params.doc_type, params.doc_id)
     storage.for_layers.bulk_put(child_layers(params, layer), name,
-                                params.doc_type, params.doc_id)
+                                params.doc_type)
     return success()
 
 

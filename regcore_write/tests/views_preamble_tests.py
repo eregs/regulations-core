@@ -27,6 +27,9 @@ class ViewsPreambleTests(TestCase):
         )
         bulk_data = dict(data)
         bulk_data['parent'] = None
+        storage.for_documents.bulk_delete.assert_called_with(
+            'preamble', 'label', None,
+        )
         storage.for_documents.bulk_put.assert_called_with(
-            [bulk_data], 'preamble', 'label', None,
+            [bulk_data], 'preamble', None,
         )
