@@ -49,6 +49,17 @@ def add(request, name, doc_type, doc_id):
     return success()
 
 
+@secure_write
+def delete(request, name, doc_type, doc_id):
+    """Delete the layer node and all of its children from the db"""
+    params = standardize_params(doc_type, doc_id)
+    if params.doc_type not in ('preamble', 'cfr'):
+        return user_error('invalid doc type')
+
+    storage.for_layers.bulk_delete(name, params.doc_type, params.doc_id)
+    return success()
+
+
 def child_layers(layer_params, layer_data):
     """We are generally given a layer corresponding to an entire regulation.
     We need to split that layer up and store it per node within the

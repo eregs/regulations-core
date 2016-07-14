@@ -12,3 +12,10 @@ def add(request, label_id, old_version, new_version):
     storage.for_diffs.insert(
         label_id, old_version, new_version, request.json_body)
     return success()
+
+
+@secure_write
+def delete(request, label_id, old_version, new_version):
+    """Delete the diff from the db"""
+    storage.for_diffs.delete(label_id, old_version, new_version)
+    return success()

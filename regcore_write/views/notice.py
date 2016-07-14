@@ -19,3 +19,10 @@ def add(request, docnum):
     storage.for_notices.delete(docnum)
     storage.for_notices.insert(docnum, notice)
     return success()
+
+
+@secure_write
+def delete(request, docnum):
+    """Delete the notice from the db"""
+    storage.for_notices.delete(docnum)
+    return success()
