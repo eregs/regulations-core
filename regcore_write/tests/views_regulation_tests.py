@@ -63,11 +63,11 @@ class ViewsRegulationTest(TestCase):
 
         Client().put(url, content_type='application/json',
                      data=json.dumps(message))
-        self.assertTrue(storage.for_documents.bulk_put.called)
-        bulk_put_args = storage.for_documents.bulk_put.call_args[0]
-        self.assertEqual(3, len(bulk_put_args[0]))
+        self.assertTrue(storage.for_documents.bulk_insert.called)
+        bulk_insert_args = storage.for_documents.bulk_insert.call_args[0]
+        self.assertEqual(3, len(bulk_insert_args[0]))
         found = [False, False, False]
-        for arg in bulk_put_args[0]:
+        for arg in bulk_insert_args[0]:
             if arg['label'] == ['p']:
                 found[0] = True
             if arg['label'] == ['p', 'c1']:
@@ -76,12 +76,12 @@ class ViewsRegulationTest(TestCase):
                 found[2] = True
         self.assertEqual(found, [True, True, True])
 
-        storage.for_documents.bulk_put.reset_mock()
+        storage.for_documents.bulk_insert.reset_mock()
         Client().post(url, content_type='application/json',
                       data=json.dumps(message))
-        self.assertTrue(storage.for_documents.bulk_put.called)
-        bulk_put_args = storage.for_documents.bulk_put.call_args[0]
-        self.assertEqual(3, len(bulk_put_args[0]))
+        self.assertTrue(storage.for_documents.bulk_insert.called)
+        bulk_insert_args = storage.for_documents.bulk_insert.call_args[0]
+        self.assertEqual(3, len(bulk_insert_args[0]))
 
     @patch('regcore_write.views.document.storage')
     def test_add_empty_children(self, storage):
@@ -94,6 +94,6 @@ class ViewsRegulationTest(TestCase):
         }
         Client().put(url, content_type='application/json',
                      data=json.dumps(message))
-        self.assertTrue(storage.for_documents.bulk_put.called)
-        bulk_put_args = storage.for_documents.bulk_put.call_args[0]
-        self.assertEqual(1, len(bulk_put_args[0]))
+        self.assertTrue(storage.for_documents.bulk_insert.called)
+        bulk_insert_args = storage.for_documents.bulk_insert.call_args[0]
+        self.assertEqual(1, len(bulk_insert_args[0]))

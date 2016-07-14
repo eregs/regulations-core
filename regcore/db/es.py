@@ -65,7 +65,7 @@ class ESDocuments(ESBase, interface.Documents):
         )
         return node
 
-    def bulk_put(self, regs, doc_type, version):
+    def bulk_insert(self, regs, doc_type, version):
         """Store all reg objects"""
         self.es.bulk_index(
             settings.ELASTIC_SEARCH_INDEX, 'reg_tree',
@@ -94,7 +94,7 @@ class ESLayers(ESBase, interface.Layers):
         doc_id = sanitize_doc_id(layer.pop('doc_id'))
         return {'id': ':'.join([layer_name, doc_type, doc_id]), 'layer': layer}
 
-    def bulk_put(self, layers, layer_name, doc_type):
+    def bulk_insert(self, layers, layer_name, doc_type):
         """Store all layer objects."""
         self.es.bulk_index(
             settings.ELASTIC_SEARCH_INDEX, 'layer',
@@ -110,7 +110,7 @@ class ESLayers(ESBase, interface.Layers):
 
 class ESNotices(ESBase, interface.Notices):
     """Implementation of Elastic Search as notice backend"""
-    def put(self, doc_number, notice):
+    def insert(self, doc_number, notice):
         """Store a single notice"""
         self.es.index(settings.ELASTIC_SEARCH_INDEX, 'notice', notice,
                       id=doc_number)
@@ -142,7 +142,7 @@ class ESDiffs(ESBase, interface.Diffs):
     def to_id(label, old, new):
         return "%s/%s/%s" % (label, old, new)
 
-    def put(self, label, old_version, new_version, diff):
+    def insert(self, label, old_version, new_version, diff):
         """Store a diff between two versions of a regulation node"""
         struct = {
             'label': label,

@@ -17,7 +17,7 @@ class Documents(object):
         raise NotImplementedError
 
     @abc.abstractmethod
-    def bulk_put(self, regs, doc_type, version):
+    def bulk_insert(self, regs, doc_type, version):
         """Add many entries, each with the provided version"""
         raise NotImplementedError
 
@@ -38,7 +38,7 @@ class Layers(object):
         :param str root_doc_id: the doc id of the "root" layer."""
         raise NotImplementedError
 
-    def bulk_put(self, layers, layer_name, doc_type):
+    def bulk_insert(self, layers, layer_name, doc_type):
         """Add multiple entries with the same layer_name.
         :param list[dict] layers: Each dictionary represents a layer; each
         should have a distinct "doc_id", which will be used during insertion.
@@ -58,7 +58,7 @@ class Notices(object):
         """:param str doc_number:"""
         raise NotImplementedError
 
-    def put(self, doc_number, notice):
+    def insert(self, doc_number, notice):
         """:param str doc_number:
            :param dict notice:"""
         raise NotImplementedError
@@ -80,7 +80,7 @@ class Diffs(object):
            :param str new_version:"""
         raise NotImplementedError
 
-    def put(self, label, old_version, new_version, diff):
+    def insert(self, label, old_version, new_version, diff):
         """:param str label:
            :param str old_version:
            :param str new_version:

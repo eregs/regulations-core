@@ -24,7 +24,7 @@ class ESBase(object):
                              es.return_value.get.call_args[0][1:])
 
     @contextmanager
-    def expect_put(self, doc_type, id):
+    def expect_insert(self, doc_type, id):
         """Expect a document to be written."""
         with patch('regcore.db.es.ElasticSearch') as es:
             yield es.return_value.index
@@ -32,7 +32,7 @@ class ESBase(object):
             self.assertEqual(id, es.return_value.index.call_args[1].get('id'))
 
     @contextmanager
-    def expect_bulk_put(self, doc_type, num_docs):
+    def expect_bulk_insert(self, doc_type, num_docs):
         """Expect multiple documents to be written.."""
         with patch('regcore.db.es.ElasticSearch') as es:
             yield es.return_value.bulk_index
@@ -65,7 +65,7 @@ class ESDocumentsTest(TestCase, ESBase):
             self.assertEqual(ESDocuments().get('cfr', 'lablab', 'verver'),
                              {"first": 0})
 
-    def test_bulk_put(self):
+    def test_bulk_insert(self):
         n2 = {'text': 'some text', 'label': ['111', '2'], 'children': []}
         n3 = {'text': 'other', 'label': ['111', '3'], 'children': []}
         # Use a copy of the children
@@ -73,8 +73,8 @@ class ESDocumentsTest(TestCase, ESBase):
                                                                dict(n3)]}
         nodes = [root, n2, n3]
 
-        with self.expect_bulk_put('reg_tree', 3) as bulk_put:
-            ESDocuments().bulk_put(nodes, 'cfr', 'verver')
+        with self.expect_bulk_insert('reg_tree', 3) as bulk_insert:
+            ESDocuments().bulk_insert(nodes, 'cfr', 'verver')
 
         root.update({'version': 'verver', 'regulation': '111',
                      'label_string': '111', 'id': 'verver/111', 'root': True,
@@ -88,7 +88,7 @@ class ESDocumentsTest(TestCase, ESBase):
         bulk_data = [dict(root), dict(n2), dict(n3)]
         for node in bulk_data:
             node['doc_type'] = 'cfr'
-        self.assertEqual(bulk_data, bulk_put.call_args[0][2])
+        self.assertEqual(bulk_data, bulk_insert.call_args[0][2])
 
     def test_listing(self):
         query = {'match': {'label_string': 'lll', 'doc_type': 'cfr'}}
@@ -119,17 +119,17 @@ class ESLayersTest(TestCase, ESBase):
             self.assertEqual(ESLayers().get('namnam', 'cfr', 'verver:lablab'),
                              {"some": "body"})
 
-    def test_bulk_put(self):
+    def test_bulk_insert(self):
         layers = [{'111-22': [], '111-22-a': [], 'doc_id': 'verver:111-22'},
                   {'111-23': [], 'doc_id': 'verver:111-23'}]
-        with self.expect_bulk_put('layer', 2) as bulk_put:
-            ESLayers().bulk_put(layers, 'name', 'cfr')
+        with self.expect_bulk_insert('layer', 2) as bulk_insert:
+            ESLayers().bulk_insert(layers, 'name', 'cfr')
 
         del layers[0]['doc_id']
         del layers[1]['doc_id']
         transformed = [{'id': 'name:cfr:verver:111-22', 'layer': layers[0]},
                        {'id': 'name:cfr:verver:111-23', 'layer': layers[1]}]
-        self.assertEqual(transformed, bulk_put.call_args[0][2])
+        self.assertEqual(transformed, bulk_insert.call_args[0][2])
 
 
 class ESNoticesTest(TestCase, ESBase):
@@ -142,10 +142,10 @@ class ESNoticesTest(TestCase, ESBase):
             self.assertEqual(ESNotices().get('docdoc'),
                              {"some": 'body'})
 
-    def test_put(self):
-        with self.expect_put('notice', 'docdoc') as put:
-            ESNotices().put('docdoc', {"some": "structure"})
-        self.assertEqual(put.call_args[0][2], {"some": "structure"})
+    def test_insert(self):
+        with self.expect_insert('notice', 'docdoc') as insert:
+            ESNotices().insert('docdoc', {"some": "structure"})
+        self.assertEqual(insert.call_args[0][2], {"some": "structure"})
 
     def test_listing(self):
         query = {'match_all': {}}
@@ -178,10 +178,11 @@ class ESDiffTest(TestCase, ESBase):
             self.assertEqual(ESDiffs().get('lablab', 'oldold', 'newnew'),
                              {"some": 'body'})
 
-    def test_put(self):
-        with self.expect_put('diff', 'lablab/oldold/newnew') as put:
-            ESDiffs().put('lablab', 'oldold', 'newnew', {"some": "structure"})
-        self.assertEqual(put.call_args[0][2],
+    def test_insert(self):
+        with self.expect_insert('diff', 'lablab/oldold/newnew') as insert:
+            ESDiffs().insert('lablab', 'oldold', 'newnew',
+                             {"some": "structure"})
+        self.assertEqual(insert.call_args[0][2],
                          {'label': 'lablab',
                           'old_version': 'oldold',
                           'new_version': 'newnew',

@@ -102,7 +102,7 @@ class DMDocuments(interface.Documents):
             label_string__startswith=root_label,
         ).delete()
 
-    def bulk_put(self, regs, doc_type, version):
+    def bulk_insert(self, regs, doc_type, version):
         """Store all document objects"""
         treeify(regs[0], Document.objects._get_next_tree_id())
         Document.objects.bulk_create(
@@ -140,7 +140,7 @@ class DMLayers(interface.Layers):
         Layer.objects.filter(name=layer_name, doc_type=doc_type,
                              doc_id__startswith=root_doc_id).delete()
 
-    def bulk_put(self, layers, layer_name, doc_type):
+    def bulk_insert(self, layers, layer_name, doc_type):
         """Store all layer objects"""
         Layer.objects.bulk_create(
             [self._transform(l, layer_name, doc_type) for l in layers],
@@ -161,7 +161,7 @@ class DMNotices(interface.Notices):
     def delete(self, doc_number):
         Notice.objects.filter(document_number=doc_number).delete()
 
-    def put(self, doc_number, notice):
+    def insert(self, doc_number, notice):
         """Store a single notice"""
         model = Notice(document_number=doc_number,
                        fr_url=notice['fr_url'],
@@ -199,7 +199,7 @@ class DMNotices(interface.Notices):
 
 class DMDiffs(interface.Diffs):
     """Implementation of Django-models as diff backend"""
-    def put(self, label, old_version, new_version, diff):
+    def insert(self, label, old_version, new_version, diff):
         """Store a diff between two versions of a regulation node"""
         Diff(label=label, old_version=old_version, new_version=new_version,
              diff=diff).save()

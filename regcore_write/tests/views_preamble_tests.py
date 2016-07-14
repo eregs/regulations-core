@@ -30,6 +30,6 @@ class ViewsPreambleTests(TestCase):
         storage.for_documents.bulk_delete.assert_called_with(
             'preamble', 'label', None,
         )
-        storage.for_documents.bulk_put.assert_called_with(
+        storage.for_documents.bulk_insert.assert_called_with(
             [bulk_data], 'preamble', None,
         )

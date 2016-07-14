@@ -17,5 +17,5 @@ def add(request, docnum):
     notice['cfr_parts'] = cfr_parts
 
     storage.for_notices.delete(docnum)
-    storage.for_notices.put(docnum, notice)
+    storage.for_notices.insert(docnum, notice)
     return success()

@@ -20,6 +20,6 @@ class ViewsDiffTest(TestCase):
 
         Client().put(url, content_type='application/json',
                      data=json.dumps({'some': 'struct'}))
-        args = storage.for_diffs.put.call_args[0]
+        args = storage.for_diffs.insert.call_args[0]
         self.assertEqual(('lablab', 'oldold', 'newnew', {'some': 'struct'}),
                          args)
