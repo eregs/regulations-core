@@ -34,7 +34,7 @@ REGULATION_SCHEMA = {
 @secure_write
 @json_body
 def add(request, doc_type, label_id, version=None):
-    """Add this regulation node and all of its children to the db"""
+    """Add this document node and all of its children to the db"""
     try:
         node = request.json_body
         jsonschema.validate(node, REGULATION_SCHEMA)
@@ -65,4 +65,12 @@ def write_node(node, doc_type, label_id, version):
             add_node(child, parent=node)
     add_node(node)
 
-    storage.for_documents.bulk_put(to_save, doc_type, label_id, version)
+    storage.for_documents.bulk_delete(doc_type, label_id, version)
+    storage.for_documents.bulk_insert(to_save, doc_type, version)
+
+
+@secure_write
+def delete(request, doc_type, label_id, version=None):
+    """Delete this document node and all of its children from the db"""
+    storage.for_documents.bulk_delete(doc_type, label_id, version)
+    return success()

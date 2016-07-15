@@ -93,14 +93,17 @@ class DMDocuments(interface.Documents):
             root=(len(reg['label']) == 1),
         )
 
-    def bulk_put(self, regs, doc_type, root_label, version):
-        """Store all reg objects"""
+    def bulk_delete(self, doc_type, root_label, version):
+        """Delete all documents that match these params"""
         # This does not handle subparts. Ignoring that for now
         Document.objects.filter(
             version=version,
             doc_type=doc_type,
             label_string__startswith=root_label,
         ).delete()
+
+    def bulk_insert(self, regs, doc_type, version):
+        """Store all document objects"""
         treeify(regs[0], Document.objects._get_next_tree_id())
         Document.objects.bulk_create(
             [self._transform(r, doc_type, version) for r in regs],
@@ -130,12 +133,15 @@ class DMLayers(interface.Layers):
         return Layer(name=layer_name, layer=layer, doc_type=doc_type,
                      doc_id=doc_id)
 
-    def bulk_put(self, layers, layer_name, doc_type, root_doc_id):
-        """Store all layer objects"""
+    def bulk_delete(self, layer_name, doc_type, root_doc_id):
+        """Delete all layer data matching the parameters"""
         # This does not handle subparts; Ignoring that for now
         # @todo - use regex to avoid deleting 222-11 when replacing 22
         Layer.objects.filter(name=layer_name, doc_type=doc_type,
                              doc_id__startswith=root_doc_id).delete()
+
+    def bulk_insert(self, layers, layer_name, doc_type):
+        """Store all layer objects"""
         Layer.objects.bulk_create(
             [self._transform(l, layer_name, doc_type) for l in layers],
             batch_size=settings.BATCH_SIZE)
@@ -152,10 +158,11 @@ class DMLayers(interface.Layers):
 
 class DMNotices(interface.Notices):
     """Implementation of Django-models as notice backend"""
-    def put(self, doc_number, notice):
-        """Store a single notice"""
+    def delete(self, doc_number):
         Notice.objects.filter(document_number=doc_number).delete()
 
+    def insert(self, doc_number, notice):
+        """Store a single notice"""
         model = Notice(document_number=doc_number,
                        fr_url=notice['fr_url'],
                        publication_date=notice['publication_date'],
@@ -192,12 +199,14 @@ class DMNotices(interface.Notices):
 
 class DMDiffs(interface.Diffs):
     """Implementation of Django-models as diff backend"""
-    def put(self, label, old_version, new_version, diff):
+    def insert(self, label, old_version, new_version, diff):
         """Store a diff between two versions of a regulation node"""
-        Diff.objects.filter(label=label, old_version=old_version,
-                            new_version=new_version).delete()
         Diff(label=label, old_version=old_version, new_version=new_version,
              diff=diff).save()
+
+    def delete(self, label, old_version, new_version):
+        Diff.objects.filter(label=label, old_version=old_version,
+                            new_version=new_version).delete()
 
     def get(self, label, old_version, new_version):
         """Find the associated diff"""

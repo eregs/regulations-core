@@ -16,5 +16,13 @@ def add(request, docnum):
         del notice['cfr_part']
     notice['cfr_parts'] = cfr_parts
 
-    storage.for_notices.put(docnum, notice)
+    storage.for_notices.delete(docnum)
+    storage.for_notices.insert(docnum, notice)
+    return success()
+
+
+@secure_write
+def delete(request, docnum):
+    """Delete the notice from the db"""
+    storage.for_notices.delete(docnum)
     return success()

@@ -41,8 +41,8 @@ class ViewsLayerTest(TestCase):
         with patch('regcore_write.views.layer.storage') as storage:
             storage.for_documents.get.return_value = root[0]
             self.put(message, **kwargs)
-            self.assertTrue(storage.for_layers.bulk_put.called)
-            layers_saved = storage.for_layers.bulk_put.call_args[0][0]
+            self.assertTrue(storage.for_layers.bulk_insert.called)
+            layers_saved = storage.for_layers.bulk_insert.call_args[0][0]
             return list(reversed(layers_saved))     # switch to outside in
 
     def test_add_success(self):
@@ -139,7 +139,7 @@ class ViewsLayerTest(TestCase):
                    '111_22-3-b': 'layer3'}
         self.client.put('/layer/aname/preamble/111_22',
                         data=json.dumps(message))
-        stored = storage.for_layers.bulk_put.call_args[0][0]
+        stored = storage.for_layers.bulk_insert.call_args[0][0]
         self.assertEqual(len(stored), 9)
         for label in ('111_22-1', '111_22-2', '111_22-2-a', '111_22-3-a',
                       '111_22-3-a-i', '111_22-3-b-i'):

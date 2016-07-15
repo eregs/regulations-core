@@ -39,6 +39,11 @@ if 'regcore_write' in settings.INSTALLED_APPS:
         mapping['notice'][verb] = wnotice.add
         mapping['preamble'][verb] = wdocument.add
         mapping['regulation'][verb] = wdocument.add
+    mapping['diff']['DELETE'] = wdiff.delete
+    mapping['layer']['DELETE'] = wlayer.delete
+    mapping['notice']['DELETE'] = wnotice.delete
+    mapping['preamble']['DELETE'] = wdocument.delete
+    mapping['regulation']['DELETE'] = wdocument.delete
 
 
 # Re-usable URL patterns.
