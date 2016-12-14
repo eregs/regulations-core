@@ -9,7 +9,7 @@ regulations-core
 An API that provides an interface for storing and retrieving regulations,
 layers, etc.
 
-This repository is part of a larger project. To read about it, please see 
+This repository is part of a larger project. To read about it, please see
 [http://eregs.github.io/](http://eregs.github.io/).
 
 ## Features
@@ -35,8 +35,8 @@ The following libraries are optionally supported
 
 * coverage - reports on test coverage
 * django-haystack - An interface for accessing Solr, Whoosh, and other search
-  engines. This is only required if not using Elastic Search. Unfortunately, 
-  we are constrained to using the pre-rewrite version of haystack (though 
+  engines. This is only required if not using Elastic Search. Unfortunately,
+  we are constrained to using the pre-rewrite version of haystack (though
   that may change in the future)
 * django-nose - plugin for Django which allows for nose integration
 * mock - makes constructing mock objects/functions easy
@@ -92,8 +92,8 @@ $ python manage.py runserver
 
 You'll be running (without search capability) using SQLite.
 
-By default, you'll be using the `example_settings.py`. We recommend local
-modification be made in a `local_settings.py` file.
+By default, you'll be using the settings defined in `regcore/settings/base.py`.
+We recommend local modification be made in a `local_settings.py` file.
 
 ## Apps included
 
@@ -155,7 +155,7 @@ Remember to run migrations.
 ### Elastic Search For Data and Search
 
 If *pyelasticsearch* is installed, you can use Elastic Search for all of
-your needs. For a search endpoint, use *regcore_read.views.es_search.search* 
+your needs. For a search endpoint, use *regcore_read.views.es_search.search*
 and use the following backend configuration:
 
 ```python
@@ -170,8 +170,8 @@ BACKENDS = {
 
 ## Settings
 
-While we provide sane defaults in the `example_settings.py` file, we recommend
-these defaults be overridden as needed in a `local_settings.py` file.
+While we provide sane default settings in `regcore/settings/base.py`, we
+recommend these defaults be overridden as needed in a `local_settings.py` file.
 
 If using Elastic Search, you will need to let the application know how to
 connect to the search servers.
@@ -221,7 +221,7 @@ is used as follows, from the root `regcore` directory.
 $ python manage.py import_reg -r <regulation-number> -s <path/to/stub/root>
 ```
 
-For an example of JSON content, see `[regulations-stub](https://github.com/cfpb/regulations-stub/)`
+For an example of JSON content, see [`regulations-stub`](https://github.com/cfpb/regulations-stub/)
 
 
 ##  Running Tests
@@ -242,5 +242,3 @@ via
 ```bash
 $ flake8 .
 ```
-
-
