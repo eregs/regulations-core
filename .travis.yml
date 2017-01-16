@@ -12,7 +12,7 @@ install:
     - pip install -r requirements.txt
     - pip install -r requirements_test.txt
 script:
-  - python manage.py test
+  - pytest --cov
   - flake8 .
   - bandit -r .
 after_success:

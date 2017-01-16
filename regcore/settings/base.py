@@ -29,8 +29,6 @@ TEMPLATES = [{
     'APP_DIRS': True,
 }]
 
-TEST_RUNNER = 'django_nose.runner.NoseTestSuiteRunner'
-
 ROOT_URLCONF = 'regcore.urls'
 
 DEBUG = True
@@ -38,11 +36,6 @@ DEBUG = True
 # Configurable storage backends, keyed by data_type (e.g. regulations, diffs)
 # If a key is not set, defaults to regcore.db.django_models versions
 BACKENDS = {}
-
-NOSE_ARGS = [
-    '--with-coverage',
-    '--cover-package=regcore,regcore_read,regcore_write'
-]
 
 ELASTIC_SEARCH_URLS = []
 ELASTIC_SEARCH_INDEX = 'eregs'
