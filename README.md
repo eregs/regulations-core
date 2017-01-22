@@ -210,18 +210,54 @@ $ sphinx-apidoc -F -o docs regcore_read
 $ sphinx-apidoc -F -o docs regcore_write
 ```
 
-##  Importing Regulation JSON
+##  Importing Data
 
-There is a `django_admin` command that facilitates the import of JSON
-regulation content into the database. The command is called `import_reg` and
-is used as follows, from the root `regcore` directory.
+### Via the `eregs` parser
+
+The `eregs` script (see
+[regulations-parser](http://github.com/eregs/regulations-parser)) includes
+subcommands which will write processed data to a running API. Notably, if
+`write_to` (the last step of `pipeline`) is directed at a target beginning
+with `http://` or `https://`, it will write the relevant data to that host.
+Note that HTTP authentication can be encoded within these urls. For example,
+if the API is running on the localhost, port 8000, you could run:
 
 ```bash
-$ python manage.py import_reg -r <regulation-number> -s <path/to/stub/root>
+$ eregs write_to http://localhost:8000/
 ```
 
-For an example of JSON content, see [`regulations-stub`](https://github.com/cfpb/regulations-stub/)
+See the command line
+[docs](https://eregs-parser.readthedocs.io/en/latest/commandline.html) for
+more detail.
 
+### Via the `import_docs` Django command
+
+If you've already exported data from the parser, you may import it from the
+command line with the `import_docs` Django management command. It should be
+given the root directory of the data as its only parameter. Note that this
+does not require a running API.
+
+```bash
+$ ls /path/to/data-root
+diff  layer  notice  regulation
+$ python manage.py import_docs /path/to/data-root
+```
+
+### Via curl
+
+You may also simulate sending data to a running API via curl, if you've
+exported data from the parser. For example, if the API is running on the
+localhost, port 8000, you could run:
+
+```bash
+$ cd /path/to/data-root
+$ ls
+diff  layer  notice  regulation
+$ for TAIL in $(find */* -type f | sort -r) \
+do \
+    curl -X PUT http://localhost:8000/$TAIL -d @$TAIL \
+done
+```
 
 ##  Running Tests
 
