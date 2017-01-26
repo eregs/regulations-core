@@ -38,9 +38,8 @@ The following libraries are optionally supported
   engines. This is only required if not using Elastic Search. Unfortunately,
   we are constrained to using the pre-rewrite version of haystack (though
   that may change in the future)
-* django-nose - plugin for Django which allows for nose integration
+* py.test - provides py.test as a test runner
 * mock - makes constructing mock objects/functions easy
-* nose - A pluggable test runner
 * pyelasticsearch - required if using Elastic Search
 * flake8 - while not strictly required, we try to meet its standards
 * pysolr - required if using solr as a search backend
