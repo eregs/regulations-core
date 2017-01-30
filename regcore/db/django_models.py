@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 
 from regcore.db import interface
-from regcore.models import Diff, Layer, Notice, Document
+from regcore.models import Diff, Document, Layer, Notice
 
 
 def treeify(node, tree_id, pos=1, level=0):
@@ -35,7 +35,7 @@ def build_adjacency_map(regs):
 
 def build_id(reg, version=None):
     if version is not None:
-        return '{}:{}'.format(version, '-'.join(reg['label']))
+        return '{0}:{1}'.format(version, '-'.join(reg['label']))
     return '-'.join(reg['label'])
 
 

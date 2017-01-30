@@ -6,7 +6,6 @@ from regcore.db import storage
 from regcore.responses import success, user_error
 from regcore_write.views.security import json_body, secure_write
 
-
 # This JSON schema is used to validate the regulation data provided
 REGULATION_SCHEMA = {
     'type': 'object',

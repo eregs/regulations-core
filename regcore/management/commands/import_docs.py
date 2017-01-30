@@ -4,7 +4,6 @@ import os
 from django.core.management.base import BaseCommand
 from django.test import Client, override_settings
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -36,7 +35,7 @@ def save_file(root, file_parts):
 
 
 class Command(BaseCommand):
-    help = "Import a collection of JSON files into the database."
+    help = "Import a collection of JSON files into the database."   # noqa
 
     def add_arguments(self, parser):
         parser.add_argument(

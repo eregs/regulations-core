@@ -1,6 +1,6 @@
 import base64
-from functools import wraps
 import json
+from functools import wraps
 
 from django.conf import settings
 from django.http import HttpResponse
@@ -21,7 +21,7 @@ def _is_correct_auth(guess):
     """Encode the configured auth username/password as a base64 string, then
     safely compare `guess` against it"""
     user, password = settings.HTTP_AUTH_USER, settings.HTTP_AUTH_PASSWORD
-    combined = '{}:{}'.format(user, password)
+    combined = '{0}:{1}'.format(user, password)
     left = base64.b64encode(combined.encode()).decode('utf-8')
     # Django's built in constant_time_compare short circuits if the length of
     # the strings is not equal. We avoid that by padding both strings out to

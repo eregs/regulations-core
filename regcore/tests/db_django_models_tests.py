@@ -3,8 +3,8 @@ from datetime import date
 
 import pytest
 
-from regcore.db.django_models import DMDiffs, DMLayers, DMNotices, DMDocuments
-from regcore.models import Diff, Layer, Notice, Document
+from regcore.db.django_models import DMDiffs, DMDocuments, DMLayers, DMNotices
+from regcore.models import Diff, Document, Layer, Notice
 
 
 @pytest.mark.django_db

@@ -5,7 +5,6 @@ from regcore.layer import standardize_params
 from regcore.responses import success, user_error
 from regcore_write.views.security import json_body, secure_write
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -40,7 +39,7 @@ def add(request, name, doc_type, doc_id):
     for key in layer.keys():
         # terms layer has a special attribute
         if not child_label_of(key, params.tree_id) and key != 'referenced':
-            return user_error('label mismatch: {}, {}'.format(
+            return user_error('label mismatch: {0}, {1}'.format(
                 params.tree_id, key))
 
     storage.for_layers.bulk_delete(name, params.doc_type, params.doc_id)

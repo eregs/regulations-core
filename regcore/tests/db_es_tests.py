@@ -4,14 +4,14 @@ from unittest import TestCase
 from mock import patch
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 
-from regcore.db.es import ESDiffs, ESLayers, ESNotices, ESDocuments
+from regcore.db.es import ESDiffs, ESDocuments, ESLayers, ESNotices
 
 
 class ESBase(object):
     """Mixin methods for boiler plate around mocking out Elastic Search. Each
     method yields the appropriate, mocked Elastic Search fn"""
     @contextmanager
-    def expect_get(self, doc_type, id, doc=None):
+    def expect_get(self, doc_type, ident, doc=None):
         """Expect an attempt to find a single document
            :param doc: document to return or None to test no document"""
         with patch('regcore.db.es.ElasticSearch') as es:
@@ -20,16 +20,17 @@ class ESBase(object):
             else:
                 es.return_value.get.return_value = {'_source': doc}
             yield es.return_value.get
-            self.assertEqual((doc_type, id),
+            self.assertEqual((doc_type, ident),
                              es.return_value.get.call_args[0][1:])
 
     @contextmanager
-    def expect_insert(self, doc_type, id):
+    def expect_insert(self, doc_type, ident):
         """Expect a document to be written."""
         with patch('regcore.db.es.ElasticSearch') as es:
             yield es.return_value.index
             self.assertEqual(doc_type, es.return_value.index.call_args[0][1])
-            self.assertEqual(id, es.return_value.index.call_args[1].get('id'))
+            self.assertEqual(ident,
+                             es.return_value.index.call_args[1].get('id'))
 
     @contextmanager
     def expect_bulk_insert(self, doc_type, num_docs):

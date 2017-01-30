@@ -13,7 +13,7 @@ def _wrapped_fn(request):
 
 
 def _encode(username, password):
-    as_unicode = '{}:{}'.format(username, password).encode()
+    as_unicode = '{0}:{1}'.format(username, password).encode()
     encoded = base64.b64encode(as_unicode).decode('utf-8')
     return 'Basic ' + encoded
 

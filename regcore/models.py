@@ -5,7 +5,7 @@ from regcore.fields import CompressedJSONField
 
 
 class Document(MPTTModel):
-    id = models.TextField(primary_key=True)
+    id = models.TextField(primary_key=True)     # noqa
     doc_type = models.SlugField(max_length=20)
     parent = TreeForeignKey('self', null=True, blank=True,
                             related_name='children', db_index=True)
