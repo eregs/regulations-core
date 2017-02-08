@@ -3,10 +3,9 @@ using Elastic Search, see es_search.py"""
 
 from haystack.query import SearchQuerySet
 
-from regcore.models import Document
 from regcore.db.django_models import DMLayers
+from regcore.models import Document
 from regcore.responses import success, user_error
-
 
 PAGE_SIZE = 50
 
@@ -55,7 +54,7 @@ def search(request, doc_type):
 
 def transform_results(results):
     """Add title field from layers if possible"""
-    regulations = set((r.regulation, r.version) for r in results)
+    regulations = {(r.regulation, r.version) for r in results}
 
     layers = {}
     for regulation, version in regulations:

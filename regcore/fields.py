@@ -3,8 +3,8 @@ import bz2
 import json
 import logging
 
-from django.db import models
 import six
+from django.db import models
 
 
 class CompressedJSONField(models.TextField):

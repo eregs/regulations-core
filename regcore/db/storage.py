@@ -11,6 +11,7 @@ def select_for(data_type):
         'regcore.db.django_models.DM' + data_type.capitalize())
     return import_string(class_str)()
 
+
 for_documents = select_for('documents')
 for_layers = select_for('layers')
 for_notices = select_for('notices')

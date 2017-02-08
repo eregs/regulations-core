@@ -1,6 +1,6 @@
 from collections import namedtuple
 
-from django.test import override_settings, TestCase
+from django.test import TestCase, override_settings
 from django.test.client import Client
 from mock import patch
 
@@ -85,9 +85,9 @@ class ViewsHaystackSearchTest(TestCase):
                          transform_results.call_args[0][0])
 
     @patch('regcore_read.views.haystack_search.DMLayers')
-    def test_transform_results(self, DMLayers):
+    def test_transform_results(self, dmlayers):
         # combine keyterms and terms into a single layer
-        DMLayers.return_value.get.return_value = {
+        dmlayers.return_value.get.return_value = {
             '2': [{'key_term': 'k2'}], '3': [{'key_term': 'k3'}],
             '6': [{'key_term': 'k6'}], '7': [{'key_term': 'k7'}],
             'referenced': {

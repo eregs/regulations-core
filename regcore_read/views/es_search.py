@@ -8,7 +8,6 @@ from regcore.db.es import ESLayers
 from regcore.responses import success, user_error
 from regcore_read.views.haystack_search import validate_boolean
 
-
 PAGE_SIZE = 50
 
 
@@ -66,7 +65,7 @@ def search(request, doc_type):
 
 def transform_results(results):
     """Pull out unused fields, add title field from layers if possible"""
-    regulations = set((r['regulation'], r['version']) for r in results)
+    regulations = {(r['regulation'], r['version']) for r in results}
 
     layers = {}
     for regulation, version in regulations:

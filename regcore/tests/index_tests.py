@@ -1,6 +1,7 @@
+from unittest import TestCase
+
 from mock import patch
 from pyelasticsearch.exceptions import IndexAlreadyExistsError
-from unittest import TestCase
 
 from regcore.index import init_schema
 

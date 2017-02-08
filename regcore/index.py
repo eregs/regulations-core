@@ -6,7 +6,6 @@ from django.conf import settings
 from pyelasticsearch import ElasticSearch
 from pyelasticsearch.exceptions import IndexAlreadyExistsError
 
-
 NODE_SEARCH_SCHEMA = {
     'text': {'type': 'string'},  # Full text search
     #   Do not search children, but make them available

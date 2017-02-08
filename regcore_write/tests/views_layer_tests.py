@@ -11,7 +11,7 @@ class ViewsLayerTest(TestCase):
     def put(self, data, name='layname', doc_type='cfr',
             doc_id='verver/lablab'):
         """Shorthand function for PUTing data to a view layer"""
-        url = '/layer/{}/{}/{}'.format(name, doc_type, doc_id)
+        url = '/layer/{0}/{1}/{2}'.format(name, doc_type, doc_id)
         if isinstance(data, dict):
             data = json.dumps(data)
         return self.client.put(url, content_type='application/json',

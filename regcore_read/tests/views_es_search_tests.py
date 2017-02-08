@@ -1,6 +1,7 @@
-from django.test import override_settings, TestCase
+from django.test import TestCase, override_settings
 from django.test.client import Client
 from mock import patch
+
 from regcore_read.views.es_search import transform_results
 
 
@@ -53,9 +54,9 @@ class ViewsESSearchTest(TestCase):
         self.assertEqual(250, query['from'])
 
     @patch('regcore_read.views.es_search.ESLayers')
-    def test_transform_results(self, ESLayers):
+    def test_transform_results(self, eslayers):
         # combine keyterms and terms into a single layer
-        ESLayers.return_value.get.return_value = {
+        eslayers.return_value.get.return_value = {
             '2': [{'key_term': 'k2'}], '3': [{'key_term': 'k3'}],
             '6': [{'key_term': 'k6'}], '7': [{'key_term': 'k7'}],
             'referenced': {

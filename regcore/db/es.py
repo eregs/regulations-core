@@ -8,7 +8,6 @@ from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 
 from regcore.db import interface
 
-
 logger = logging.getLogger(__name__)
 
 
@@ -22,11 +21,12 @@ class ESBase(object):
     def __init__(self):
         self.es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
 
-    def safe_fetch(self, doc_type, id):
+    def safe_fetch(self, doc_type, es_id):
         """Attempt to retrieve a document from Elastic Search.
         :return: Found document, if it exists, otherwise None"""
         try:
-            result = self.es.get(settings.ELASTIC_SEARCH_INDEX, doc_type, id)
+            result = self.es.get(settings.ELASTIC_SEARCH_INDEX, doc_type,
+                                 es_id)
             return result['_source']
         except ElasticHttpNotFoundError:
             return None
@@ -140,7 +140,7 @@ class ESDiffs(ESBase, interface.Diffs):
     """Implementation of Elastic Search as diff backend"""
     @staticmethod
     def to_id(label, old, new):
-        return "%s/%s/%s" % (label, old, new)
+        return '/'.join([label, old, new])
 
     def insert(self, label, old_version, new_version, diff):
         """Store a diff between two versions of a regulation node"""
