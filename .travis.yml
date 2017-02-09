@@ -16,4 +16,4 @@ script:
   - flake8 .
   - bandit -r . -x regcore/tests,regcore_read/tests,regcore_write/tests
 after_success:
-    coveralls
+  - if [[ $INTEGRATION_TARGET = '' ]] && [[ $TRAVIS_PYTHON_VERSION = '3.5' ]]; then coveralls; fi
