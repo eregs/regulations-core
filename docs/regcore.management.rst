@@ -1,18 +1,17 @@
-regcore\_read package
-=====================
+regcore\.management package
+===========================
 
 Subpackages
 -----------
 
 .. toctree::
 
-    regcore_read.tests
-    regcore_read.views
+    regcore.management.commands
 
 Module contents
 ---------------
 
-.. automodule:: regcore_read
+.. automodule:: regcore.management
     :members:
     :undoc-members:
     :show-inheritance:
