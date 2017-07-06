@@ -3,7 +3,11 @@ FROM python:3-alpine
 COPY [".", "/app/src/"]
 
 WORKDIR /app/src/
-RUN pip install --no-cache-dir -r requirements.txt \
+RUN apk --update add ca-certificates \
+    && update-ca-certificates \
+    && rm -rf /var/cache/apk/*
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -e .[all-backends] \
     && python manage.py migrate
 
 ENV PYTHONUNBUFFERED="1"
