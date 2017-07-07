@@ -25,7 +25,7 @@ This repository is part of a larger project. To read about it, please see
 
 This library requires
 * Python 2.7 (including PyPy), 3.4, 3.5, or 3.6
-* Django 1.8 or 1.9
+* Django 1.8, 1.9, 1.10, or 1.11
 
 ## API Docs
 
