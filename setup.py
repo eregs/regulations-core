@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="regcore",
-    version="3.0.0",
+    version="3.1.0",
     license="public domain",
     packages=find_packages(),
     include_package_data=True,
