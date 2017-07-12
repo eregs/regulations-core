@@ -20,7 +20,7 @@ import os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('..'))
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'regcore.example_settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'regcore.settings.base')
 
 # -- General configuration ----------------------------------------------------
 

@@ -1,5 +1,5 @@
-regcore_read package
-====================
+regcore\_read package
+=====================
 
 Subpackages
 -----------

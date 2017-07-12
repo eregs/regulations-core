@@ -1,19 +1,14 @@
 language: python
 sudo: false
 python:
-    - "2.7"
-    - "3.4"
-    - "3.5"
-    - "pypy"
-    # - "3.2" pyelasticsearch is not compatible
-    # - "3.3" Django stopped supporting this in 1.9
-    # - "pypy3" requires sudo in travis
+  - "2.7"
+  - "3.4"
+  - "3.5"
+  - "3.6"
+  - "pypy"
 install:
-    - pip install -r requirements.txt
-    - pip install -r requirements_test.txt
+  - pip install coveralls tox-travis
 script:
-  - pytest --cov
-  - flake8 .
-  - bandit -r . -x regcore/tests,regcore_read/tests,regcore_write/tests
+  - tox
 after_success:
-  - if [[ $INTEGRATION_TARGET = '' ]] && [[ $TRAVIS_PYTHON_VERSION = '3.5' ]]; then coveralls; fi
+  - if [[ $INTEGRATION_TARGET = '' ]] && [[ $TRAVIS_PYTHON_VERSION = '3.6' ]]; then coveralls; fi

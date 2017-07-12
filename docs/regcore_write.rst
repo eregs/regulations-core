@@ -1,5 +1,5 @@
-regcore_write package
-=====================
+regcore\_write package
+======================
 
 Subpackages
 -----------

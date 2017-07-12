@@ -6,7 +6,7 @@ regulations-core
 [![Code Climate](https://codeclimate.com/github/eregs/regulations-core/badges/gpa.svg)](https://codeclimate.com/github/eregs/regulations-core)
 [![Code Issues](https://www.quantifiedcode.com/api/v1/project/0cdc7eb543724f60b428aa9cae42bd5f/badge.svg)](https://www.quantifiedcode.com/app/project/0cdc7eb543724f60b428aa9cae42bd5f)
 
-An API that provides an interface for storing and retrieving regulations,
+An API library that provides an interface for storing and retrieving regulations,
 layers, etc.
 
 This repository is part of a larger project. To read about it, please see
@@ -23,76 +23,66 @@ This repository is part of a larger project. To read about it, please see
 
 ## Requirements
 
-This application requires Python 2.7 (including PyPy), 3.3, 3.4, 3.5
-
-Requirements are retrieved and/or build automatically via pip (see below).
-
-* django - Web framework
-* jsonschema - used to test that JSON provided fits our required data
-  structure
-
-The following libraries are optionally supported
-
-* coverage - reports on test coverage
-* django-haystack - An interface for accessing Solr, Whoosh, and other search
-  engines. This is only required if not using Elastic Search. Unfortunately,
-  we are constrained to using the pre-rewrite version of haystack (though
-  that may change in the future)
-* py.test - provides py.test as a test runner
-* mock - makes constructing mock objects/functions easy
-* pyelasticsearch - required if using Elastic Search
-* flake8 - while not strictly required, we try to meet its standards
-* pysolr - required if using solr as a search backend
+This library requires
+* Python 2.7 (including PyPy), 3.4, 3.5, or 3.6
+* Django 1.8, 1.9, 1.10, or 1.11
 
 ## API Docs
 
 [regulations-core on Read The Docs](http://regulations-core.readthedocs.org/en/latest/)
 
-## Setup & Running
+## Local development
 
-### Docker
+### Tox
 
-For quick installation, consider installing from our
-[Docker Image](https://hub.docker.com/r/eregs/core/). This image includes all
-of the relevant dependencies, wrapped up in a "container" for ease of
-installation. To run it, you'll need to have Docker installed, though the
-installation instructions for [Linux](https://docs.docker.com/linux/step_one/),
-[Mac](https://docs.docker.com/mac/step_one/), and
-[Windows](https://docs.docker.com/windows/step_one/) are relatively painless.
-
-The image is tailored for development purposes; it runs in DEBUG mode using
-SQLite for data storage. To start it up, you'll want to run it in daemon mode,
-forwarding port 8080:
+We use [tox](tox.readthedocs.io) to test across multiple versions of Python
+and Django. To run our tests, linters, and build our docs, you'll need to
+install `tox` *globally* (Tox handles virtualenvs for us).
 
 ```bash
-docker run -p 8080:8080 -d eregs/core
+pip install tox
+# If using pyenv, consider also installing tox-pyenv
 ```
 
-Your server should now be running at http://localhost:8080/. Use docker
-commands such as `docker ps`, `docker kill`, and `docker rm` to stop the
-service. Note, however, that the database will disappear with the service.
-
-### From Source
-
-This project uses `requirements*.txt` files for defining dependencies, so you
-can get up and running with `pip`:
+Then, run tests and linting across available Python versions:
 
 ```bash
-$ pip install -r requirements.txt       # modules required for execution
-$ pip install -r requirements_test.txt  # modules required for running tests
-$ pip install -r requirements_dev.txt   # helpful modules for developers
+tox
 ```
 
-With that, you just need a few additional commands to get up and running:
+To build docs, run:
+
 ```bash
-$ python manage.py migrate --fake-initial
-$ python manage.py runserver
+tox -e docs
 ```
 
-You'll be running (without search capability) using SQLite.
+The output will be in `docs/_build/dirhtml`.
 
-By default, you'll be using the settings defined in `regcore/settings/base.py`.
-We recommend local modification be made in a `local_settings.py` file.
+### Running as an application
+
+While this library is generally intended to be used within a larger project,
+it can also be ran as its own application via
+[Docker](https://www.docker.com/) or a local Python install. In both cases,
+we'll run in `DEBUG` mode using SQLite for data storage. We don't have a turn
+key solution for integrating this with search (though it can be accomplished
+via a custom settings file).
+
+To run via Docker, 
+```bash
+docker build . -t eregs/core  # only needed after code changes
+docker run -p 8080:8080 eregs/core
+```
+
+To run via local Python, run the following inside a
+[virtualenv](https://virtualenv.pypa.io/en/stable/):
+```bash
+pip install .
+python manage.py migrate
+python manage.py runserver 0.0.0.0:8080
+```
+
+In both cases, you can find the site locally at
+[http://0.0.0.0:8080/](http://0.0.0.0:8080/).
 
 ## Apps included
 
@@ -189,27 +179,6 @@ All standard Django and haystack settings are also available; you will likely
 want to override `DATABASES`, `HAYSTACK_CONNECTIONS`, `DEBUG` and certainly
 `SECRET_KEY`.
 
-## Building the documentation
-
-For most tweaks, you will simply need to run the Sphinx documentation
-builder again.
-
-```bash
-$ sphinx-build -b dirhtml -d docs/_build/doctrees/ docs/ docs/_build/dirhtml/
-```
-
-The output will be in `docs/_build/dirhtml`.
-
-If you are adding new modules, you may need to re-run the skeleton build
-script first:
-
-```bash
-$ rm docs/regcore*.rst
-$ sphinx-apidoc -F -o docs regcore
-$ sphinx-apidoc -F -o docs regcore_read
-$ sphinx-apidoc -F -o docs regcore_write
-```
-
 ##  Importing Data
 
 ### Via the `eregs` parser
@@ -257,23 +226,4 @@ $ for TAIL in $(find */* -type f | sort -r) \
 do \
     curl -X PUT http://localhost:8000/$TAIL -d @$TAIL \
 done
-```
-
-##  Running Tests
-
-```bash
-$ python manage.py test
-```
-
-This will include a report of test coverage.
-
-To run tests across all supported python versions, run `tox`.
-
-## Linting
-
-We rely on flake8 for linting and style checks. You can run it over everything
-via
-
-```bash
-$ flake8 .
 ```
