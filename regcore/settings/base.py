@@ -4,6 +4,10 @@ import os
 
 from django.utils.crypto import get_random_string
 
+ALLOWED_HOSTS = [
+    value for key, value in os.environ.items()
+    if key.startswith('ALLOWED_HOST')
+]
 
 INSTALLED_APPS = [
     'mptt',
