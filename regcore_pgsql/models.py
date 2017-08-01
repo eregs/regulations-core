@@ -17,8 +17,9 @@ class DocumentIndex(models.Model):
         doc_and_children = document.get_descendants(include_self=True)
         return cls(
             document=document,
-            combined_text=' '.join(d.text for d in doc_and_children if d.text),
-            combined_titles=' '.join(
+            combined_text='\n'.join(
+                d.text for d in doc_and_children if d.text),
+            combined_titles='\n'.join(
                 d.title for d in doc_and_children if d.title),
             root_title=document.title or '',
         )
