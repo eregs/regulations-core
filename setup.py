@@ -11,6 +11,7 @@ setup(
         'django-mptt',
         'jsonschema',
         'six',
+        'webargs',
     ],
     extras_require={
         'backend-elastic': ['pyelasticsearch'],

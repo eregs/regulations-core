@@ -3,32 +3,26 @@ results. If using haystack, see haystack_search.py"""
 
 from django.conf import settings
 from pyelasticsearch import ElasticSearch
+from webargs import ValidationError
+from webargs.djangoparser import parser
 
 from regcore.db.es import ESLayers
 from regcore.responses import success, user_error
-from regcore_read.views.haystack_search import validate_boolean
+from regcore_read.views.search_utils import search_args
 
 PAGE_SIZE = 50
 
 
 def search(request, doc_type):
     """Search elastic search for any matches in the node's text"""
-    term = request.GET.get('q', '')
-    version = request.GET.get('version', '')
-    regulation = request.GET.get('regulation', '')
-    is_root = request.GET.get('is_root')
-    is_subpart = request.GET.get('is_subpart')
     try:
-        page = int(request.GET.get('page', '0'))
-    except ValueError:
-        page = 0
+        args = parser.parse(search_args, request)
+    except ValidationError as err:
+        return user_error('. '.join(err.messages))
 
-    if not term:
-        return user_error('No query term')
-    if not validate_boolean(is_root):
-        return user_error('Parameter "is_root" must be "true" or "false"')
-    if not validate_boolean(is_subpart):
-        return user_error('Parameter "is_subpart" must be "true" or "false"')
+    term, version, regulation = args['q'], args['version'], args['regulation']
+    is_root, is_subpart = args['is_root'], args['is_subpart']
+    page = args['page']
 
     query = {
         'fields': ['text', 'label', 'version', 'regulation', 'title',
@@ -43,9 +37,9 @@ def search(request, doc_type):
             term['version'] = version
         if regulation:
             term['regulation'] = regulation
-        if is_root:
+        if is_root is not None:
             term['is_root'] = is_root
-        if is_subpart:
+        if is_subpart is not None:
             term['is_subpart'] = is_subpart
         query['query'] = {'filtered': {
             'query': text_match,

@@ -38,7 +38,7 @@ class ViewsHaystackSearchTest(TestCase):
         version_filter.return_value = []
         response = Client().get('/haystack_search?q=test&is_root=false')
         self.assertEqual(200, response.status_code)
-        version_filter.assert_called_with(is_root='false')
+        version_filter.assert_called_with(is_root=False)
 
     @patch('regcore_read.views.haystack_search.SearchQuerySet')
     def test_search_subpart(self, sqs):
@@ -47,7 +47,7 @@ class ViewsHaystackSearchTest(TestCase):
         version_filter.return_value = []
         response = Client().get('/haystack_search?q=test&is_subpart=true')
         self.assertEqual(200, response.status_code)
-        version_filter.assert_called_with(is_subpart='true')
+        version_filter.assert_called_with(is_subpart=True)
 
     @patch('regcore_read.views.haystack_search.SearchQuerySet')
     def test_search_subpart_invalid(self, sqs):
