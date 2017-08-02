@@ -3,44 +3,32 @@ results. If using haystack, see haystack_search.py"""
 
 from django.conf import settings
 from pyelasticsearch import ElasticSearch
-from webargs import ValidationError
-from webargs.djangoparser import parser
 
 from regcore.db.es import ESLayers
-from regcore.responses import success, user_error
-from regcore_read.views.search_utils import search_args
-
-PAGE_SIZE = 50
+from regcore.responses import success
+from regcore_read.views.search_utils import requires_search_args, PAGE_SIZE
 
 
-def search(request, doc_type):
+@requires_search_args
+def search(request, doc_type, search_args):
     """Search elastic search for any matches in the node's text"""
-    try:
-        args = parser.parse(search_args, request)
-    except ValidationError as err:
-        return user_error('. '.join(err.messages))
-
-    term, version, regulation = args['q'], args['version'], args['regulation']
-    is_root, is_subpart = args['is_root'], args['is_subpart']
-    page = args['page']
-
     query = {
         'fields': ['text', 'label', 'version', 'regulation', 'title',
                    'label_string'],
-        'from': page * PAGE_SIZE,
+        'from': search_args.page * PAGE_SIZE,
         'size': PAGE_SIZE,
     }
-    text_match = {'match': {'text': term, 'doc_type': doc_type}}
-    if version or regulation:
+    text_match = {'match': {'text': search_args.q, 'doc_type': doc_type}}
+    if search_args.version or search_args.regulation:
         term = {}
-        if version:
-            term['version'] = version
-        if regulation:
-            term['regulation'] = regulation
-        if is_root is not None:
-            term['is_root'] = is_root
-        if is_subpart is not None:
-            term['is_subpart'] = is_subpart
+        if search_args.version:
+            term['version'] = search_args.version
+        if search_args.regulation:
+            term['regulation'] = search_args.regulation
+        if search_args.is_root is not None:
+            term['is_root'] = search_args.is_root
+        if search_args.is_subpart is not None:
+            term['is_subpart'] = search_args.is_subpart
         query['query'] = {'filtered': {
             'query': text_match,
             'filter': {'term': term}
