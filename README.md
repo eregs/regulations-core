@@ -120,15 +120,15 @@ turn `DEBUG` off in your `local_settings.py`
 ## Storage-Backends
 
 This project allows multiple backends for storing, retrieving, and searching
-data. The default settings file uses Django models for both data and search,
-but Django models can be combined with Elastic Search, or Elastic Search can
-be used for both data and search. We discuss each configuration below.
+data. The default settings file uses Django models for data storage and
+Haystack for search, but Elastic Search (1.7) can be used instead.
 
 ### Django Models For Data, Haystack For Search
 
-This is the default configuration. You will need to have *haystack*
-installed and *pysolr* (or *pyelasticsearch*). This uses the
-*regcore_read.views.haystack_search.search* as the endpoint and
+This is the default configuration. You will need to have *haystack* installed
+and one of their
+[backends](http://django-haystack.readthedocs.io/en/master/backend_support.html).
+In your settings file, use:
 
 ```python
 BACKENDS = {
@@ -137,15 +137,16 @@ BACKENDS = {
     'notices': 'regcore.db.django_models.DMNotices',
     'diffs': 'regcore.db.django_models.DMDiffs'
 }
+SEARCH_HANDLER = 'regcore_read.views.haystack_search.search'
 ```
 
-Remember to run migrations.
+You will need to migrate the database (`manage.py migrate`) to get started and
+rebuild the search index (`manage.py rebuild_index`) after adding documents.
 
 ### Elastic Search For Data and Search
 
-If *pyelasticsearch* is installed, you can use Elastic Search for all of
-your needs. For a search endpoint, use *regcore_read.views.es_search.search*
-and use the following backend configuration:
+If *pyelasticsearch* is installed, you can use Elastic Search (1.7) for both
+data storage and search. Add the following to your settings file:
 
 ```python
 BACKENDS = {
@@ -154,6 +155,7 @@ BACKENDS = {
     'notices': 'regcore.db.es.ESNotices',
     'diffs': 'regcore.db.es.ESDiffs'
 }
+SEARCH_HANDLER = 'regcore_read.views.es_search.search'
 ```
 
 
