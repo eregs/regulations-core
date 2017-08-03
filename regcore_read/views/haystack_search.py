@@ -5,46 +5,26 @@ from haystack.query import SearchQuerySet
 
 from regcore.db.django_models import DMLayers
 from regcore.models import Document
-from regcore.responses import success, user_error
-
-PAGE_SIZE = 50
-
-
-def validate_boolean(value):
-    return value is None or value in ['true', 'false']
+from regcore.responses import success
+from regcore_read.views.search_utils import requires_search_args, PAGE_SIZE
 
 
-def search(request, doc_type):
+@requires_search_args
+def search(request, doc_type, search_args):
     """Use haystack to find search results"""
-    term = request.GET.get('q', '')
-    version = request.GET.get('version', '')
-    regulation = request.GET.get('regulation', '')
-    is_root = request.GET.get('is_root')
-    is_subpart = request.GET.get('is_subpart')
-    try:
-        page = int(request.GET.get('page', '0'))
-    except ValueError:
-        page = 0
-
-    if not term:
-        return user_error('No query term')
-    if not validate_boolean(is_root):
-        return user_error('Parameter "is_root" must be "true" or "false"')
-    if not validate_boolean(is_subpart):
-        return user_error('Parameter "is_subpart" must be "true" or "false"')
-
     query = SearchQuerySet().models(Document).filter(
-        content=term, doc_type=doc_type)
-    if version:
-        query = query.filter(version=version)
-    if regulation:
-        query = query.filter(regulation=regulation)
-    if is_root:
-        query = query.filter(is_root=is_root)
-    if is_subpart:
-        query = query.filter(is_subpart=is_subpart)
+        content=search_args.q, doc_type=doc_type)
+    if search_args.version:
+        query = query.filter(version=search_args.version)
+    if search_args.regulation:
+        query = query.filter(regulation=search_args.regulation)
+    if search_args.is_root is not None:
+        query = query.filter(is_root=search_args.is_root)
+    if search_args.is_subpart is not None:
+        query = query.filter(is_subpart=search_args.is_subpart)
 
-    start, end = page * PAGE_SIZE, (page + 1) * PAGE_SIZE
+    start = search_args.page * PAGE_SIZE
+    end = start + PAGE_SIZE
 
     return success({
         'total_hits': len(query),
