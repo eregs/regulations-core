@@ -15,7 +15,6 @@ setup(
     ],
     extras_require={
         'backend-elastic': ['pyelasticsearch'],
-        'backend-django': ['django-haystack'],
-        'all-backends': ['django-haystack', 'pyelasticsearch'],
+        'backend-haystack': ['django-haystack'],
     },
 )

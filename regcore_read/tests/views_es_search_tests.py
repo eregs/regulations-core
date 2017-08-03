@@ -1,21 +1,23 @@
+import pytest
 from django.test import TestCase, override_settings
 from django.test.client import Client
 from mock import patch
 
+pytest.importorskip('pyelasticsearch')  # noqa
 from regcore_read.views.es_search import transform_results
 
 
-@override_settings(ROOT_URLCONF='regcore_read.tests.urls')
+@override_settings(SEARCH_HANDLER='regcore_read.views.es_search.search')
 class ViewsESSearchTest(TestCase):
     def test_search_missing_q(self):
-        response = Client().get('/es_search?non_q=test')
+        response = Client().get('/search?non_q=test')
         self.assertEqual(400, response.status_code)
 
     @patch('regcore_read.views.es_search.ElasticSearch')
     def test_search_success(self, es):
         es.return_value.search.return_value = {'hits': {'hits': [],
                                                         'total': 0}}
-        response = Client().get('/es_search?q=test')
+        response = Client().get('/search?q=test')
         self.assertEqual(200, response.status_code)
         self.assertTrue(es.called)
         self.assertTrue(es.return_value.search.called)
@@ -24,7 +26,7 @@ class ViewsESSearchTest(TestCase):
     def test_search_version(self, es):
         es.return_value.search.return_value = {'hits': {'hits': [],
                                                         'total': 0}}
-        response = Client().get('/es_search?q=test&version=12345678')
+        response = Client().get('/search?q=test&version=12345678')
         self.assertEqual(200, response.status_code)
         self.assertTrue(es.called)
         self.assertTrue(es.return_value.search.called)
@@ -34,7 +36,7 @@ class ViewsESSearchTest(TestCase):
     def test_search_version_regulation(self, es):
         es.return_value.search.return_value = {'hits': {'hits': [],
                                                         'total': 0}}
-        response = Client().get('/es_search?q=test&version=678&regulation=123')
+        response = Client().get('/search?q=test&version=678&regulation=123')
         self.assertEqual(200, response.status_code)
         self.assertTrue(es.called)
         self.assertTrue(es.return_value.search.called)
@@ -45,7 +47,7 @@ class ViewsESSearchTest(TestCase):
     def test_search_paging(self, es):
         es.return_value.search.return_value = {'hits': {'hits': [],
                                                         'total': 0}}
-        response = Client().get('/es_search?q=test&page=5')
+        response = Client().get('/search?q=test&page=5')
         self.assertEqual(200, response.status_code)
         self.assertTrue(es.called)
         self.assertTrue(es.return_value.search.called)

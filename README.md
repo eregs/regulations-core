@@ -145,8 +145,9 @@ rebuild the search index (`manage.py rebuild_index`) after adding documents.
 
 ### Elastic Search For Data and Search
 
-If *pyelasticsearch* is installed, you can use Elastic Search (1.7) for both
-data storage and search. Add the following to your settings file:
+If *pyelasticsearch* is installed (e.g. through `pip install
+regcore[backend-elastic]`), you can use Elastic Search (1.7) for both data
+storage and search. Add the following to your settings file:
 
 ```python
 BACKENDS = {
@@ -157,6 +158,8 @@ BACKENDS = {
 }
 SEARCH_HANDLER = 'regcore_read.views.es_search.search'
 ```
+
+You may wish to extend the `regcore.settings.elastic` module for simplicity.
 
 
 ## Settings

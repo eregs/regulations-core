@@ -1,23 +1,25 @@
 from collections import namedtuple
 
+import pytest
 from django.test import TestCase, override_settings
 from django.test.client import Client
 from mock import patch
 
+pytest.importorskip('haystack')  # noqa
 from regcore_read.views.haystack_search import transform_results
 
 
-@override_settings(ROOT_URLCONF='regcore_read.tests.urls')
+@override_settings(SEARCH_HANDLER='regcore_read.views.haystack_search.search')
 class ViewsHaystackSearchTest(TestCase):
     def test_search_missing_q(self):
-        response = Client().get('/haystack_search?non_q=test')
+        response = Client().get('/search?non_q=test')
         self.assertEqual(400, response.status_code)
 
     @patch('regcore_read.views.haystack_search.SearchQuerySet')
     def test_search_success(self, sqs):
         results = sqs.return_value.models.return_value.filter
         results.return_value = []
-        response = Client().get('/haystack_search?q=test')
+        response = Client().get('/search?q=test')
         self.assertEqual(200, response.status_code)
         results.assert_called_with(content='test', doc_type='cfr')
 
@@ -26,7 +28,7 @@ class ViewsHaystackSearchTest(TestCase):
         results = sqs.return_value.models.return_value.filter
         version_filter = results.return_value.filter
         version_filter.return_value = []
-        response = Client().get('/haystack_search?q=test&version=12345678')
+        response = Client().get('/search?q=test&version=12345678')
         self.assertEqual(200, response.status_code)
         self.assertTrue(version_filter.called)
         self.assertEqual('12345678', version_filter.call_args[1]['version'])
@@ -36,7 +38,7 @@ class ViewsHaystackSearchTest(TestCase):
         results = sqs.return_value.models.return_value.filter
         version_filter = results.return_value.filter
         version_filter.return_value = []
-        response = Client().get('/haystack_search?q=test&is_root=false')
+        response = Client().get('/search?q=test&is_root=false')
         self.assertEqual(200, response.status_code)
         version_filter.assert_called_with(is_root=False)
 
@@ -45,7 +47,7 @@ class ViewsHaystackSearchTest(TestCase):
         results = sqs.return_value.models.return_value.filter
         version_filter = results.return_value.filter
         version_filter.return_value = []
-        response = Client().get('/haystack_search?q=test&is_subpart=true')
+        response = Client().get('/search?q=test&is_subpart=true')
         self.assertEqual(200, response.status_code)
         version_filter.assert_called_with(is_subpart=True)
 
@@ -54,7 +56,7 @@ class ViewsHaystackSearchTest(TestCase):
         results = sqs.return_value.models.return_value.filter
         version_filter = results.return_value.filter
         version_filter.return_value = []
-        response = Client().get('/haystack_search?q=test&is_subpart=truetrue')
+        response = Client().get('/search?q=test&is_subpart=truetrue')
         self.assertEqual(400, response.status_code)
 
     @patch('regcore_read.views.haystack_search.SearchQuerySet')
@@ -64,8 +66,7 @@ class ViewsHaystackSearchTest(TestCase):
         regulation_filter = version_filter.return_value.filter
 
         regulation_filter.return_value = []
-        response = Client().get('/haystack_search?q=test&'
-                                'version=678&regulation=123')
+        response = Client().get('/search?q=test&version=678&regulation=123')
         self.assertEqual(200, response.status_code)
         self.assertTrue(regulation_filter.called)
         self.assertEqual('678', version_filter.call_args[1]['version'])
@@ -77,7 +78,7 @@ class ViewsHaystackSearchTest(TestCase):
         results = sqs.return_value.models.return_value.filter
         results.return_value = list(range(500))
         transform_results.return_value = {}
-        response = Client().get('/haystack_search?q=test&page=5')
+        response = Client().get('/search?q=test&page=5')
         self.assertEqual(200, response.status_code)
         self.assertTrue(results.called)
         self.assertTrue(transform_results.called)

@@ -1,6 +1,8 @@
 from unittest import TestCase
 
+import pytest
 from mock import patch
+pytest.importorskip('pyelasticsearch')  # noqa
 from pyelasticsearch.exceptions import IndexAlreadyExistsError
 
 from regcore.index import init_schema
