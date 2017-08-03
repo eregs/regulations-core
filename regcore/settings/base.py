@@ -72,6 +72,8 @@ LOGGING = {
     }
 }
 
+SEARCH_HANDLER = 'regcore_read.views.haystack_search.search'
+
 # Batch size used in `bulk_create`; defaults to a conservative value to avoid
 # hitting SQLite limits
 BATCH_SIZE = 50

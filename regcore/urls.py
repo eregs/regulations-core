@@ -6,13 +6,13 @@ and regcore_write apps"""
 from collections import defaultdict
 
 from django.conf import settings
+from django.utils.module_loading import import_string
 
 from regcore.urls_utils import by_verb_url
 from regcore_read.views import diff as rdiff
 from regcore_read.views import document as rdocument
 from regcore_read.views import layer as rlayer
 from regcore_read.views import notice as rnotice
-from regcore_read.views.haystack_search import search
 from regcore_write.views import diff as wdiff
 from regcore_write.views import document as wdocument
 from regcore_write.views import layer as wlayer
@@ -29,7 +29,7 @@ if 'regcore_read' in settings.INSTALLED_APPS:
     mapping['preamble']['GET'] = rdocument.get
     mapping['regulation']['GET'] = rdocument.get
     mapping['reg-versions']['GET'] = rdocument.listing
-    mapping['search']['GET'] = search
+    mapping['search']['GET'] = import_string(settings.SEARCH_HANDLER)
 
 
 if 'regcore_write' in settings.INSTALLED_APPS:
