@@ -17,5 +17,6 @@ setup(
     extras_require={
         'backend-elastic': ['pyelasticsearch'],
         'backend-haystack': ['django-haystack'],
+        'backend-pgsql': ['django>=1.10', 'psycopg2'],
     },
 )
