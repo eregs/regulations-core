@@ -9,6 +9,7 @@ class DocumentIndex(models.Model):
     combined_text = models.TextField()
     combined_titles = models.TextField()
     root_title = models.TextField()
+    doc_root = models.SlugField(max_length=200)     # denormalized
 
     search_vector = SearchVectorField()
 
@@ -22,12 +23,15 @@ class DocumentIndex(models.Model):
             combined_titles='\n'.join(
                 d.title for d in doc_and_children if d.title),
             root_title=document.title or '',
+            doc_root=document.label_string.split('-')[0],
         )
 
     @classmethod
     def rebuild_search_vectors(cls):
         cls.objects.update(search_vector=(
-            SearchVector('root_title', weight='A')
-            + SearchVector('combined_titles', weight='B')
-            + SearchVector('combined_text', weight='C')
+            # note that the root title gets double-counted, as it's also in
+            # combined_titles
+            SearchVector('root_title', weight='B') +
+            SearchVector('combined_titles', weight='A') +
+            SearchVector('combined_text', weight='B')
         ))

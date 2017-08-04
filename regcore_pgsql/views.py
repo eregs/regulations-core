@@ -3,11 +3,11 @@ from django.db.models import F, Q
 
 from regcore.models import Document
 from regcore.responses import success
-from regcore_read.views.search_utils import requires_search_args, PAGE_SIZE
+from regcore_read.views.search_utils import requires_search_args
 
 
-@requires_search_args
-def search(request, doc_type, search_args):
+def matching_sections(search_args):
+    """Retrieve all Document sections that match the parsed search args."""
     sections_query = Document.objects\
         .annotate(rank=SearchRank(
             F('documentindex__search_vector'), SearchQuery(search_args.q)))\
@@ -16,13 +16,22 @@ def search(request, doc_type, search_args):
 
     if search_args.version:
         sections_query = sections_query.filter(version=search_args.version)
+    if search_args.regulation:
+        sections_query = sections_query.filter(
+            documentindex__doc_root=search_args.regulation)
     # can't filter regulation yet
-    start = search_args.page * PAGE_SIZE
-    end = start + PAGE_SIZE
+    return sections_query
+
+
+@requires_search_args
+def search(request, doc_type, search_args):
+    sections = matching_sections(search_args)
+    start = search_args.page * search_args.page_size
+    end = start + search_args.page_size
 
     return success({
-        'total_hits': sections_query.count(),
-        'results': transform_results(sections_query[start:end], search_args.q),
+        'total_hits': sections.count(),
+        'results': transform_results(sections[start:end], search_args.q),
     })
 
 
