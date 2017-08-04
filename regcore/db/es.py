@@ -2,6 +2,7 @@
 etc.), implemented using Elastic Search as a data store"""
 import logging
 
+from cached_property import cached_property
 from django.conf import settings
 from pyelasticsearch import ElasticSearch
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError
@@ -18,8 +19,10 @@ def sanitize_doc_id(doc_id):
 
 class ESBase(object):
     """Shared code for Elastic Search storage models"""
-    def __init__(self):
-        self.es = ElasticSearch(settings.ELASTIC_SEARCH_URLS)
+
+    @cached_property
+    def es(self):
+        return ElasticSearch(settings.ELASTIC_SEARCH_URLS)
 
     def safe_fetch(self, doc_type, es_id):
         """Attempt to retrieve a document from Elastic Search.
