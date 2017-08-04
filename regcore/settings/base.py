@@ -10,6 +10,7 @@ ALLOWED_HOSTS = [
 ]
 
 INSTALLED_APPS = [
+    'django.contrib.contenttypes',
     'mptt',
     'haystack',
     'regcore',
