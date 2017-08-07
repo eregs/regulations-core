@@ -6,7 +6,7 @@ from haystack.query import SearchQuerySet
 from regcore.db.django_models import DMLayers
 from regcore.models import Document
 from regcore.responses import success
-from regcore_read.views.search_utils import requires_search_args, PAGE_SIZE
+from regcore_read.views.search_utils import requires_search_args
 
 
 @requires_search_args
@@ -23,8 +23,8 @@ def search(request, doc_type, search_args):
     if search_args.is_subpart is not None:
         query = query.filter(is_subpart=search_args.is_subpart)
 
-    start = search_args.page * PAGE_SIZE
-    end = start + PAGE_SIZE
+    start = search_args.page * search_args.page_size
+    end = start + search_args.page_size
 
     return success({
         'total_hits': len(query),
