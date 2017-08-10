@@ -4,7 +4,6 @@ regulations-core
 [![Dependency Status](https://gemnasium.com/badges/github.com/eregs/regulations-core.svg)](https://gemnasium.com/github.com/eregs/regulations-core)
 [![Coverage Status](https://coveralls.io/repos/github/eregs/regulations-core/badge.svg?branch=master)](https://coveralls.io/github/eregs/regulations-core?branch=master)
 [![Code Climate](https://codeclimate.com/github/eregs/regulations-core/badges/gpa.svg)](https://codeclimate.com/github/eregs/regulations-core)
-[![Code Issues](https://www.quantifiedcode.com/api/v1/project/0cdc7eb543724f60b428aa9cae42bd5f/badge.svg)](https://www.quantifiedcode.com/app/project/0cdc7eb543724f60b428aa9cae42bd5f)
 
 An API library that provides an interface for storing and retrieving regulations,
 layers, etc.
