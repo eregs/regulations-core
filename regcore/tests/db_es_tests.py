@@ -1,7 +1,9 @@
 from contextlib import contextmanager
 from unittest import TestCase
 
+import pytest
 from mock import patch
+pytest.importorskip('pyelasticsearch')  # noqa
 from pyelasticsearch.exceptions import ElasticHttpNotFoundError
 
 from regcore.db.es import ESDiffs, ESDocuments, ESLayers, ESNotices

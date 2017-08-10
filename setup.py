@@ -7,6 +7,7 @@ setup(
     packages=find_packages(),
     include_package_data=True,
     install_requires=[
+        'cached_property',
         'django>=1.8,<1.12',
         'django-mptt',
         'jsonschema',
@@ -15,7 +16,6 @@ setup(
     ],
     extras_require={
         'backend-elastic': ['pyelasticsearch'],
-        'backend-django': ['django-haystack'],
-        'all-backends': ['django-haystack', 'pyelasticsearch'],
+        'backend-haystack': ['django-haystack'],
     },
 )

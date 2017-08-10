@@ -7,7 +7,7 @@ RUN apk --update add ca-certificates \
     && update-ca-certificates \
     && rm -rf /var/cache/apk/*
 RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -e .[all-backends] \
+    && pip install --no-cache-dir -e .[backend-haystack] \
     && python manage.py migrate
 
 ENV PYTHONUNBUFFERED="1"
