@@ -6,7 +6,7 @@ from pyelasticsearch import ElasticSearch
 
 from regcore.db.es import ESLayers
 from regcore.responses import success
-from regcore_read.views.search_utils import requires_search_args, PAGE_SIZE
+from regcore_read.views.search_utils import requires_search_args
 
 
 @requires_search_args
@@ -15,8 +15,8 @@ def search(request, doc_type, search_args):
     query = {
         'fields': ['text', 'label', 'version', 'regulation', 'title',
                    'label_string'],
-        'from': search_args.page * PAGE_SIZE,
-        'size': PAGE_SIZE,
+        'from': search_args.page * search_args.page_size,
+        'size': search_args.page_size,
     }
     text_match = {'match': {'text': search_args.q, 'doc_type': doc_type}}
     if search_args.version or search_args.regulation:

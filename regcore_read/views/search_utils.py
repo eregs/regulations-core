@@ -1,10 +1,12 @@
 from collections import namedtuple
 from functools import wraps
 
-from webargs import fields, ValidationError
+from webargs import fields, validate, ValidationError
 from webargs.djangoparser import parser
 
 from regcore.responses import user_error
+
+MAX_PAGE_SIZE = 50
 
 search_args = {
     'q': fields.Str(required=True),
@@ -12,12 +14,14 @@ search_args = {
     'regulation': fields.Str(missing=None),
     'is_root': fields.Bool(missing=None),
     'is_subpart': fields.Bool(missing=None),
-    'page': fields.Int(missing=0)
+    'page': fields.Int(missing=0),
+    'page_size': fields.Int(missing=MAX_PAGE_SIZE,
+                            validate=validate.Range(1, MAX_PAGE_SIZE)),
 }
-SearchArgs = namedtuple('SearchArgs', ['q', 'version', 'regulation',
-                                       'is_root', 'is_subpart', 'page'])
-
-PAGE_SIZE = 50
+SearchArgs = namedtuple(
+    'SearchArgs',
+    ['q', 'version', 'regulation', 'is_root', 'is_subpart', 'page',
+     'page_size'])
 
 
 def requires_search_args(view):
