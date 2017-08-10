@@ -52,6 +52,14 @@ regcore\_read\.views\.notice module
     :undoc-members:
     :show-inheritance:
 
+regcore\_read\.views\.search\_utils module
+------------------------------------------
+
+.. automodule:: regcore_read.views.search_utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

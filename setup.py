@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name="regcore",
-    version="3.1.0",
+    version="4.0.0",
     license="public domain",
     packages=find_packages(),
     include_package_data=True,
@@ -17,5 +17,6 @@ setup(
     extras_require={
         'backend-elastic': ['pyelasticsearch'],
         'backend-haystack': ['django-haystack'],
+        'backend-pgsql': ['django>=1.10', 'psycopg2'],
     },
 )

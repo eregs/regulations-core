@@ -12,6 +12,22 @@ regcore\.settings\.base module
     :undoc-members:
     :show-inheritance:
 
+regcore\.settings\.elastic module
+---------------------------------
+
+.. automodule:: regcore.settings.elastic
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+regcore\.settings\.pgsql module
+-------------------------------
+
+.. automodule:: regcore.settings.pgsql
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

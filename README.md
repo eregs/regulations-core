@@ -85,14 +85,16 @@ In both cases, you can find the site locally at
 
 ## Apps included
 
-This repository contains three Django apps, *regcore*, *regcore_read*, and
-*regcore_write*. The former contains shared models and libraries. The "read"
-app provides read-only end-points while the "write" app provides write-only
-end-points (see the next section for security implications.) We recommend
-using *regcore.urls* as your url router, in which case turning on or off
-read/write capabilities is as simple as including the appropriate
-applications in your Django settings file. Note that you will always need
-*regcore* installed.
+This repository contains four Django apps, *regcore*, *regcore_read*,
+*regcore_write*, and *regcore_pgsql*. The first contains shared models and
+libraries. The "read" app provides read-only end-points while the "write" app
+provides write-only end-points (see the next section for security
+implications.) We recommend using *regcore.urls* as your url router, in which
+case turning on or off read/write capabilities is as simple as including the
+appropriate applications in your Django settings file. The final app,
+*regcore_pgsql* contains all of the modules related to running with a
+Postgres-based search index. Note that you will always need *regcore*
+installed.
 
 
 ## Security
@@ -120,7 +122,7 @@ turn `DEBUG` off in your `local_settings.py`
 
 This project allows multiple backends for storing, retrieving, and searching
 data. The default settings file uses Django models for data storage and
-Haystack for search, but Elastic Search (1.7) can be used instead.
+Haystack for search, but Elastic Search (1.7) or Postgres can be used instead.
 
 ### Django Models For Data, Haystack For Search
 
@@ -141,6 +143,30 @@ SEARCH_HANDLER = 'regcore_read.views.haystack_search.search'
 
 You will need to migrate the database (`manage.py migrate`) to get started and
 rebuild the search index (`manage.py rebuild_index`) after adding documents.
+
+### Django Models For Data, Postgres For Search
+
+If running Django 1.10 or greater, you may skip *haystack* and rely
+exclusively on Postgres for search. The current search index only indexes at
+the CFR section level. Install the `psycopg` (e.g. through `pip install
+regcore[backend-pgsql]`) and use the following settings:
+
+```python
+BACKENDS = {
+    'regulations': 'regcore.db.django_models.DMRegulations',
+    'layers': 'regcore.db.django_models.DMLayers',
+    'notices': 'regcore.db.django_models.DMNotices',
+    'diffs': 'regcore.db.django_models.DMDiffs'
+}
+SEARCH_HANDLER = 'regcore_pgsql.views.search'
+APPS.append('regcore_pgsql')
+```
+
+You may wish to extend the `regcore.settings.pgsql` module for simplicity.
+
+You will need to migrate the database (`manage.py migrate`) to get started and
+rebuild the search index (`manage.py rebuild_pgsql_index`) after adding
+documents.
 
 ### Elastic Search For Data and Search
 

@@ -68,6 +68,14 @@ regcore\_read\.tests\.views\_regulation\_tests module
     :undoc-members:
     :show-inheritance:
 
+regcore\_read\.tests\.views\_seach\_utils\_tests module
+-------------------------------------------------------
+
+.. automodule:: regcore_read.tests.views_seach_utils_tests
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 Module contents
 ---------------

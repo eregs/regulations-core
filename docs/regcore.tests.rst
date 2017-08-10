@@ -51,6 +51,14 @@ regcore\.tests\.layer\_tests module
     :undoc-members:
     :show-inheritance:
 
+regcore\.tests\.recipes module
+------------------------------
+
+.. automodule:: regcore.tests.recipes
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 regcore\.tests\.responses\_tests module
 ---------------------------------------
 
