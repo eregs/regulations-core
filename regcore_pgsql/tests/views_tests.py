@@ -1,4 +1,5 @@
 import pytest
+from django.db.models import Q
 from mock import call, Mock
 
 pytest.importorskip('django', minversion='1.10')    # noqa
@@ -32,22 +33,80 @@ def test_matching_sections(monkeypatch):
     assert call(documentindex__doc_root='rrr') in filters
 
 
-def test_transform_results():
-    """Verify conversion to a dict."""
-    sect1, sect2 = Mock(title='Section 111'), Mock(title='Section 222')
-    query1, query2 = make_queryset_mock(), make_queryset_mock()
-    sect1.get_descendants.return_value = query1
-    sect2.get_descendants.return_value = query2
-    query1.first.return_value = doc_recipe.prepare(
-        text='sect1', label_string='root-111', version='vvv',
-        title='Section 111')
-    query2.first.return_value = doc_recipe.prepare(
-        text='subpar', label_string='root-222-a-3', version='vvv')
+@pytest.mark.django_db
+def test_transform_results(monkeypatch):
+    """If there's a text match inside a section, we should convert it to a
+    dictionary."""
+    monkeypatch.setattr(    # __search isn't supported by sqlite
+        views, 'Q', Mock(return_value=Q(text__contains='matching')))
+    sect = doc_recipe.make(label_string='root-11', title='Sect 111',
+                           version='vvv')
+    par_a = doc_recipe.make(label_string='root-11-a', parent=sect)
+    doc_recipe.make(text='matching text', label_string='root-11-a-3',
+                    parent=par_a, title="Match's title")
 
-    assert views.transform_results([sect1, sect2], 'my terms') == [
-        dict(text='sect1', label=['root', '111'], version='vvv',
-             regulation='root', label_string='root-111', title='Section 111'),
-        dict(text='subpar', label=['root', '222', 'a', '3'], version='vvv',
-             regulation='root', label_string='root-222-a-3',
-             title='Section 222'),
-    ]
+    results = views.transform_results([sect], 'this is a query')
+    assert results == [{
+        'text': 'matching text',
+        'label': ['root', '11', 'a', '3'],
+        'version': 'vvv',
+        'regulation': 'root',
+        'label_string': 'root-11-a-3',
+        'match_title': "Match's title",
+        'paragraph_title': "Match's title",
+        'section_title': 'Sect 111',
+        'title': 'Sect 111',
+    }]
+
+
+@pytest.mark.django_db
+def test_transform_title_match(monkeypatch):
+    """If there's a title match with no text, we should conver to the correct
+    dictionary."""
+    monkeypatch.setattr(    # __search isn't supported by sqlite
+        views, 'Q', Mock(return_value=Q(title__contains='matching')))
+    sect = doc_recipe.make(label_string='root-11', title='Sect 111',
+                           version='vvv')
+    par_a = doc_recipe.make(label_string='root-11-a', parent=sect, text='',
+                            title='matching title')
+    doc_recipe.make(label_string='root-11-a-3', parent=par_a,
+                    text='inner text', title='inner title')
+
+    results = views.transform_results([sect], 'this is a query')
+    assert results == [{
+        'text': 'inner text',
+        'label': ['root', '11', 'a'],
+        'version': 'vvv',
+        'regulation': 'root',
+        'label_string': 'root-11-a',
+        'match_title': 'matching title',
+        'paragraph_title': 'inner title',
+        'section_title': 'Sect 111',
+        'title': 'Sect 111',
+    }]
+
+
+@pytest.mark.django_db
+def test_transform_no_exact_match(monkeypatch):
+    """If text is searched text is broken across multiple paragraphs, we
+    should just graph the first text node we can find."""
+    monkeypatch.setattr(    # __search isn't supported by sqlite
+        views, 'Q', Mock(return_value=Q(text=None)))    # will have no results
+    sect = doc_recipe.make(label_string='root-11', text='', title='Sect 111',
+                           version='vvv')
+    par_a = doc_recipe.make(label_string='root-11-a', parent=sect,
+                            text='has some text', title='nonmatching title')
+    doc_recipe.make(label_string='root-11-a-3', parent=par_a)
+
+    results = views.transform_results([sect], 'this is a query')
+    assert results == [{
+        'text': 'has some text',
+        'label': ['root', '11'],
+        'version': 'vvv',
+        'regulation': 'root',
+        'label_string': 'root-11',
+        'match_title': 'Sect 111',
+        'paragraph_title': 'nonmatching title',
+        'section_title': 'Sect 111',
+        'title': 'Sect 111',
+    }]
