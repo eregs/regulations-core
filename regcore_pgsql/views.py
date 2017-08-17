@@ -40,17 +40,25 @@ def transform_results(sections, search_terms):
     serialization."""
     final_results = []
     for section in sections:
-        first_match = section.get_descendants(include_self=True)\
+        # TODO: n+1 problem; hypothetically these could all be performed via
+        # subqueries and annotated on the sections queryset
+        match_node = section.get_descendants(include_self=True)\
             .filter(Q(text__search=search_terms) |
                     Q(title__search=search_terms))\
+            .first() or section
+        text_node = match_node.get_descendants(include_self=True)\
+            .exclude(text='')\
             .first()
 
         final_results.append({
-            'text': first_match.text,
-            'label': first_match.label_string.split('-'),
-            'version': first_match.version,
-            'regulation': first_match.label_string.split('-')[0],
-            'label_string': first_match.label_string,
+            'text': text_node.text if text_node else '',
+            'label': match_node.label_string.split('-'),
+            'version': section.version,
+            'regulation': section.label_string.split('-')[0],
+            'label_string': match_node.label_string,
+            'match_title': match_node.title,
+            'paragraph_title': text_node.title if text_node else '',
+            'section_title': section.title,
             'title': section.title,
         })
     return final_results
