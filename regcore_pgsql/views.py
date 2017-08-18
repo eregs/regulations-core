@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.postgres.search import SearchRank, SearchQuery
 from django.db.models import F, Q
 
@@ -11,7 +12,7 @@ def matching_sections(search_args):
     sections_query = Document.objects\
         .annotate(rank=SearchRank(
             F('documentindex__search_vector'), SearchQuery(search_args.q)))\
-        .filter(rank__gte=0.15)\
+        .filter(rank__gt=settings.PG_SEARCH_RANK_CUTOFF)\
         .order_by('-rank')
 
     if search_args.version:
