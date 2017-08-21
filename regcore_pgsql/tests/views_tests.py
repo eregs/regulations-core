@@ -16,10 +16,11 @@ def make_queryset_mock():
     return queryset_mock
 
 
-def test_matching_sections(monkeypatch):
+def test_matching_sections(monkeypatch, settings):
     """Search arguments should be converted to the correct arguments."""
     queryset_mock = make_queryset_mock()
     monkeypatch.setattr(views.Document, 'objects', queryset_mock)
+    settings.PG_SEARCH_RANK_CUTOFF = 0.1234
 
     result = views.matching_sections(SearchArgs(
         q='some terms', version='vvv', regulation='rrr',
@@ -29,6 +30,7 @@ def test_matching_sections(monkeypatch):
     assert 'some terms' in str(queryset_mock.annotate.call_args)
     assert 'search_vector' in str(queryset_mock.annotate.call_args)
     filters = queryset_mock.filter.call_args_list
+    assert call(rank__gt=0.1234) in filters
     assert call(version='vvv') in filters
     assert call(documentindex__doc_root='rrr') in filters
 

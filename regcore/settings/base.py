@@ -79,6 +79,9 @@ SEARCH_HANDLER = 'regcore_read.views.haystack_search.search'
 # hitting SQLite limits
 BATCH_SIZE = 50
 
+# Lower bound for search results to appear when using pgsql search
+PG_SEARCH_RANK_CUTOFF = 0.15
+
 _envvars = ('HTTP_AUTH_USER', 'HTTP_AUTH_PASSWORD')
 for var in _envvars:
     globals()[var] = os.environ.get(var)
