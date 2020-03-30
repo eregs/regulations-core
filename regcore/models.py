@@ -8,7 +8,7 @@ class Document(MPTTModel):
     id = models.TextField(primary_key=True)     # noqa
     doc_type = models.SlugField(max_length=20)
     parent = TreeForeignKey('self', null=True, blank=True,
-                            related_name='children', db_index=True)
+                            related_name='children', db_index=True, on_delete=models.SET_NULL)
     version = models.SlugField(max_length=20, null=True, blank=True)
     label_string = models.SlugField(max_length=200)
     text = models.TextField()
