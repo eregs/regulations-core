@@ -47,7 +47,7 @@ class Notice(models.Model):
 class NoticeCFRPart(models.Model):
     """Represents the one-to-many relationship between notices and CFR parts"""
     cfr_part = models.SlugField(max_length=10, db_index=True)
-    notice = models.ForeignKey(Notice)
+    notice = models.ForeignKey(Notice, null=True, on_delete=models.SET_NUL )
 
     class Meta:
         index_together = (('notice', 'cfr_part'),)
