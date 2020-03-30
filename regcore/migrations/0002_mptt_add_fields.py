@@ -29,7 +29,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='regulation',
             name='parent',
-            field=mptt.fields.TreeForeignKey(blank=True, to='regcore.Regulation', null=True),
+            field=mptt.fields.TreeForeignKey(blank=True, to='regcore.Regulation', null=True, on_delete=models.SET_NULL),
         ),
         migrations.AddField(
             model_name='regulation',

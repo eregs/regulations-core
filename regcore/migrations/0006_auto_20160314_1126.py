@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='regulation',
             name='parent',
-            field=mptt.fields.TreeForeignKey(related_name='children', blank=True, to='regcore.Regulation', null=True),
+            field=mptt.fields.TreeForeignKey(related_name='children', blank=True, to='regcore.Regulation', null=True, on_delete=models.SET_NULL),
         ),
         migrations.AlterUniqueTogether(
             name='layer',
