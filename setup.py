@@ -8,8 +8,8 @@ setup(
     include_package_data=True,
     install_requires=[
         'cached_property',
-        'django~=2.0.0',
-        'django-mptt~=0.11.0',
+        'django~=2.2.0',
+        'django-mptt~=0.9.0',
         'jsonschema',
         'six',
         'webargs',
