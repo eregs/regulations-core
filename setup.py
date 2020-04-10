@@ -9,7 +9,7 @@ setup(
     install_requires=[
         'cached_property',
         'django~=2.2.11',
-        'django-mptt~=0.9.0',
+        'django-mptt~=0.8.6',
         'jsonschema',
         'six',
         'webargs',
